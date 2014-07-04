@@ -1,0 +1,8 @@
+add_executable(Hello hello.cpp)
+
+# Aliases for module libs
+
+# Linker information
+target_link_libraries(Hello ${LIBRARIES})
+
+
