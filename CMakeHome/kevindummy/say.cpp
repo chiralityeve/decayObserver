@@ -5,9 +5,11 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	Sayer sayer("Test message");
+	if(argc < 2) 
+		cout << "Say what?" << endl;
 	
-	sayer.Say();
+	for(int i=1; i<argc; ++i)
+		Sayer(argv[i]).Say();
 	
 	return 0;
 }
