@@ -12,7 +12,7 @@ public:
 	Sayer(const string& message):message(message){}
 	~Sayer(){}
 	
-	void Say(){ cout << message << endl; }
+	void Say() const { cout << message << endl; }
 	
 private:
 	string message;
