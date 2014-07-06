@@ -103,5 +103,8 @@ endif()
 #add_subdirectory(src)
 add_subdirectory(main)
 
+# Edited by Kevin. This directory is to play around with CMake
+add_subdirectory(kevindummy)
+
 # vim:ft=cmake
 
