@@ -104,7 +104,7 @@ endif()
 add_subdirectory(main)
 
 # Edited by Kevin. This directory is to play around with CMake
-add_subdirectory(kevindummy)
+add_subdirectory(kevinproto)
 
 # vim:ft=cmake
 
