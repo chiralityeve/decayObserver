@@ -67,15 +67,22 @@ int main() {
 
 
 
+    //There are basically two types of Constructos:
+    //
+    //Type1: First (or only) histogram on one canvas
+    //Plotvariable Type1(variable to plot, pointer to Tree, Title of Canvas, Label in legend, #bins, lower bound, upper bound, x-axis label, unit, cuts (optional), container (do not edit))
+    //
+    //Type2: Additional histogram(s) on same canvas
+    //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
-    Plotvariable B_M("B0_M", MCtree, "Bs-Mass", "vor truth", nbins, 5000, 5700, "m_{B}", "MeV", vecp);
-    Plotvariable B_M_truth("B0_M", MCtree, "nach truth", cuts, vecp);
+    Plotvariable B_M("B0_M", MCtree, "Bs-Mass", "before truth", nbins, 5000, 5700, "m_{B}", "MeV", vecp);                          //Type1
+    Plotvariable B_M_truth("B0_M", MCtree, "after truth", cuts, vecp);                                                           //Type2
 
-    Plotvariable f2_M("phi_1020_M", MCtree, "f2-Mass", "vor truth", nbins, 900, 2500, "m_{f2}", "MeV", vecp);
-    Plotvariable f2_M_truth("phi_1020_M", MCtree, "nach truth", cuts, vecp);
+    Plotvariable f2_M("phi_1020_M", MCtree, "f2-Mass", "before truth", nbins, 900, 2500, "m_{f2}", "MeV", vecp);
+    Plotvariable f2_M_truth("phi_1020_M", MCtree, "afer truth", cuts, vecp);
 
     
-    Plotvariable mumu_M("J_psi_1S_M", MCtree, "MuMu-Mass", "NICHTDA", nbins, 0, 4000, "m_{#{mu}#{mu}}", "MeV", vecp);
+    Plotvariable mumu_M("J_psi_1S_M", MCtree, "MuMu-Mass", "You should not see a legend here", nbins, 0, 4000, "m_{#{mu}#{mu}}", "MeV", vecp);
 
 
     // -----------------------------------
