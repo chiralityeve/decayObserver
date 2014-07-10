@@ -1,5 +1,0 @@
-Run the command "SetupProject DaVinci" once to make sure cmake will find all the
- libraries. Then go into the directory decayObserver/CMakeHome/build/ and run 
- "cmake -DCMAKE_BUILD_TYPE=Release ..". Then run "make kevinproto" or "make all"
- and then run "./bin/kevinproto". Now there should be a plot inside the plot 
- directory
