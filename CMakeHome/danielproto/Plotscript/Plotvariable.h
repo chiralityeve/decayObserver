@@ -45,7 +45,7 @@ class Plotvariable {
         std::string unit_;           //Unit of the variable
         std::string ylabel_;         //Y-label
         std::string cuts_;           //cuts (if applicable)
-        bool show_on_same_canvas_;
+               bool show_on_same_canvas_;
 
 };
 

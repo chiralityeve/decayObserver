@@ -25,38 +25,72 @@ using std::endl;
 // This Script creates Histograms from TTree - Variables
 // --------------------------------------------------------
 
-//Define setting-functions
-void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto);
-void kevin_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto);
-void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto);
 
 
-int main(int argc, char **argv) {
+int main() {
     gStyle->SetOptStat(0);          //Do not plot infobox in histogram
 
     
     std::vector<Plotvariable*> vec;
     std::vector<Plotvariable*> *vecp = &vec;
 
-     bool normalized_plots;
-    int nbins;
-    std::string saveto;
-
-    if(argc == 1) {
-        cout << endl << "No option given" << endl;
-        return 1;
-    }
 
 
-    //Settings are loaded here (depending on the main parameter given)
-    std::string compare = argv[1];
-    if(compare == "daniel") daniel_current(vecp, normalized_plots, nbins, saveto);
-    else if(compare == "kevin") kevin_current(vecp, normalized_plots, nbins, saveto);
-    else if(compare == "vitali") vitali_current(vecp, normalized_plots, nbins, saveto);
-    else{
-        cout << endl << "Wrong option given" << endl;
-        return 1;
-    }
+
+
+
+
+
+    // -----------------------------------
+    // Start Editing here (Example given) 
+    // -----------------------------------
+
+
+
+    //Read NTuples (can be either TTrees or TChains)
+    TChain MC("LambdaBOfflineTree/DecayTree");
+    TChain* MCtree = &MC;
+    MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/LambdaB2LcHHH.root");
+
+    //TFile* fileB = TFile::Open("/afs/cern.ch/work/c/clinn/public/f2mumu/Bsf2mumu_MC_up.root");
+    //TTree *MCtreeup = dynamic_cast<TTree*>(fileB->Get("Bs2phimumuTuple/DecayTree"));
+
+
+    //Define Cuts that will be used
+    std::string cuts = "B0_BKGCAT == 20";
+
+
+    bool normalized_plots = true;               //<-------- Normalized plots?
+    int nbins = 200;                            //<-------- Default number of bins
+    std::string saveto = "../plots/";
+
+
+
+    //There are basically two types of Constructos:
+    //
+    //Type1: First (or only) histogram on one canvas
+    //Plotvariable Type1(variable to plot, pointer to Tree, Title of Canvas, Label in legend, #bins, lower bound, upper bound, x-axis label, unit, cuts (optional), container (do not edit))
+    //
+    //Type2: Additional histogram(s) on same canvas
+    //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
+
+    Plotvariable B_M("lab0_M", MCtree, "Lambda B Mass", "", nbins, 5200, 6000, "m_{#{lambda}}", "MeV", vecp);                          //Type1
+    /*Plotvariable B_M_truth("B0_M", MCtree, "after truth", cuts, vecp);                                                           //Type2
+
+    Plotvariable f2_M("phi_1020_M", MCtree, "f2-Mass", "before truth", nbins, 900, 2500, "m_{f2}", "MeV", vecp);
+    Plotvariable f2_M_truth("phi_1020_M", MCtree, "afer truth", cuts, vecp);
+
+    
+    Plotvariable mumu_M("J_psi_1S_M", MCtree, "MuMu-Mass", "You should not see a legend here", nbins, 0, 4000, "m_{#{mu}#{mu}}", "MeV", vecp);
+    */
+
+    // -----------------------------------
+    // End of Editing Area
+    // -----------------------------------
+
+
+
+
 
 
 
