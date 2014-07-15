@@ -92,6 +92,9 @@ int main(int argc, char **argv) {
     std::string str_savepathnr;
     std::string savename;
 
+    int pdfpage = 0;                           //number of pages in pdf
+    std::string pdfname = saveto + (vec[0] -> Getname()) + "_etc.pdf";
+
     std::string norm = "";
     std::string normsame = "same";
     std::string normierte = "";
@@ -101,8 +104,15 @@ int main(int argc, char **argv) {
         normierte = "Normierte";
     }
 
+    cp -> SaveAs((pdfname + "[").c_str());                          //Begin plotting on pdf
+
     for(unsigned int i = 0; i < vector_size; i++) {
         if((vec[i] -> Getsamecanvas()) == false) {                  //Plot it on a new canvas
+            //Plot plots also in a single PDF-File
+            if(pdfpage > 0) cp -> SaveAs(pdfname.c_str());
+            pdfpage += 1;                                           //Note: Plot of last canvas is done after this loops
+            
+            
             maxbincontent = 0;                                      //Reset counters
             nplots = 0;
             savepathnr += 1;
@@ -114,20 +124,22 @@ int main(int argc, char **argv) {
 
             
 
-            savename = vec[i] -> Getname();                                                     //Remove illegal characters
+            savename = vec[i] -> Getname();                                                                 //Remove illegal characters in savename
             savename.erase(std::remove(savename.begin(), savename.end(), '/'), savename.end());
             savename.erase(std::remove(savename.begin(), savename.end(), ':'), savename.end());
             savename.erase(std::remove(savename.begin(), savename.end(), ' '), savename.end());
             
-            savepath = saveto + str_savepathnr + "_" + savename + ".png";                                         //PROBLEM: if name contains fancy characters
+            savepath = saveto + str_savepathnr + "_" + savename + ".png";
 
             cp -> SaveAs(savepath.c_str());
+
+
         }
         else{                                                                                       //Plot it on the same canvas  
             nplots += 1;                                                                            //(number+1) of plots on same canvas (raise by one)
 
             if(nplots == 1) {
-                temphistp = vec[i] -> plot(kRed, 1, normsame);                          //Edit the layout here
+                temphistp = vec[i] -> plot(kRed, 1, normsame);                                      //<----------Edit the layout here
                 legendp -> AddEntry(motherhistp, vec[i-1]->Getlegendname().c_str(), "l");
                 legendp -> AddEntry(temphistp, vec[i]->Getlegendname().c_str(), "l");
             }
@@ -149,6 +161,9 @@ int main(int argc, char **argv) {
             cp -> SaveAs(savepath.c_str());
         }
     }
+    cp -> SaveAs(pdfname.c_str());                                                         //Plot last canvas
+    cp -> SaveAs( (pdfname + "]").c_str());                                                         //finish PDF plotting
+
 
 
 

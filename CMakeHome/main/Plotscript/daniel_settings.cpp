@@ -24,12 +24,12 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     
     //Define cuts
     //Cut auf Background: schließe J_psi-Resonanz und Psi(2S) aus und Schneide auf f2_mass (official exclude areas)
-    std::string bkgrcut = "(J_psi_1S_M > 3316.6 || J_psi_1S_M < 2828.4) && (J_psi_1S_M < 3535.6 || J_psi_1S_M > 3873.0)";
+    std::string bkgrcut = "(J_psi_1S_M > 3316.6 || J_psi_1S_M < 2828.4) && (J_psi_1S_M < 3535.6 || J_psi_1S_M > 3873.0) && (phi_1020_M > 1300 && phi_1020_M < 1800)";
 
 
 
-    normalized_plots = true;                //<-------- Normalized plots?
-    nbins = 200;                            //<-------- Default number of bins
+    normalized_plots = true;                               //<-------- Normalized plots?
+    nbins = 200;                                           //<-------- Default number of bins
     saveto = "../plots/1_SignalVsBkgr/";                   //<-------- Path to save it
 
 
@@ -44,7 +44,7 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
     new Plotvariable("Kplus_PT", MCtree, "Transversal Momentum of K^{+}", "Signal", nbins, 0, 5000, "p_{T}", "MeV/c", vecp);                          //Type1
     new Plotvariable("Kplus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                             //Type2
-
+    
     new Plotvariable("Kminus_PT", MCtree, "Transversal Momentum of K^{-}", "Signal", nbins, 0, 5000, "p_{T}", "MeV/c", vecp);                   
     new Plotvariable("Kminus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                     
 
@@ -55,7 +55,7 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     new Plotvariable("muminus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                         
 
 
-
+    
     new Plotvariable("Kplus_P", MCtree, "Momentum of K^{+}", "Signal", nbins, 0, 50000, "p", "MeV/c", vecp);                   
     new Plotvariable("Kplus_P", Bkgrtree, "Background", bkgrcut, vecp);                                                                       
 
@@ -98,11 +98,11 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
 
 
-    new Plotvariable("B0_ENDVERTEX_CHI2/B0_ENDVERTEX_NDOF", MCtree, "B_{s}: #chi_{vtx}^{2}", "Signal", nbins, -0.2, 30, "#chi_{vtx}^{2} / NDOF", "", vecp);                   
-    new Plotvariable("B0_ENDVERTEX_CHI2/B0_ENDVERTEX_NDOF", Bkgrtree, "Background", bkgrcut, vecp);                                                                       
+    new Plotvariable("B0_ENDVERTEX_CHI2", MCtree, "B_{s}: #chi_{vtx}^{2}", "Signal", nbins, -0.2, 30, "#chi_{vtx}^{2}", "", vecp);                   
+    new Plotvariable("B0_ENDVERTEX_CHI2", Bkgrtree, "Background", bkgrcut, vecp);                                                                       
                                              
-    new Plotvariable("phi_1020_ENDVERTEX_CHI2/phi_1020_ENDVERTEX_NDOF", MCtree, "f_{2}: #chi_{vtx}^{2}", "Signal", nbins, -0.2, 10, "#chi_{vtx}^{2} / NDOF", "", vecp);  
-    new Plotvariable("phi_1020_ENDVERTEX_CHI2/phi_1020_ENDVERTEX_NDOF", Bkgrtree, "Background", bkgrcut, vecp);
+    new Plotvariable("phi_1020_ENDVERTEX_CHI2", MCtree, "f_{2}: #chi_{vtx}^{2}", "Signal", nbins, -0.2, 10, "#chi_{vtx}^{2}", "", vecp);  
+    new Plotvariable("phi_1020_ENDVERTEX_CHI2", Bkgrtree, "Background", bkgrcut, vecp);
 
 
 
@@ -139,7 +139,7 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
     new Plotvariable("muminus_TRACK_CHI2NDOF", MCtree, "#mu^{-}: #chi_{track}^{2}/DOF", "Signal", nbins, 0, 3, "#chi_{track}^{2}/DOF", "", vecp);                      
     new Plotvariable("muminus_TRACK_CHI2NDOF", Bkgrtree, "Background", bkgrcut, vecp);            
-
+    
     
 }
 
