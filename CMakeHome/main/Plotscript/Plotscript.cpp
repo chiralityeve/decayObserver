@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include "math.h"
 #include <TCanvas.h>
 #include <TFile.h>
@@ -87,6 +88,10 @@ int main(int argc, char **argv) {
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
 
     std::string savepath;
+    unsigned int savepathnr = 0;
+    std::string str_savepathnr;
+    std::string savename;
+
     std::string norm = "";
     std::string normsame = "same";
     std::string normierte = "";
@@ -100,6 +105,8 @@ int main(int argc, char **argv) {
         if((vec[i] -> Getsamecanvas()) == false) {                  //Plot it on a new canvas
             maxbincontent = 0;                                      //Reset counters
             nplots = 0;
+            savepathnr += 1;
+            str_savepathnr = std::to_string(savepathnr);
             legendp -> Clear();                                     //Clear legend in case of new canvas
 
             motherhistp = vec[i] -> plot(kBlue, 1, norm); 
@@ -107,8 +114,12 @@ int main(int argc, char **argv) {
 
             
 
-
-            savepath = saveto + vec[i]->Getname() + ".png";                                         //PROBLEM: if name contains fancy characters
+            savename = vec[i] -> Getname();                                                     //Remove illegal characters
+            savename.erase(std::remove(savename.begin(), savename.end(), '/'), savename.end());
+            savename.erase(std::remove(savename.begin(), savename.end(), ':'), savename.end());
+            savename.erase(std::remove(savename.begin(), savename.end(), ' '), savename.end());
+            
+            savepath = saveto + str_savepathnr + "_" + savename + ".png";                                         //PROBLEM: if name contains fancy characters
 
             cp -> SaveAs(savepath.c_str());
         }
