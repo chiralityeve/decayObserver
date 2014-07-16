@@ -10,6 +10,11 @@
 #include <ctime>
 #include <utility>
 #include <map>
+#include <functional>
+#include <cstring>
+#include <deque>
+#include <tuple>
+#include <algorithm>
 
 #include "ItemSelector.h"
 
@@ -21,6 +26,8 @@
 #include "TApplication.h"
 #include "TH1.h"
 #include "TKey.h"
+
+#include "TGFileDialog.h"
 
 using namespace std;
 
@@ -34,6 +41,8 @@ struct BranchInfo
 	
 	/// This function is to cast a BranchInfo object to a string. This is needed for the SelectDialogFilter function in ItemSelector.h.
 	operator string(){ ostringstream oss; oss << *this; return oss.str(); }
+	
+	bool operator==(const BranchInfo& br) const { return name==br.name; }
 	
 	string name, title;
 	static map<char, string> types;
@@ -67,6 +76,8 @@ struct Object
 		return *this; 
 	}
 	
+	bool operator==(const Object& obj) const { return path == obj.path && type == obj.type; }
+	
 	/// Constructor for a histogram (pBranches will be NULL).
 	Object(const string& path, const string& type):path(path),type(type),pBranches(NULL){}
 	
@@ -76,7 +87,7 @@ struct Object
 	~Object(){ if(pBranches) delete pBranches; pBranches=NULL;}
 
 	/// Check if the object is a tree.
-	bool IsTree(){ return pBranches!=NULL; }
+	bool IsTree() const { return pBranches!=NULL; }
 
 	/// This functions lets us insert BranchInfo objects to a output stream. It will use the title to deduce its type (This currently only works for branches with one leaf).
 	friend ostream& operator<<(ostream& os, const Object& obj){ return os << '(' << obj.type << ") " << obj.path; }
@@ -88,7 +99,7 @@ struct Object
 	string Name() const { return string(&path[path.find_last_of('/')+1]); }
 
 	/// Splits the path at '/' and returns all substrings in a vector, except for the last one.
-	vector<string> GetDirectories()
+	vector<string> GetDirectories() const
 	{
 		vector<string> dirs;
 		if(!path.size()) return dirs;
@@ -114,8 +125,10 @@ struct Object
 void PrintUsage();
 vector<Object> CrawlDirectory(TDirectory* pDir);
 vector<BranchInfo> GetVarInfo(TTree* pt);
-void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename);
-void Prune(const string& configFilename);
+void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename, const vector<Object>& sel_objects);
+template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects);
+int ReadConfigurationFile(const string& configFilename, string& inputFilename, string& outputFilename, vector<Object>& objects);
+void Prune(const string& inputFilename, const string& outputFilename, const vector<Object>& objects);
 
 
 int main(int argc, char** argv)
@@ -123,18 +136,75 @@ int main(int argc, char** argv)
 	new TApplication("Secateur", NULL, NULL);
 	gROOT->ProcessLine("gErrorIgnoreLevel = 3001;");
 	
-	switch(argc)
+	
+	// Interpret the command line arguments
+	map<string, function<int(void)> > flagInterpreters;
+	bool argErr = argc < 2;
+	deque<string> args = argErr? deque<string>() : deque<string>(argv+1, argv+argc-1);
+	
+	string configFilename = argErr? "" : argv[argc-1];
+	string 	inputFilename;
+	string outputFilename;
+	bool flag_modify = false;
+	bool flag_create = false;
+	
+	auto readArgStr = [&args](string& str)
 	{
-	case 2:
-		Prune(argv[1]);
+		if(args.empty()) return 1;
+		str = args.front();
+		args.pop_front();
 		return 0;
-	case 5:
-		if(string(argv[1]) != "-c") break;
-		CreateConfigFile(argv[4], argv[2], argv[3]);
+	};
+	
+	flagInterpreters["-c"] = [&](){ flag_create = true; return 0; };
+	flagInterpreters["-m"] = [&](){ flag_modify = true; return 0; };
+	flagInterpreters["-i"] = [&](){ return readArgStr( inputFilename); };
+	flagInterpreters["-o"] = [&](){ return readArgStr(outputFilename); };
+	
+	while(!argErr && !args.empty())
+	{
+		string arg = args.front(); 
+		args.pop_front();
+		argErr = !flagInterpreters.count(arg) || flagInterpreters[arg]() != 0;
+	}
+	
+	if(flag_create && flag_modify) argErr = true;
+	if(argErr)
+	{
+		PrintUsage();
 		return 0;
 	}
 	
-	PrintUsage();
+	
+	vector<Object> objects;
+	
+	// Read the configuration for pruning or modifying
+	if(!flag_create)
+	{
+		string  conf_inputFilename;
+		string conf_outputFilename;
+		
+		if(ReadConfigurationFile(configFilename, conf_inputFilename, conf_outputFilename, objects)) 
+			return 0;
+			
+		if( inputFilename.empty())  inputFilename =  conf_inputFilename;
+		if(outputFilename.empty()) outputFilename = conf_outputFilename;
+	}
+	
+	// Create or modify the configuration file
+	if(flag_create || flag_modify)
+	{
+		CreateConfigFile(configFilename, inputFilename, outputFilename, objects);
+		return 0;
+	}
+	
+	// Prune the ROOT file
+	if(!flag_create && !flag_modify)
+	{
+		Prune(inputFilename, outputFilename, objects);
+		return 0;
+	}
+		
 	
 	return 0;
 }
@@ -142,12 +212,16 @@ int main(int argc, char** argv)
 
 void PrintUsage()
 {
-	cerr << "Usage: secateur [-c input_file output_file] config_file" << endl;
-	cerr << "Copy selected histograms and subsets of trees from a root file to a new root    " << endl \
+	cerr << "Usage: secateur [-c|-m] [-i input_file] [-o output_file] config_file            " << endl \
+	     << "Copy selected histograms and subsets of trees from a root file to a new root    " << endl \
 	     << "file. The configuration file specifies the input and output files as well as the" << endl \
-	     << "histograms, trees and branches." << endl << endl;
-	cerr << "  -c input_file output_file: Creates a configuration file for pruning trees from" << endl \
-	     << "                             input_file and saving them to output_file" << endl;
+	     << "histograms, trees and branches.                                                 " << endl \
+		 << "                                                                                " << endl \
+	     << "  -c             : Interactively creates a configuration file                   " << endl \
+	     << "  -m             : Interactively modifies the configuration file                " << endl \
+	     << "  -i input_file  : Overwrite the input file value in config_file                " << endl \
+	     << "  -o output_file : Overwrite the output file value in config_file               " << endl \
+	     << "  config_file    : Location where to find or create the configuration file      " << endl;
 }
 
 
@@ -227,27 +301,84 @@ vector<BranchInfo> GetVarInfo(TTree* pt)
 /// @param configFilename 	Where to store the generated configuration file.
 /// @param inputFilename 	The ROOT file that contains the trees that need to be pruned.
 /// @param outputFilename 	The ROOT file that will be created when the generated configuration file is run.
-void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename)
+void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename, const vector<Object>& sel_objects)
 {
-	// Open the input ROOT file and ask the user which objects and branches to keep
-	TFile fileIn(inputFilename.c_str());
+	// Let the user select input and output ROOT files if they are not specified
+	string  inFilename =  inputFilename;
+	string outFilename = outputFilename;
+	TGFileInfo fileInfo;
+	const char* fileTypes[] = {"ROOT files", "*.root", 0, 0};
+	string current_dir = gSystem->pwd(); // The file dialog can change this, so we need to remember it
 	
+	fileInfo.fFileTypes = fileTypes;
+	fileInfo.fIniDir = NULL;
+	
+	if(inFilename.empty())
+	{
+		new TGFileDialog(gClient->GetDefaultRoot(), gClient->GetDefaultRoot(), kFDOpen, &fileInfo);
+		if(!fileInfo.fFilename)
+		{
+			if(fileInfo.fMultipleSelection) cerr << "Multiple files are not supported" << endl;
+			else cout << "Canceled by user" << endl;
+			return;
+		}
+		inFilename = fileInfo.fFilename;
+	}
+	
+	if(fileInfo.fFilename)
+	{	
+		delete fileInfo.fFilename;
+		fileInfo.fFilename = NULL;
+	}
+	
+	if(outFilename.empty())
+	{
+		new TGFileDialog(gClient->GetDefaultRoot(), gClient->GetDefaultRoot(), kFDSave, &fileInfo);
+		if(!fileInfo.fFilename)
+		{
+			cout << "Canceled by user" << endl;
+			return;
+		}
+		outFilename = fileInfo.fFilename;
+		if(outFilename.size() < 5 || outFilename.substr(outFilename.size()-5) != ".root") 
+			outFilename += ".root";
+	}
+	
+	gSystem->cd(current_dir.c_str());
+	
+
+	// Open the input ROOT file and ask the user which objects and branches to keep
+	TFile fileIn(inFilename.c_str());
+	ostringstream oss_tree;
+	ostringstream oss_hist;	
+	vector<Object> objects;
+	vector<pair<Object, bool> > object_selected_pairs;
+
 	if(!fileIn.IsOpen())
 	{
-		cerr << "Error opening " << inputFilename << endl;
+		cerr << "Error opening " << inFilename << endl;
 		return;
 	}
 	
-	
-	ostringstream oss_tree;
-	ostringstream oss_hist;	
-	vector<Object> objects = CrawlDirectory(&fileIn); // This gets a vector of info on all trees, histograms and branches
-	
-	SelectDialogFilter(objects, "Secateur - Select objects"); // This function pops up a listbox and removes entries in objects that are not selected by the user
+	objects = CrawlDirectory(&fileIn); // This gets a vector of info on all trees, histograms and branches	
+	object_selected_pairs = MakeObjectSelectionPairs(objects, sel_objects);
+
+	// This function pops up a listbox and lets the user select entries
+	if(SelectDialog(object_selected_pairs, "Secateur - Select objects"))
+	{
+		cout << "Canceled by user" << endl;
+		return;
+	}
 	
 	// Loop over all selected objects
-	for(auto& obj : objects)
+	for(auto& objSel : object_selected_pairs)
 	{
+		if(!objSel.second) continue;
+		auto& obj = objSel.first;
+		ostringstream oss_current_tree;
+		vector<pair<BranchInfo, bool> > branch_selected_pairs;
+		vector<BranchInfo> sel_branches;
+		
 		// If this object is a histogram, output a configuration line to oss_hist
 		if(!obj.IsTree())
 		{
@@ -256,19 +387,34 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 		}
 		
 		// This is a tree. Let the user select which branches to keep
-		SelectDialogFilter(*obj.pBranches, "Secateur - Select variables in " + obj.Name());
+		const auto& iSel_obj = find(sel_objects.begin(), sel_objects.end(), obj);
+		bool preselected_branches = iSel_obj != sel_objects.end() && iSel_obj->pBranches!=NULL;
+				
+		branch_selected_pairs = MakeObjectSelectionPairs(*obj.pBranches, preselected_branches? *iSel_obj->pBranches : sel_branches);		
+		if(SelectDialog(branch_selected_pairs, "Secateur - Select objects"))
+		{
+			cout << "Canceled by user" << endl;
+			return;
+		}
+			
+		// Output the configuration lines for this tree
+		oss_current_tree << "TREE " << obj.path << endl;
+		for(auto& brSel : branch_selected_pairs)
+		{
+			if(!brSel.second) continue;
+			auto& br = brSel.first;
+			
+			oss_current_tree << "\tBRANCH " << br.name << endl;
+		}
+		oss_current_tree << endl;
 		
-		if(!obj.pBranches->size()) continue; // No branches were selected, so skip this tree
+		if(oss_current_tree.str().empty()) continue; // No branches were selected, so skip this tree
 		
-		// Output the configuration lines for this tree to oss_tree
-		oss_tree << "TREE " << obj.path << endl;
-		for(auto& br : *obj.pBranches)
-			oss_tree << "\tBRANCH " << br.name << endl;
-		oss_tree << endl;
+		oss_tree << oss_current_tree.str();
 	}
 	
 	// Stop if the user didn't select any trees or histograms
-	if(!oss_tree.str().size() && !oss_hist.str().size())
+	if(oss_tree.str().empty() && oss_hist.str().empty())
 	{
 		cerr << "Nothing selected" << endl;
 		return;
@@ -290,8 +436,8 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	strftime(date, 32, "%FT%T%z", localtime(&rawtime));
 	
 	of << "# Secateur config file generated on " << date << endl << endl;
-	of << "INPUT  " << inputFilename << endl;
-	of << "OUTPUT " << outputFilename << endl << endl;
+	of << "INPUT  " << inFilename << endl;
+	of << "OUTPUT " << outFilename << endl << endl;
 	if(oss_hist.str().size()) of << oss_hist.str() << endl;
 	if(oss_tree.str().size()) of << oss_tree.str() << endl;
 	
@@ -299,15 +445,40 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 }
 
 
-/// Reads a configuration file and prunes the specified ROOT file
+/// Makes a vector of pairs of Objects and booleans
 ///
-/// @param configFilename Filename of the configuration file
-void Prune(const string& configFilename)
+/// @param objects 		The vector with objects
+/// @param sel_objects 	Vector with the selected objects
+/// @return vector of pairs of Objects and booleans
+template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects)
+{
+	auto isSelected = [&](const T& obj)
+	{
+		for(auto& sel_obj : sel_objects)
+			if(sel_obj == obj) 
+				return true;
+		return false;
+	};
+	vector<pair<T,bool> > objSelPair;
+	
+	for(auto& obj : objects)
+		objSelPair.push_back(make_pair(obj, isSelected(obj)));
+	
+	return objSelPair;
+}
+
+
+/// Reads the configuration file
+///
+/// @param configFilename 	The filename of the configuration file to read
+/// @param inputFilename 	This will contain the input ROOT filename specified in the configuration file
+/// @param outputFilename 	This will contain the output ROOT filename specified in the configuration file
+/// @param objects 			This will contain the paths to tree and histogram and names of branches to copy
+/// @return 				returns 0 on success and a nonzero value otherwise.
+int ReadConfigurationFile(const string& configFilename, string& inputFilename, string& outputFilename, vector<Object>& objects)
 {
 	ifstream ifs(configFilename);
-	string inputFilename, outputFilename;
 	string str;
-	vector<Object> objects;
 	bool success = true;
 	
 	// This function reads a line from the configuration that starts with the string key and puts the rest of the line into val.
@@ -340,11 +511,11 @@ void Prune(const string& configFilename)
 	
 	
 	// Read the configuration file
-	if(!ifs){ cerr << "Error opening " << configFilename << endl; return; }	
-	if(!read("INPUT ", inputFilename)){ cerr << "Error reading INPUT from " << configFilename << endl; return;	}
-	if(!read("OUTPUT ", outputFilename)){ cerr << "Error reading OUTPUT from " << configFilename << endl; return; }
+	if(!ifs){ cerr << "Error opening " << configFilename << endl; return 1; }	
+	if(!read("INPUT ", inputFilename)){ cerr << "Error reading INPUT from " << configFilename << endl; return 1;	}
+	if(!read("OUTPUT ", outputFilename)){ cerr << "Error reading OUTPUT from " << configFilename << endl; return 1; }
 	
-	if(inputFilename == outputFilename){ cerr << "Input and output filenames are the same" << endl; return; }
+	if(inputFilename == outputFilename){ cerr << "Input and output filenames are the same" << endl; return 1; }
 
 	while(success)
 	{
@@ -367,7 +538,21 @@ void Prune(const string& configFilename)
 	}
 	
 	// If we did not reach the EOF, then the configuration file contains gibberish
-	if(ifs){ cerr << "Error reading from " << configFilename << endl; return; }
+	if(ifs){ cerr << "Error reading from " << configFilename << endl; return 1; }
+
+	return 0;
+}
+
+/// Prunes the specified ROOT file
+///
+/// @param configFilename Filename of the configuration file
+void Prune(const string& inputFilename, const string& outputFilename, const vector<Object>& objects)
+{
+	// Read the configuration
+	//string inputFilename, outputFilename;
+	//vector<Object> objects;	
+	
+	//if(ReadConfigurationFile(configFilename, inputFilename, outputFilename, objects)) return;
 	
 	
 	// Prune the ROOT file

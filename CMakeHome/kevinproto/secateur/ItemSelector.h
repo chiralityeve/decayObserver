@@ -11,6 +11,9 @@
 #include "TGClient.h"
 #include "TGButton.h"
 #include "TGListBox.h"
+#include <TGTextEntry.h>
+#include <TGLabel.h>
+#include <TSystem.h>
 #include "TList.h"
 #include "RQ_OBJECT.h"
 
@@ -21,43 +24,51 @@ using namespace std;
 class ItemSelector : public TGMainFrame
 {
 public:
-	ItemSelector(vector<pair<int, string> >& items, const string& title);
+	ItemSelector(vector<pair<string, bool> >& items, bool& canceled, const string& title);
 	virtual ~ItemSelector();
 	void Select();
 	void Close();
 	void InvertSelection();
+	void Filter(char* str);
+	void Cancel();
 	
 
 private:
-	vector<pair<int, string> >& items;
+	vector<pair<string, bool> >& items;
 	TGListBox* pListBox;
+	TGTextEntry* pTextEntry;
+	bool& canceled;
 	
-	vector<pair<int, string> > GetSelection();
+	//vector<tuple<int, string, bool> > GetSelection();
 	
 	static TApplication* pApp;
 
 	ClassDef(ItemSelector, 0)
+	
+	static int wid;
 };
 
-void ItemSelectDialog(vector<pair<int, string> >& items, const string& title);
 
 template<class T>
-void SelectDialogFilter(vector<T>& objects, const string& title)
+int SelectDialog(vector<pair<T,bool> >& objSelTuples, const string& title)
 {
-	vector<pair<int, string> > items;
-	vector<T> objectsSelected;
-	int n = objects.size();
+	bool canceled = false;
+	vector<pair<string, bool> > items;
+	int i = 0;
 	
-	for(int i=0; i<n; ++i)
-		items.emplace_back(i, objects[i]);
+	if(!gApplication) new TApplication("", NULL, NULL);
+	
+	for(auto& objSel : objSelTuples)
+		items.push_back(make_pair(objSel.first, objSel.second));
+		
+	new ItemSelector(items, canceled, title);
+	gApplication->Run(1);
+	
+	for(auto& objSel : objSelTuples)
+		objSel.second  = items[i++].second;
 
-	ItemSelectDialog(items, title);
 	
-	for(auto it=items.begin(); it!=items.end(); ++it)
-		objectsSelected.emplace_back(objects[it->first]);
-	
-	objects = objectsSelected;
-	
+	return canceled?1:0;
 }
 
 
