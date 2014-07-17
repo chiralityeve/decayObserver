@@ -16,7 +16,8 @@
 #include <tuple>
 #include <algorithm>
 
-#include "ItemSelector.h"
+//#include "ItemSelector.h"
+#include "SelectDialog.h"
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -24,6 +25,7 @@
 #include "TTree.h"
 #include "TObjArray.h"
 #include "TApplication.h"
+#include "TSystem.h"
 #include "TH1.h"
 #include "TKey.h"
 
@@ -125,6 +127,7 @@ struct Object
 void PrintUsage();
 vector<Object> CrawlDirectory(TDirectory* pDir);
 vector<BranchInfo> GetVarInfo(TTree* pt);
+template<class T> int SelectDialogFilter(const string& title, vector<T>& objects, const vector<T>& preselected_objects);
 void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename, const vector<Object>& sel_objects);
 template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects);
 int ReadConfigurationFile(const string& configFilename, string& inputFilename, string& outputFilename, vector<Object>& objects);
@@ -293,6 +296,35 @@ vector<BranchInfo> GetVarInfo(TTree* pt)
 	return branchInfo;
 }
 
+template<class T> 
+int SelectDialogFilter(const string& title, vector<T>& objects, const vector<T>& preselected_objects)
+{
+	vector<SelectDialogEntry> entries;
+	bool cancelled = false;
+	vector<T> objects_out;
+	int id = 0;
+	auto isSelected = [&](const T& obj)
+	{
+		for(auto& sel_obj : preselected_objects)
+			if(sel_obj == obj) 
+				return true;
+		return false;
+	};
+	
+	for(auto& obj : objects) 
+		entries.emplace_back(obj, isSelected(obj), id++);
+	
+	SelectDialog(title, entries, cancelled);
+	if(cancelled) return 1;
+	
+	for(auto& entry : entries)
+		if(entry.selected)
+			objects_out.emplace_back(objects[entry.id]);
+			
+	objects = objects_out;
+	
+	return 0;
+}
 
 /// Creates a new configuration file which specifies what histograms, trees and branches to copy from a ROOT file into a new ROOT file.
 ///
@@ -352,7 +384,6 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	ostringstream oss_tree;
 	ostringstream oss_hist;	
 	vector<Object> objects;
-	vector<pair<Object, bool> > object_selected_pairs;
 
 	if(!fileIn.IsOpen())
 	{
@@ -361,24 +392,17 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	}
 	
 	objects = CrawlDirectory(&fileIn); // This gets a vector of info on all trees, histograms and branches	
-	object_selected_pairs = MakeObjectSelectionPairs(objects, sel_objects);
 
 	// This function pops up a listbox and lets the user select entries
-	if(SelectDialog(object_selected_pairs, "Secateur - Select objects"))
+	if(SelectDialogFilter("Secateur - Select objects", objects, sel_objects))
 	{
 		cout << "Canceled by user" << endl;
 		return;
 	}
 	
 	// Loop over all selected objects
-	for(auto& objSel : object_selected_pairs)
+	for(auto& obj : objects)
 	{
-		if(!objSel.second) continue;
-		auto& obj = objSel.first;
-		ostringstream oss_current_tree;
-		vector<pair<BranchInfo, bool> > branch_selected_pairs;
-		vector<BranchInfo> sel_branches;
-		
 		// If this object is a histogram, output a configuration line to oss_hist
 		if(!obj.IsTree())
 		{
@@ -386,31 +410,25 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 			continue;
 		}
 		
+		
 		// This is a tree. Let the user select which branches to keep
 		const auto& iSel_obj = find(sel_objects.begin(), sel_objects.end(), obj);
+		vector<BranchInfo> dummy_branches;
 		bool preselected_branches = iSel_obj != sel_objects.end() && iSel_obj->pBranches!=NULL;
 				
-		branch_selected_pairs = MakeObjectSelectionPairs(*obj.pBranches, preselected_branches? *iSel_obj->pBranches : sel_branches);		
-		if(SelectDialog(branch_selected_pairs, "Secateur - Select objects"))
+		if(SelectDialogFilter("Secateur - Select branches in " + obj.Name(), *obj.pBranches, preselected_branches? *iSel_obj->pBranches : dummy_branches))
 		{
 			cout << "Canceled by user" << endl;
 			return;
 		}
+		
+		if(obj.pBranches->empty()) continue; // No branches were selected, so skip this tree
 			
 		// Output the configuration lines for this tree
-		oss_current_tree << "TREE " << obj.path << endl;
-		for(auto& brSel : branch_selected_pairs)
-		{
-			if(!brSel.second) continue;
-			auto& br = brSel.first;
-			
-			oss_current_tree << "\tBRANCH " << br.name << endl;
-		}
-		oss_current_tree << endl;
-		
-		if(oss_current_tree.str().empty()) continue; // No branches were selected, so skip this tree
-		
-		oss_tree << oss_current_tree.str();
+		oss_tree << "TREE " << obj.path << endl;
+		for(auto& br : *obj.pBranches)
+			oss_tree << "\tBRANCH " << br.name << endl;
+		oss_tree << endl;
 	}
 	
 	// Stop if the user didn't select any trees or histograms

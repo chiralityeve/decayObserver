@@ -1,3 +1,3 @@
-add_executable(secateur secateur.cpp ItemSelector.cpp ItemSelectorDict.cpp)
+add_executable(secateur secateur.cpp SelectDialog.cpp SelectDialogDict.cpp)
 
 target_link_libraries(secateur ${ROOT_LIBRARIES})	
