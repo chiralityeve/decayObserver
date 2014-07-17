@@ -12,8 +12,8 @@
 class Plotvariable {
     public:
         //Constructor: Name = Branchname in TTree. Title = Title on canvas. After creation, a pointer to the Plotvariable will be pushed to the vector in the first argument
-        Plotvariable(std::string name, TTree* tree, std::string title, std::string legendname, int nbins, double xlow, double xup, std::string xlabel, std::string unit, std::vector<Plotvariable*> *Plotvector);                 //no cuts
-        Plotvariable(std::string name, TTree* tree, std::string title, std::string legendname, int nbins, double xlow, double xup, std::string xlabel, std::string unit, std::string cuts, std::vector<Plotvariable*> *Plotvector);  //with cuts
+        Plotvariable(std::string name, TTree* tree, std::string title, std::string legendname, int nbins, double xlow, double xup, std::string xlabel, std::string unit, std::vector<Plotvariable*> *Plotvector, std::string options = "");                 //no cuts
+        Plotvariable(std::string name, TTree* tree, std::string title, std::string legendname, int nbins, double xlow, double xup, std::string xlabel, std::string unit, std::string cuts, std::vector<Plotvariable*> *Plotvector, std::string options = "");  //with cuts
 
 
         //Constructor for Plotvariable which shall be plotted on the same canvas as the last one (the title is here equal to the legendname)
@@ -27,6 +27,7 @@ class Plotvariable {
         double Getxlow();
         double Getxup();
         std::string Getcuts();
+        std::string Getoptions();
 
         bool Getsamecanvas();
 
@@ -46,6 +47,7 @@ class Plotvariable {
         std::string ylabel_;         //Y-label
         std::string cuts_;           //cuts (if applicable)
         bool show_on_same_canvas_;
+        std::string options_;        //Options (eg. logy, logx etc.)
 
 };
 

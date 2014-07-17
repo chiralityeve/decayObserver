@@ -131,6 +131,12 @@ int main(int argc, char **argv) {
             
             savepath = saveto + str_savepathnr + "_" + savename + ".png";
 
+            //Set logy or logx Scale
+            if((vec[i] -> Getoptions()).find("logx") != std::string::npos) cp -> SetLogx(1);
+            else cp -> SetLogx(0);
+            if((vec[i] -> Getoptions()).find("logy") != std::string::npos) cp -> SetLogy(1);
+            else cp -> SetLogy(0);
+
             cp -> SaveAs(savepath.c_str());
 
 

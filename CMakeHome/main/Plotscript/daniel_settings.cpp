@@ -15,11 +15,11 @@
 void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
     
     TChain* Bkgrtree = new TChain("DecayTree");                                                               //Background tree (B_M > 5500)
-    Bkgrtree -> Add("/afs/cern.ch/work/d/dberning/private/Bsf2mumu_Data2011_background_subsample.root");
-    Bkgrtree -> Add("/afs/cern.ch/work/d/dberning/private/Bsf2mumu_Data2012_background_subsample.root");
+    Bkgrtree -> Add("/afs/cern.ch/work/d/dberning/private/Subsamples/Bsf2mumu_Data2011_background_subsample.root");
+    Bkgrtree -> Add("/afs/cern.ch/work/d/dberning/private/Subsamples/Bsf2mumu_Data2012_background_subsample.root");
 
     TChain* MCtree = new TChain("DecayTree");                                                                 //Truthmatched MC
-    MCtree -> Add("/afs/cern.ch/work/d/dberning/private/Bsf2mumu_MC_merged_truthmatched.root");
+    MCtree -> Add("/afs/cern.ch/work/d/dberning/private/BDT/Bsf2mumu_MC_merged_truthmatched.root");
     
     
     //Define cuts
@@ -42,16 +42,16 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
 
-    new Plotvariable("Kplus_PT", MCtree, "Transversal Momentum of K^{+}", "Signal", nbins, 0, 5000, "p_{T}", "MeV/c", vecp);                          //Type1
+    new Plotvariable("Kplus_PT", MCtree, "Transversal Momentum of K^{+}", "Signal", nbins, 0, 5000, "p_{T}", "MeV/c", vecp, "logy");                          //Type1
     new Plotvariable("Kplus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                             //Type2
     
-    new Plotvariable("Kminus_PT", MCtree, "Transversal Momentum of K^{-}", "Signal", nbins, 0, 5000, "p_{T}", "MeV/c", vecp);                   
+    new Plotvariable("Kminus_PT", MCtree, "Transversal Momentum of K^{-}", "Signal", nbins, 0, 5000, "p_{T}", "MeV/c", vecp, "logy");                   
     new Plotvariable("Kminus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                     
 
-    new Plotvariable("muplus_PT", MCtree, "Transversal Momentum of #mu^{+}", "Signal", nbins, 0, 6000, "p_{T}", "MeV/c", vecp);                        
+    new Plotvariable("muplus_PT", MCtree, "Transversal Momentum of #mu^{+}", "Signal", nbins, 0, 6000, "p_{T}", "MeV/c", vecp, "logy");                        
     new Plotvariable("muplus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                         
 
-    new Plotvariable("muminus_PT", MCtree, "Transversal Momentum of #mu^{-}", "Signal", nbins, 0, 6000, "p_{T}", "MeV/c", vecp);                      
+    new Plotvariable("muminus_PT", MCtree, "Transversal Momentum of #mu^{-}", "Signal", nbins, 0, 6000, "p_{T}", "MeV/c", vecp, "logy");                      
     new Plotvariable("muminus_PT", Bkgrtree, "Background", bkgrcut, vecp);                                                                         
 
 
@@ -70,7 +70,7 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
 
 
-    new Plotvariable("Kplus_IPCHI2_OWNPV", MCtree, "K^{+}: #chi_{IP}^{2}", "Signal", nbins, 0, 50, "#chi_{IP}^{2}", "", vecp);                   
+    new Plotvariable("Kplus_IPCHI2_OWNPV", MCtree, "K^{+}: #chi_{IP}^{2}", "Signal", nbins, 0, 50, "#chi_{IP}^{2}", "", vecp, "logy");                   
     new Plotvariable("Kplus_IPCHI2_OWNPV", Bkgrtree, "Background", bkgrcut, vecp);                                                                       
 
     new Plotvariable("Kminus_IPCHI2_OWNPV", MCtree, "K^{-}: #chi_{IP}^{2}", "Signal", nbins, 0, 50, "#chi_{IP}^{2}", "", vecp);
