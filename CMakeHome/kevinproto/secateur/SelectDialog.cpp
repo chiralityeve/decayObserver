@@ -112,7 +112,6 @@ pButtonCancel(new TGTextButton(pFrameButtons2, "&Cancel"))
 	pDialogFrame->MapSubwindows();	
 	PositionWindow();
 
-	//gApplication->Run(1);
 	gClient->WaitFor(pDialogFrame);
 }
 

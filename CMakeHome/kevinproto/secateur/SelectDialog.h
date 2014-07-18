@@ -91,9 +91,7 @@ private:
 	static int map_offset_x;
 	static int map_offset_y;
 	
-	template<class T>
-	static inline void MaybeDelete(T& p){ if(p==NULL) return; delete p; p=NULL; }
-
+	template<class T> static inline void MaybeDelete(T& p){ if(p==NULL) return; delete p; p=NULL; }
 };
 
 
