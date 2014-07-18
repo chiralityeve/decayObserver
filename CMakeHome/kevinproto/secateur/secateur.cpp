@@ -230,17 +230,8 @@ int main(int argc, char** argv)
 	vector<Object> objects;
 	
 	// Read the configuration for pruning or modifying
-	if(!flag_create)
-	{
-		string  conf_inputFilename;
-		string conf_outputFilename;
-		
-		if(ReadConfigurationFile(configFilename, conf_inputFilename, conf_outputFilename, objects)) 
-			return 0;
-			
-		if( inputFilename.empty())  inputFilename =  conf_inputFilename;
-		if(outputFilename.empty()) outputFilename = conf_outputFilename;
-	}
+	if(!flag_create && ReadConfigurationFile(configFilename, inputFilename, outputFilename, objects))
+		return 0;
 	
 	// Create or modify the configuration file
 	if(flag_create || flag_modify)
