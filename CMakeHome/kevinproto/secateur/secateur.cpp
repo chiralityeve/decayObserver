@@ -129,7 +129,6 @@ vector<Object> CrawlDirectory(TDirectory* pDir);
 vector<BranchInfo> GetVarInfo(TTree* pt);
 template<class T> int SelectDialogFilter(const string& title, vector<T>& objects, const vector<T>& preselected_objects);
 void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename, const vector<Object>& sel_objects);
-template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects);
 int ReadConfigurationFile(const string& configFilename, string& inputFilename, string& outputFilename, vector<Object>& objects);
 void Prune(const string& inputFilename, const string& outputFilename, const vector<Object>& objects);
 
@@ -296,6 +295,13 @@ vector<BranchInfo> GetVarInfo(TTree* pt)
 	return branchInfo;
 }
 
+
+/// Uses the SelectDialog class to let the user select object and then remove the unselected objects from the vector.
+///
+/// @param title 				Title of the dialog window.
+/// @param objects 				The vector of object that will be shown in the list. Class  must implement the equal to operator and a conversion operator to a string.
+/// @param preselected_objects 	The objects in this vector will be selected when the dialog window opens.
+/// @return 					Return zero on success and nonzero if the user cancelled or closed the window.
 template<class T> 
 int SelectDialogFilter(const string& title, vector<T>& objects, const vector<T>& preselected_objects)
 {
@@ -460,29 +466,6 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	if(oss_tree.str().size()) of << oss_tree.str() << endl;
 	
 	of.close();	
-}
-
-
-/// Makes a vector of pairs of Objects and booleans
-///
-/// @param objects 		The vector with objects
-/// @param sel_objects 	Vector with the selected objects
-/// @return vector of pairs of Objects and booleans
-template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects)
-{
-	auto isSelected = [&](const T& obj)
-	{
-		for(auto& sel_obj : sel_objects)
-			if(sel_obj == obj) 
-				return true;
-		return false;
-	};
-	vector<pair<T,bool> > objSelPair;
-	
-	for(auto& obj : objects)
-		objSelPair.push_back(make_pair(obj, isSelected(obj)));
-	
-	return objSelPair;
 }
 
 
