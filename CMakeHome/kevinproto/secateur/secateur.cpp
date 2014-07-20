@@ -239,7 +239,7 @@ int main(int argc, char** argv)
 		CreateConfigFile(configFilename, inputFilename, outputFilename, objects);
 		return 0;
 	}
-	
+		
 	// Prune the ROOT file
 	if(!flag_create && !flag_modify)
 	{
@@ -643,7 +643,7 @@ void Prune(const string& inputFilename, const string& outputFilename, const vect
 					return;
 				}
 			}
-			pTreeOut->Write(); // Save any unsaved data
+			pTreeOut->AutoSave(); // Save any unsaved data
 		}
 		else
 		{
