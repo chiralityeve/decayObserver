@@ -15,8 +15,10 @@
 #include <deque>
 #include <tuple>
 #include <algorithm>
+#include <stdexcept> 
+#include <stack> 
 
-#include "ItemSelector.h"
+#include "SelectDialog.h"
 
 #include "TROOT.h"
 #include "TFile.h"
@@ -24,12 +26,15 @@
 #include "TTree.h"
 #include "TObjArray.h"
 #include "TApplication.h"
+#include "TSystem.h"
 #include "TH1.h"
 #include "TKey.h"
 
 #include "TGFileDialog.h"
 
 using namespace std;
+
+// Todo: Reimplement the BranchInfo and Object classes sometime in the future. They got a little out of hand.
 
 /// \class BranchInfo
 /// This class contains the name and title of a branch. The title names the leafs and their types. Most trees have branches with only one leaf.
@@ -60,34 +65,76 @@ ostream& operator<<(ostream& os, const BranchInfo& b)
 }
 
 
+struct TreeInfo
+{
+	TreeInfo(const vector<BranchInfo>& branches=vector<BranchInfo>(), const vector<string>& selects=vector<string>()):branches(branches),selects(selects){}
+
+	string GetSelection()
+	{		
+		auto glue = [](const vector<string>& strs, const string& glue)
+		{
+			int i=0;
+			ostringstream oss;
+			for(auto& str : strs)
+			{
+				if(str.empty()) continue;
+				oss << (i++?glue:string()) << str;
+			}
+			return oss.str();
+		};
+		
+		return glue(selects, " && ");
+	}
+	
+	vector<BranchInfo> branches;
+	vector<string> selects;
+};
+
+
 /// \class Object 
 /// This class stores the path and type of either a tree or histogram.
 struct Object
 {
 	/// Copy constructor, because we allocate some memory for the branches.
-	Object(const Object& obj):path(obj.path),type(obj.type),pBranches(obj.pBranches?new vector<BranchInfo>(*obj.pBranches):NULL){}
+	Object(const Object& obj):
+	path(obj.path),
+	type(obj.type),
+	//pBranches(obj.pBranches?new vector<BranchInfo>(*obj.pBranches):NULL),
+	pTreeInfo(obj.pTreeInfo?new TreeInfo(*obj.pTreeInfo):NULL)
+	{}
 	
 	/// Assignment operator, because we allocate some memory for the branches.
 	Object& operator=(const Object& obj)
 	{ 
-		if(pBranches){ delete pBranches; pBranches=NULL; } 
-		path=obj.path; type=obj.type; 
-		if(obj.pBranches) pBranches = new vector<BranchInfo>(*obj.pBranches); 
+		//if(pBranches){ delete pBranches; pBranches=NULL; } 
+		if(pTreeInfo){ delete pTreeInfo; pTreeInfo=NULL; } 
+		path=obj.path; 
+		type=obj.type; 
+		//if(obj.pBranches) pBranches = new vector<BranchInfo>(*obj.pBranches); 
+		if(obj.pTreeInfo) pTreeInfo = new TreeInfo(*obj.pTreeInfo); 
 		return *this; 
 	}
 	
 	bool operator==(const Object& obj) const { return path == obj.path && type == obj.type; }
 	
 	/// Constructor for a histogram (pBranches will be NULL).
-	Object(const string& path, const string& type):path(path),type(type),pBranches(NULL){}
+	Object(const string& path, const string& type):path(path),type(type),pTreeInfo(NULL){}
 	
-	/// Constructor for a tree
-	Object(const string& path, const string& type, const vector<BranchInfo>& branches):path(path),type(type),pBranches(new vector<BranchInfo>(branches)){}
+	/// Constructors for a tree
+	Object(const string& path, const string& type, const vector<BranchInfo>& branches):
+	path(path),type(type),pTreeInfo(new TreeInfo(branches)){}
 
-	~Object(){ if(pBranches) delete pBranches; pBranches=NULL;}
+	Object(const string& path, const string& type, const vector<BranchInfo>& branches, const vector<string>& selects):
+	path(path),type(type),pTreeInfo(new TreeInfo(branches, selects)){}
+
+	~Object()
+	{ 
+		//if(pBranches) delete pBranches; pBranches=NULL;
+		if(pTreeInfo) delete pTreeInfo; pTreeInfo=NULL;
+	}
 
 	/// Check if the object is a tree.
-	bool IsTree() const { return pBranches!=NULL; }
+	bool IsTree() const { return pTreeInfo!=NULL; }
 
 	/// This functions lets us insert BranchInfo objects to a output stream. It will use the title to deduce its type (This currently only works for branches with one leaf).
 	friend ostream& operator<<(ostream& os, const Object& obj){ return os << '(' << obj.type << ") " << obj.path; }
@@ -116,17 +163,21 @@ struct Object
 			a = b+1;
 		}
 	}
-	
+
 	string path, type;
-	vector<BranchInfo>* pBranches;
+	//vector<BranchInfo>* pBranches;
+	//vector<string>* pSelects;
+	TreeInfo* pTreeInfo;
 };
+
+
 
 
 void PrintUsage();
 vector<Object> CrawlDirectory(TDirectory* pDir);
 vector<BranchInfo> GetVarInfo(TTree* pt);
+template<class T> int SelectDialogFilter(const string& title, vector<T>& objects, const vector<T>& preselected_objects);
 void CreateConfigFile(const string& configFilename, const string& inputFilename, const string& outputFilename, const vector<Object>& sel_objects);
-template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects);
 int ReadConfigurationFile(const string& configFilename, string& inputFilename, string& outputFilename, vector<Object>& objects);
 void Prune(const string& inputFilename, const string& outputFilename, const vector<Object>& objects);
 
@@ -179,17 +230,8 @@ int main(int argc, char** argv)
 	vector<Object> objects;
 	
 	// Read the configuration for pruning or modifying
-	if(!flag_create)
-	{
-		string  conf_inputFilename;
-		string conf_outputFilename;
-		
-		if(ReadConfigurationFile(configFilename, conf_inputFilename, conf_outputFilename, objects)) 
-			return 0;
-			
-		if( inputFilename.empty())  inputFilename =  conf_inputFilename;
-		if(outputFilename.empty()) outputFilename = conf_outputFilename;
-	}
+	if(!flag_create && ReadConfigurationFile(configFilename, inputFilename, outputFilename, objects))
+		return 0;
 	
 	// Create or modify the configuration file
 	if(flag_create || flag_modify)
@@ -197,7 +239,7 @@ int main(int argc, char** argv)
 		CreateConfigFile(configFilename, inputFilename, outputFilename, objects);
 		return 0;
 	}
-	
+		
 	// Prune the ROOT file
 	if(!flag_create && !flag_modify)
 	{
@@ -217,8 +259,8 @@ void PrintUsage()
 	     << "file. The configuration file specifies the input and output files as well as the" << endl \
 	     << "histograms, trees and branches.                                                 " << endl \
 		 << "                                                                                " << endl \
-	     << "  -c             : Interactively creates a configuration file                   " << endl \
-	     << "  -m             : Interactively modifies the configuration file                " << endl \
+	     << "  -c             : Interactively generate config_file                           " << endl \
+	     << "  -m             : Interactively modify config_file                             " << endl \
 	     << "  -i input_file  : Overwrite the input file value in config_file                " << endl \
 	     << "  -o output_file : Overwrite the output file value in config_file               " << endl \
 	     << "  config_file    : Location where to find or create the configuration file      " << endl;
@@ -294,6 +336,42 @@ vector<BranchInfo> GetVarInfo(TTree* pt)
 }
 
 
+/// Uses the SelectDialog class to let the user select object and then remove the unselected objects from the vector.
+///
+/// @param title 				Title of the dialog window.
+/// @param objects 				The vector of object that will be shown in the list. Class  must implement the equal to operator and a conversion operator to a string.
+/// @param preselected_objects 	The objects in this vector will be selected when the dialog window opens.
+/// @return 					Return zero on success and nonzero if the user cancelled or closed the window.
+template<class T> 
+int SelectDialogFilter(const string& title, vector<T>& objects, const vector<T>& preselected_objects)
+{
+	vector<SelectDialogEntry> entries;
+	bool cancelled = false;
+	vector<T> objects_out;
+	int id = 0;
+	auto isSelected = [&](const T& obj)
+	{
+		for(auto& sel_obj : preselected_objects)
+			if(sel_obj == obj) 
+				return true;
+		return false;
+	};
+	
+	for(auto& obj : objects) 
+		entries.emplace_back(obj, isSelected(obj), id++);
+	
+	SelectDialog(title, entries, cancelled);
+	if(cancelled) return 1;
+	
+	for(auto& entry : entries)
+		if(entry.selected)
+			objects_out.emplace_back(objects[entry.id]);
+			
+	objects = objects_out;
+	
+	return 0;
+}
+
 /// Creates a new configuration file which specifies what histograms, trees and branches to copy from a ROOT file into a new ROOT file.
 ///
 /// This function lists the objects and branches and asks the user to select which ones to keep. 
@@ -352,7 +430,6 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	ostringstream oss_tree;
 	ostringstream oss_hist;	
 	vector<Object> objects;
-	vector<pair<Object, bool> > object_selected_pairs;
 
 	if(!fileIn.IsOpen())
 	{
@@ -361,24 +438,17 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	}
 	
 	objects = CrawlDirectory(&fileIn); // This gets a vector of info on all trees, histograms and branches	
-	object_selected_pairs = MakeObjectSelectionPairs(objects, sel_objects);
 
 	// This function pops up a listbox and lets the user select entries
-	if(SelectDialog(object_selected_pairs, "Secateur - Select objects"))
+	if(SelectDialogFilter("Secateur - Select objects", objects, sel_objects))
 	{
 		cout << "Canceled by user" << endl;
 		return;
 	}
 	
 	// Loop over all selected objects
-	for(auto& objSel : object_selected_pairs)
+	for(auto& obj : objects)
 	{
-		if(!objSel.second) continue;
-		auto& obj = objSel.first;
-		ostringstream oss_current_tree;
-		vector<pair<BranchInfo, bool> > branch_selected_pairs;
-		vector<BranchInfo> sel_branches;
-		
 		// If this object is a histogram, output a configuration line to oss_hist
 		if(!obj.IsTree())
 		{
@@ -388,29 +458,29 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 		
 		// This is a tree. Let the user select which branches to keep
 		const auto& iSel_obj = find(sel_objects.begin(), sel_objects.end(), obj);
-		bool preselected_branches = iSel_obj != sel_objects.end() && iSel_obj->pBranches!=NULL;
+		vector<BranchInfo> dummy_branches;
+		bool preselected_branches = iSel_obj != sel_objects.end() && iSel_obj->pTreeInfo!=NULL;
 				
-		branch_selected_pairs = MakeObjectSelectionPairs(*obj.pBranches, preselected_branches? *iSel_obj->pBranches : sel_branches);		
-		if(SelectDialog(branch_selected_pairs, "Secateur - Select objects"))
+		if(SelectDialogFilter("Secateur - Select branches in " + obj.Name(), obj.pTreeInfo->branches, preselected_branches? iSel_obj->pTreeInfo->branches : dummy_branches))
 		{
 			cout << "Canceled by user" << endl;
 			return;
 		}
-			
+		
+		if(obj.pTreeInfo->branches.empty()) continue; // No branches were selected, so skip this tree
+		
+	
 		// Output the configuration lines for this tree
-		oss_current_tree << "TREE " << obj.path << endl;
-		for(auto& brSel : branch_selected_pairs)
-		{
-			if(!brSel.second) continue;
-			auto& br = brSel.first;
-			
-			oss_current_tree << "\tBRANCH " << br.name << endl;
-		}
-		oss_current_tree << endl;
+		oss_tree << "TREE " << obj.path << endl;
 		
-		if(oss_current_tree.str().empty()) continue; // No branches were selected, so skip this tree
+		// Also keep the selection fields (the cuts)
+		if(preselected_branches)
+			for(auto& select : iSel_obj->pTreeInfo->selects)
+				oss_tree << "\tSELECT " << select << endl;		
 		
-		oss_tree << oss_current_tree.str();
+		for(auto& br : obj.pTreeInfo->branches)
+			oss_tree << "\tBRANCH " << br.name << endl;
+		oss_tree << endl;
 	}
 	
 	// Stop if the user didn't select any trees or histograms
@@ -445,29 +515,6 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 }
 
 
-/// Makes a vector of pairs of Objects and booleans
-///
-/// @param objects 		The vector with objects
-/// @param sel_objects 	Vector with the selected objects
-/// @return vector of pairs of Objects and booleans
-template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>& objects, const vector<T>& sel_objects)
-{
-	auto isSelected = [&](const T& obj)
-	{
-		for(auto& sel_obj : sel_objects)
-			if(sel_obj == obj) 
-				return true;
-		return false;
-	};
-	vector<pair<T,bool> > objSelPair;
-	
-	for(auto& obj : objects)
-		objSelPair.push_back(make_pair(obj, isSelected(obj)));
-	
-	return objSelPair;
-}
-
-
 /// Reads the configuration file
 ///
 /// @param configFilename 	The filename of the configuration file to read
@@ -478,68 +525,71 @@ template<class T> vector<pair<T,bool> > MakeObjectSelectionPairs(const vector<T>
 int ReadConfigurationFile(const string& configFilename, string& inputFilename, string& outputFilename, vector<Object>& objects)
 {
 	ifstream ifs(configFilename);
-	string str;
-	bool success = true;
+	map<string, function<void(const string&)> > keyfnc; // Lambda expressions are used for parsing
 	
-	// This function reads a line from the configuration that starts with the string key and puts the rest of the line into val.
-	// It deals with comment lines and whitespace.
-	// Returns true if it succeeds and false if it fails
-	// It only reads a new line if the previous call succeeded.
-	auto read = [&ifs](const string& key, string& val)
-	{	
-		static bool nextLine = true;
-		static string line;
-		int n = key.size();
-		size_t pos;
-		
-		while(ifs && (!nextLine || getline(ifs, line)))
+	// Trims leading and trailing white space of str
+	auto trim = [](const string& str) -> string
+	{
+		try
 		{
-			nextLine = true; 								// Make sure that a new line will be read when we continue
-			if(!line.size()) continue; 						// This line is empty, ignore it.
-			pos = line.find_first_not_of(" \t\r"); 			// Ignore the whitespace
-			if(pos == string::npos) continue; 				// There is only whitespace, ignore this line.
-			if(line[pos] == '#') continue; 					// This line is a comment, ignore it.
-			if(line.substr(pos, n) != key) break; 			// If the first part of the line doesn't match the key then break
-			pos = line.find_first_not_of(" \t\r", pos+n); 	// Ignore any whitespace after the key string
-			if(pos == string::npos) return false; 			// If there is only whitespace or nothing else then return false (So that nextLine remains true)
-			val = line.substr(pos); 						// Put the remaining line into val
-			return true;									// success
+			const string whiteSpace = " \t\r";
+			size_t a = str.find_first_not_of(whiteSpace);
+			size_t b = str.find_last_not_of(whiteSpace);
+			return str.substr(a, b-a+1);
 		}
-		nextLine = false; // The key didn't match and we might want to try another key later, so don't read a new line the next time.
-		return false; // fail
+		catch(out_of_range& e){ return ""; }	
 	};
 	
+	// Checks if strs contains str
+	auto contains = [](const vector<string>& strs, const string& str){ return find(strs.begin(), strs.end(), str) != strs.end(); };
 	
-	// Read the configuration file
-	if(!ifs){ cerr << "Error opening " << configFilename << endl; return 1; }	
-	if(!read("INPUT ", inputFilename)){ cerr << "Error reading INPUT from " << configFilename << endl; return 1;	}
-	if(!read("OUTPUT ", outputFilename)){ cerr << "Error reading OUTPUT from " << configFilename << endl; return 1; }
-	
-	if(inputFilename == outputFilename){ cerr << "Input and output filenames are the same" << endl; return 1; }
-
-	while(success)
+	// Searches for the next key value pair and calls their interpreters if they are in the expected keys vector (expkeys)
+	// Return true when the key matched and false otherwise.
+	auto parse = [&](const vector<string>& expkeys)
 	{
-		success = false; // If both keys "HIST " and "TREE " don't match, exit the loop
-		if(read("HIST ", str))
-		{ 
-			objects.emplace_back(str, "TH1"); 
-			success = true; 
-		} 
-		if(read("TREE ", str))
+		static bool nextline = true;
+		static string key;
+		static string val;
+
+		while(ifs && (!nextline || (ifs>>key && getline(ifs, val))))
 		{
-			vector<BranchInfo> branches;
-			string var;
-			while(read("BRANCH ", var))
-				branches.emplace_back(var, "");
-			
-			if(branches.size())	objects.emplace_back(str, "TTree", branches);
-			success = true;
+			nextline = true; 					// Make sure that a new line will be read when we continue.
+			if(key[0] == '#') continue;	 		// This is a comment, ignore it.
+			if(!contains(expkeys, key)) break; 	// The key does not match any of the expected ones
+			keyfnc[key](trim(val));
+			return true;
 		}
-	}
+		nextline = false; // The key didn't match and we might want to try another set of keys later, so don't read a new line the next time.
+		return false; // Fail		
+	};
+
+	// Define the interpreters
+	keyfnc["INPUT" ] = [&](const string& str){ if( inputFilename.empty())  inputFilename = str; };
+	keyfnc["OUTPUT"] = [&](const string& str){ if(outputFilename.empty()) outputFilename = str; };
+	keyfnc["HIST"  ] = [&](const string& histPath){ objects.emplace_back(histPath, "TH1"); };
+	keyfnc["TREE"  ] = [&](const string& treePath)
+	{ 
+		vector<BranchInfo> branches;
+		vector<string> selects;
+		
+		keyfnc["BRANCH"] = [&](const string& branchName){ branches.emplace_back(branchName, ""); };
+		keyfnc["SELECT"] = [&](const string& select    ){  selects.emplace_back(select);         };
+						
+		while(parse({"BRANCH", "SELECT"}));		
+		if(branches.empty()) return;
+		objects.emplace_back(treePath, "TTree", branches, selects);
+	};
+	
+	if(!ifs){ cerr << "Error opening " << configFilename << endl; return 1; }
+	
+	while(parse({"INPUT", "OUTPUT", "TREE"}));
+	
+	if( inputFilename.empty()){ cerr << "No input ROOT file specified in "  << configFilename << endl; return 1; }
+	if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << configFilename << endl; return 1; }
 	
 	// If we did not reach the EOF, then the configuration file contains gibberish
-	if(ifs){ cerr << "Error reading from " << configFilename << endl; return 1; }
-
+	if(ifs){ cerr << "Error parsing " << configFilename << endl; return 1; }
+	
 	return 0;
 }
 
@@ -548,13 +598,6 @@ int ReadConfigurationFile(const string& configFilename, string& inputFilename, s
 /// @param configFilename Filename of the configuration file
 void Prune(const string& inputFilename, const string& outputFilename, const vector<Object>& objects)
 {
-	// Read the configuration
-	//string inputFilename, outputFilename;
-	//vector<Object> objects;	
-	
-	//if(ReadConfigurationFile(configFilename, inputFilename, outputFilename, objects)) return;
-	
-	
 	// Prune the ROOT file
 	TFile fileIn(inputFilename.c_str());
 	TFile fileOut(outputFilename.c_str(), "RECREATE");
@@ -576,18 +619,31 @@ void Prune(const string& inputFilename, const string& outputFilename, const vect
 		{
 			TTree* pTreeIn = (TTree*) fileIn.Get(obj.path.c_str());
 			TTree* pTreeOut = NULL;
+			string select = obj.pTreeInfo->GetSelection();
 			
 			if(!pTreeIn){ cerr << "Error opening " << inputFilename << ":" << obj.path << endl; return; }	
 			
 			// Activate selected branches
 			pTreeIn->SetBranchStatus("*", 0);
-			for(auto& br : *obj.pBranches)
+			for(auto& br : obj.pTreeInfo->branches)
 				pTreeIn->SetBranchStatus(br.name.c_str(), 1);
-							
-			pTreeOut = pTreeIn->CloneTree(0);
-			pTreeOut->SetAutoSave(); // Auto save every 300MB
-			pTreeOut->CopyEntries(pTreeIn, -1, "fast");	// "fast" means direct copy of data
-			pTreeOut->Write(); // Save any unsaved data
+			
+			if(select.empty()) // No selections
+			{
+				pTreeOut = pTreeIn->CloneTree(0);
+				pTreeOut->SetAutoSave(); // Auto save every 300MB
+				pTreeOut->CopyEntries(pTreeIn, -1, "fast");	// "fast" means direct copy of data
+			}
+			else
+			{
+				pTreeOut = pTreeIn->CopyTree(select.c_str(), "fast");
+				if(pTreeOut == NULL)
+				{
+					cerr << "Error in selection " << select << endl;
+					return;
+				}
+			}
+			pTreeOut->AutoSave(); // Save any unsaved data
 		}
 		else
 		{

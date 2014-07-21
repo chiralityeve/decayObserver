@@ -7,5 +7,5 @@
  
 #pragma link C++ global gHtml;
  
-#pragma link C++ defined_in "ItemSelector.h";
+#pragma link C++ defined_in "SelectDialog.h";
 #endif
