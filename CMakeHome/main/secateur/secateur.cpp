@@ -505,7 +505,7 @@ void CreateConfigFile(const string& configFilename, const string& inputFilename,
 	time(&rawtime);
 	strftime(date, 32, "%FT%T%z", localtime(&rawtime));
 	
-	of << "# Secateur config file generated on " << date << endl << endl;
+	of << "# Secateur configuration file generated on " << date << endl << endl;
 	of << "INPUT  " << inFilename << endl;
 	of << "OUTPUT " << outFilename << endl << endl;
 	if(oss_hist.str().size()) of << oss_hist.str() << endl;

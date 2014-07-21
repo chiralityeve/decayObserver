@@ -8,3 +8,5 @@ target_link_libraries(Hello ${LIBRARIES})
 
 
 add_subdirectory(Plotscript)
+add_subdirectory(secateur)
+
