@@ -85,6 +85,7 @@ int main(int argc, char **argv) {
     unsigned int vector_size = vecp -> size();
 
     double maxbincontent = 0;                           //maxbincontent (needed if more plots are made in the same canvas)
+    double minbincontent = 0;                           //minbincontent...
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
 
     std::string savepath;
@@ -95,13 +96,12 @@ int main(int argc, char **argv) {
     int pdfpage = 0;                           //number of pages in pdf
     std::string pdfname = saveto + (vec[0] -> Getname()) + "_etc.pdf";
 
-    std::string norm = "";
-    std::string normsame = "same";
-    std::string normierte = "";
+    std::string norm, normsame;                                     //Prepare norm(same) strings (plotoptions)
+    std::string defnorm = "";
+    std::string defnormsame = "same";
     if(normalized_plots) {
-        norm = "norm";
-        normsame = "normsame";
-        normierte = "Normierte";
+        defnorm = "norm";
+        defnormsame = "normsame";
     }
 
     cp -> SaveAs((pdfname + "[").c_str());                          //Begin plotting on pdf
@@ -114,14 +114,22 @@ int main(int argc, char **argv) {
             
             
             maxbincontent = 0;                                      //Reset counters
+            minbincontent = 0;
             nplots = 0;
             savepathnr += 1;
             str_savepathnr = std::to_string(savepathnr);
             legendp -> Clear();                                     //Clear legend in case of new canvas
 
+            norm = defnorm;                                         //Restore default settings for norm(same)
+            normsame = defnormsame;
+            if((vec[i] -> Getoptions()).find("norm") != std::string::npos) {        //Find if canvas should be normalised
+                norm = "norm";
+                normsame = "normsame";
+                }
+
             motherhistp = vec[i] -> plot(kBlue, 1, norm); 
             maxbincontent = motherhistp -> GetMaximum();
-
+            minbincontent = motherhistp -> GetMinimum();
             
 
             savename = vec[i] -> Getname();                                                                 //Remove illegal characters in savename
@@ -143,7 +151,7 @@ int main(int argc, char **argv) {
         }
         else{                                                                                       //Plot it on the same canvas  
             nplots += 1;                                                                            //(number+1) of plots on same canvas (raise by one)
-
+ 
             if(nplots == 1) {
                 temphistp = vec[i] -> plot(kRed, 1, normsame);                                      //<----------Edit the layout here
                 legendp -> AddEntry(motherhistp, vec[i-1]->Getlegendname().c_str(), "l");
@@ -158,10 +166,17 @@ int main(int argc, char **argv) {
                 legendp -> AddEntry(temphistp, vec[i]->Getlegendname().c_str(), "l");
             }
 
+            //Adjust the y-Scale according to the histograms in the Canvas
             if(maxbincontent < temphistp -> GetBinContent(temphistp->GetMaximumBin())) {
                 maxbincontent = temphistp -> GetMaximum();
                 motherhistp -> SetMaximum(maxbincontent + maxbincontent/10);
             }
+
+            if(minbincontent > temphistp -> GetBinContent(temphistp->GetMinimumBin())) {
+                minbincontent = temphistp -> GetMinimum();
+                motherhistp -> SetMinimum(minbincontent - minbincontent/10);
+            }
+
 
             legendp->Draw();
             cp -> SaveAs(savepath.c_str());

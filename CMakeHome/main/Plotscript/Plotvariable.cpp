@@ -7,8 +7,13 @@
 #include <TH1D.h>
 #include <TCanvas.h>
 #include <vector>
+#include <cstdlib>
 #include "Plotvariable.h"
 #include "tree2hist.h"
+
+#include <ctime>
+
+
 
 
 
@@ -62,9 +67,19 @@ std::string Plotvariable::Getoptions() { return options_; }
 
 TH1D* Plotvariable::plot(Color_t color /*= kBlue*/, Style_t style/* = 1*/, std::string options/* = ""*/) {
 
+    clock_t clocktime = clock();
+    std::stringstream ss;
+    ss << "histid_" << clocktime;
+    std::string histid;
+    histid = ss.str();
+
+
+
+    /*
     static int globalidnr = 0;
     std::string histid = "Plotvariablehist_" +  std::to_string(globalidnr);                              //Histogram needs ID => get it from globalidnr and increase globalid
     globalidnr += 1;
+    */
 
     //Prepare strings so that branch can be read from TTree
     std::string str_nbins   = std::to_string(nbins_);

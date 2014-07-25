@@ -29,7 +29,7 @@ void daniel_comparison_MC_BKG(std::vector<Plotvariable*> *vecp, bool &normalized
 
 
 
-    normalized_plots = true;                               //<-------- Normalized plots?
+    normalized_plots = true;                               //<-------- Normalized plots? | In case of false you can still make canvases normalised by writing "norm" in options
     nbins = 200;                                           //<-------- Default number of bins
     saveto = "../plots/1_SignalVsBkgr/";                   //<-------- Path to save it
 
@@ -185,6 +185,17 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
 
+    //normalised Plots
+    //J_psi_1S
+    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp, "norm");
+    new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
+   
+    //Psi(2S)
+    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_phi2s_wo_response, vecp, "norm");
+    new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
+
+
+    //unnormalised Plots
     //J_psi_1S
     new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp);
     new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
