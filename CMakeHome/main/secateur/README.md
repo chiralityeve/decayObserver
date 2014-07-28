@@ -27,7 +27,9 @@ This will show a listbox in which you can select which trees to keep. Then it
 will show a listbox in which you can select which branches to copy to the new
 root file. You can modify the configuration file manually to add cuts. How to do
 this can be seen in secateur_example.conf. If you only want to remove or add
-branches, you can modify the configuration by running
+branches, you can modify the configuration by running (WARNING: This will remove
+all your comments in the configuration file, because effectively, it reads in
+the settings and generates a new configuration file. I plan on fixing this.)
 
     $ ./bin/secateur -m /path/configfile.conf
 
