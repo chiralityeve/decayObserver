@@ -78,7 +78,7 @@ struct TreeInfo
 			for(auto& str : strs)
 			{
 				if(str.empty()) continue;
-				oss << (i++?glue:string()) << str;
+				oss << (i++?glue:string()) << "(" << str << ")";
 			}
 			return oss.str();
 		};
