@@ -56,11 +56,14 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Boost, a collection of useful C++ utilities and idioms
-#find_package(Boost COMPONENTS
+# find_package(Boost COMPONENTS
 #    program_options
 #    filesystem
 #    thread
 #    system
+#    date_time
+#    uuid
+#    random
 #    REQUIRED)
 #include_directories(${Boost_INCLUDE_DIR})
 #set(LIBRARIES ${LIBRARIES} ${Boost_LIBRARIES})
