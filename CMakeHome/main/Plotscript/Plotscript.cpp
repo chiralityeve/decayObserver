@@ -104,12 +104,25 @@ int main(int argc, char **argv) {
         defnormsame = "normsame";
     }
 
+
+
+    //Sebastians Code (save all created plots into a .root file)
+    std::string rootname = saveto + (vec[0] -> Getname()) + "_etc.root";
+    TFile* outfile = TFile::Open(rootname.c_str(),"RECREATE");
+    std::string temptitle_before, temptitle_root;
+    //---------------------------------------------------------
+
+
+
     cp -> SaveAs((pdfname + "[").c_str());                          //Begin plotting on pdf
 
     for(unsigned int i = 0; i < vector_size; i++) {
         if((vec[i] -> Getsamecanvas()) == false) {                  //Plot it on a new canvas
             //Plot plots also in a single PDF-File
-            if(pdfpage > 0) cp -> SaveAs(pdfname.c_str());
+            if(pdfpage > 0) {
+                cp -> SaveAs(pdfname.c_str());
+                cp -> SaveAs(savepath.c_str());
+            }
             pdfpage += 1;                                           //Note: Plot of last canvas is done after this loops
             
             
@@ -132,12 +145,8 @@ int main(int argc, char **argv) {
             minbincontent = motherhistp -> GetMinimum();
             
 
-            savename = vec[i] -> Getname();                                                                 //Remove illegal characters in savename
-            savename.erase(std::remove(savename.begin(), savename.end(), '/'), savename.end());
-            savename.erase(std::remove(savename.begin(), savename.end(), ':'), savename.end());
-            savename.erase(std::remove(savename.begin(), savename.end(), ' '), savename.end());
-            
-            savepath = saveto + str_savepathnr + "_" + savename + ".png";
+                       
+            savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";
 
             //Set logy or logx Scale
             if((vec[i] -> Getoptions()).find("logx") != std::string::npos) cp -> SetLogx(1);
@@ -145,8 +154,18 @@ int main(int argc, char **argv) {
             if((vec[i] -> Getoptions()).find("logy") != std::string::npos) cp -> SetLogy(1);
             else cp -> SetLogy(0);
 
-            cp -> SaveAs(savepath.c_str());
 
+            //Save to ROOT-File (therefore add to title the legendname for distignuishing purposes)
+            if(vec[i]->Getlegendname() != "") {
+                temptitle_before = motherhistp->GetTitle();
+                temptitle_root = temptitle_before + " | " + vec[i] -> Getlegendname();
+                motherhistp-> SetTitle(temptitle_root.c_str());
+                motherhistp -> Write();          
+                motherhistp -> SetTitle(temptitle_before.c_str());
+            }
+            else { 
+                motherhistp -> Write();
+            }
 
         }
         else{                                                                                       //Plot it on the same canvas  
@@ -179,13 +198,22 @@ int main(int argc, char **argv) {
 
 
             legendp->Draw();
-            cp -> SaveAs(savepath.c_str());
+            
+            //Save to ROOT-File (adding the Legendname to the title is already included in the class itself here)
+            temphistp -> Write();          
+    
+
+
         }
     }
-    cp -> SaveAs(pdfname.c_str());                                                         //Plot last canvas
+    cp -> SaveAs(pdfname.c_str());                                                                  //Plot last canvas (.PDF)
+    cp -> SaveAs(savepath.c_str());                                                                 //     "           (.PNG)
     cp -> SaveAs( (pdfname + "]").c_str());                                                         //finish PDF plotting
 
 
+
+    
+    outfile->Close();           //Close ROOT-File
 
 
 
