@@ -13,7 +13,7 @@ void kevin_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int
     MCtree -> Add("/afs/cern.ch/work/c/clinn/public/f2mumu/Bsf2mumu_MC_up.root");
 
     
-    std::string cuts = "B0_BKGCAT == 20 && K_PT > 500";
+    std::string cuts = "B0_BKGCAT == 20";
     
     normalized_plots = true;                //<-------- Normalized plots?
     nbins = 200;                            //<-------- Default number of bins
