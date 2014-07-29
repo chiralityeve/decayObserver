@@ -49,14 +49,14 @@ private:
 	vector<RooAbsReal*> vec_pParam;
 	RooRealVar* pFitVar;
 	string basename;
-	string latestname;
+	//string latestname;
 	string fitUnit;
 	Interval fitRange;
 	
 	void AddParams(const vector<RooAbsReal*>& vec){ vec_pParam.insert(vec_pParam.end(), vec.begin(), vec.end()); }
 	
-	const char* Name(const string& name){ latestname = basename + ' ' + name; return latestname.c_str(); }
-	const char* Name(){ return latestname.c_str(); }
+	//const char* Name(const string& name){ latestname = basename + ' ' + name; return latestname.c_str(); }
+	//const char* Name(){ return latestname.c_str(); }
 	
 	int CheckGaussian();
 	int CheckPolynomial();

@@ -15,6 +15,8 @@ public:
 	double Length() const { return maximum - minimum; }
 	double Center() const { return 0.5*(minimum + maximum); }
 	
+	bool In(double x) const { return !(x < minimum || x > maximum); }
+	
 	double minimum;
 	double maximum;
 };

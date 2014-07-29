@@ -108,29 +108,56 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 
 
 	string dataFilename, treeName, outputFilename;
-	Fitter f;
+	vector<string> filenames;
+	vector<string> treeNames;
 	
 	// Define the interpreters
 	keyfnc["DATA"  ] = [&](const string& line)
 	{
-		if(ArgParser(line).Scan(f.rootFilename, f.treeName))
+		keyfnc["FILE"] = [&](const string& line)
+		{ 
+			if(ArgParser(line).Scan(dataFilename, treeName))
+			{
+				cerr << "Not enough arguments in FILE " << line << endl;
+				parseError = true;
+				return;
+			}
+			filenames.push_back(dataFilename);
+			treeNames.push_back(treeName);
+		};
+	
+		filenames.clear();
+		treeNames.clear();
+		
+		int notRead = ArgParser(line).Scan(dataFilename, treeName);
+		if(notRead==1)
 		{
-			cerr << "Not enough arguments for DATA " << endl;
+			cerr << "Not enough arguments in DATA " << line << endl;
 			parseError = true;
 			return;
 		}
+		if(notRead==0)
+		{
+			filenames.push_back(dataFilename);
+			treeNames.push_back(treeName);
+			return;
+		}
+				
+		parseAll({"FILE"});
 	};
+	
 	keyfnc["OUTPUT"] = [&](const string& line)
 	{ 
-		f.outputFilename = line; 
+		outputFilename = line; 
 		
 		// Open and close with RECREATE to make an empty file
-		TFile* pFile = new TFile(f.outputFilename.c_str(), "RECREATE");
-		if(!pFile){ cerr << "Error opening " << f.outputFilename << endl; parseError = true; return; }	
+		TFile* pFile = new TFile(outputFilename.c_str(), "RECREATE");
+		if(!pFile){ cerr << "Error opening " << outputFilename << endl; parseError = true; return; }	
 		delete pFile;
 	};
 	keyfnc["FIT"   ] = [&](const string& line)
 	{
+		Fitter f;
 		keyfnc["SIGNAL"] = [&](const string& line){ parseError = f.AddSignal(line); };
 		keyfnc["BACKGROUND"] = [&](const string& line){ parseError = f.AddBackground(line); };
 		
@@ -141,6 +168,10 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 			return;
 		}
 		
+		f.rootFilenames = filenames;
+		f.treeNames = treeNames;
+		f.outputFilename = outputFilename;
+		
 		parseAll({"SIGNAL", "BACKGROUND"});
 		
 		fitters.push_back(f);
@@ -150,8 +181,9 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 	
 	parseAll({"DATA", "OUTPUT"});
 	
-	if(  f.rootFilename.empty()){ cerr << "No data ROOT file specified in "   << filename << endl; return 1; }
-	if(f.outputFilename.empty()){ cerr << "No output ROOT file specified in " << filename << endl; return 1; }
+	if(parseError){ return 1; }
+	if(  dataFilename.empty()){ cerr << "No data ROOT file specified in "   << filename << endl; return 1; }
+	if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << filename << endl; return 1; }
 	
 	parseAll({"DATA", "OUTPUT", "FIT"});
 	
