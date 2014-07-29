@@ -10,7 +10,7 @@
 #include <TLegend.h>
 #include <TStyle.h>
 
-#include "tree2hist.h"
+
 
 //RooFit includes
 #include <RooRealVar.h> 
@@ -36,7 +36,7 @@ int main() {
     
     
     // Open Data 
-    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Output/Data_preselected_TMVAresponse.root");
+    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/Pruned/BDT_Background.root");
     if (fileReal == 0) {
         // if we cannot open the file, print an error message and return immediatly
         printf("Error: cannot open RealData");
@@ -48,77 +48,86 @@ int main() {
     treeReal->SetBranchStatus("*",0);
     treeReal->SetBranchStatus("B0_M",1);                  //Bs_M aktivieren
 
-    treeReal->SetBranchStatus("J_psi_1S_M",1);       //ab hier: aktiviere Branches für Cuts (nur Cut auf Jpsi-Masse nötig)
+    
 
 
     //Cuts anwenden (auf Jpsi-Massenfenster)
-    std::string cuts = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147"
+    //std::string cuts = "";
 
     //---------------------
     //Let the FITTING BEGIN
     //--------------------
     
     //Lade Daten aus Tree
-    RooRealVar Mass("B0_M", "Masse B_{s}", 5180, 5500, "MeV");                   //Erstelle Variable Masse für gewünschte Range
+    RooRealVar Bs_M("B0_M", "Masse B_{s}", 5316.3, 7000, "MeV");                   //Erstelle Variable Masse für gewünschte Range
+    
+    
 
-    RooRealVar B_IPCHI2("J_psi_1S_M", "J_psi_1S_M", 2000, 5000);         //Variablen, auf die Cuts angewendet werden..
-
-    RooArgSet VarSet(Mass, B_IPCHI2 
+    RooArgSet VarSet(Bs_M);
     
     RooDataSet dataSet("Datensatz_Masse", "Datensatz_Masse", treeReal, VarSet);     //Lade gewünschte Daten (Bplus_M) aus dem Tree
-    RooDataSet* ReducedDataSet = (RooDataSet*)dataSet.reduce(cuts.c_str());
+    RooDataSet* ReducedDataSet = &dataSet;
 
     //Fiting Parameter definieren
-    //Signal
-    RooRealVar peak_gaussian_mean("gaus_mean", "Mittelwert für Gaussian des Signals", 5280, 5250, 5320, "MeV");        //Fitting parameter
-    RooRealVar peak_gaussian_sigma("gaus_sigma", "Sigma für Gaussian des Signals", 19, 0, 40, "MeV");
-    RooGaussian peak_gaussian("peak_gaussian", "Gaussian für Signal", Mass, peak_gaussian_mean, peak_gaussian_sigma);           //Erstelle Guass PDF für Signal
-
-    RooRealVar peak_yield("peak_yield", "Yield des Signal-Peaks", 227000, 200000, 244008);                                          //Definiere Yield (Anz. Events im Gauss)
-
     //Background
-    RooRealVar background_parameter("bkgrd_param", "Parameter für Background e Fkt", -0.005, -0.006, -0.004, "1/MeV");           //Definiere Parameter der e-Fkt
-    RooExponential background("bkgrd", "Exponentialfkt für Background", Mass, background_parameter);
+    RooRealVar background_parameter("bkgrd_param", "Parameter für Background e Fkt", -0.001, -100, 0.0, "1/MeV");           //Definiere Parameter der e-Fkt
+    RooExponential background("bkgrd", "Exponentialfkt für Background", Bs_M, background_parameter);
 
-    RooRealVar background_yield("bkgrd_yield", "Yield des Background", 17000, 0, 30000);
+    RooRealVar background_yield("bkgrd_yield", "Yield des Background", 250000, 150000, 400000);
 
     //Füge PDFs zu Listen hinzu
     RooArgList shapes;
     RooArgList yields;
-    shapes.add(peak_gaussian);
-    yields.add(peak_yield);
+    
+    
     shapes.add(background);
     yields.add(background_yield);
 
     RooAddPdf totalPdf("totalPdf", "Summe aus Signal und Background", shapes, yields);
 
-    totalPdf.fitTo(*ReducedDataSet, Extended() );
+    totalPdf.fitTo(*ReducedDataSet, Extended(), Range(5500, 7000) );
 
     //----------------------
     //Plotte den ganzen Spaß
     //----------------------
+    Bs_M.setRange("fitrange", 5500, 7000);  
+    Bs_M.setRange("signalrange", 5316.3, 5416.3);
+    Bs_M.setRange("plotrange", 5316.3, 7000);
+
+    //Open TFile to save Plots
+    TFile* f = new TFile("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation.root", "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
-    RooPlot* DMassFrame = Mass.frame(Bins(50), Name("Masse"), Title("Massenverteilung B2JPsiK (cutted) & fitted with Gauss"));
+    RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Backgroundfit"));
     
     //Plot histogram of Mass
     ReducedDataSet->plotOn(DMassFrame, MarkerSize(0.9));
 
-    //Display fit parameters
-    totalPdf.paramOn(DMassFrame, Format("NELU", AutoPrecision(2)), Layout(0.52, 1.0, 0.9));
-
-    //Plot just the background
-    totalPdf.plotOn(DMassFrame, Components(background), LineColor(kGreen) );
 
     //Plot total PDF
-    totalPdf.plotOn(DMassFrame, LineColor(kRed));
+    totalPdf.plotOn(DMassFrame, LineColor(kRed), Range("plotrange"));
 
+    //Display fit parameters
+    totalPdf.paramOn(DMassFrame, Format("NELU", AutoPrecision(2)), Layout(0.5, 1.0, 0.9));
+
+    
+    
     //Create Canvas and put Plot on the screen
     TCanvas* DMassCanvas = new TCanvas("DMassCanvas", "Fit of Mass", 200, 10,1000, 600);
     DMassFrame->Draw();
-    DMassCanvas->SaveAs("./Histogramme/Massfit_cutted_Gauss.png");
+
+    DMassFrame -> Write();
+    DMassCanvas->SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation.png");
+
+    f -> Close();
+    
+    RooAbsReal* intOfFunc = totalPdf.createIntegral(Bs_M, NormSet(Bs_M), Range("signalrange"));
+    cout << "Normalised Integral (5316.3 - 5416.3): " << intOfFunc -> getVal() << endl;
+    double bkgr_yield_in_sig_region = (intOfFunc -> getVal()) * (background_yield.getVal());
+    cout << "Background im Signalwindow: " << bkgr_yield_in_sig_region << endl;
 
 
+    /*
     //Signaleffizienz der verwendeten Cuts ausgeben (berechnet aus MC-Data)
     std::string cutsMC = "B_IPCHI2_OWNPV < 9 && B_ENDVERTEX_CHI2 / B_ENDVERTEX_NDOF < 9 && muplus_IPCHI2_OWNPV > 16 && muminus_IPCHI2_OWNPV > 16";
     cutsMC += " && muplus_PIDK < 0 && muminus_PIDK < 0 && muplus_DLLmu > 0 && muminus_DLLmu > 0 && kaon_DLLK > 5";
@@ -131,6 +140,7 @@ int main() {
     cout << "Entries ohne Cuts:\t" << nevents << endl;
     cout << "Entries mit Cuts:\t" << neventscuts << endl;
     cout << "=> Effizienz:\t\t" << eff << endl;
+    */
 
     return 0;
 
