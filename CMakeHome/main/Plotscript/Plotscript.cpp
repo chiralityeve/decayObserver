@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
             
             
             maxbincontent = 0;                                      //Reset counters
-            minbincontent = 0;
+            
             nplots = 0;
             savepathnr += 1;
             str_savepathnr = std::to_string(savepathnr);
