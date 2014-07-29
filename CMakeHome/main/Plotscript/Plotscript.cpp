@@ -84,8 +84,7 @@ int main(int argc, char **argv) {
 
     unsigned int vector_size = vecp -> size();
 
-    double maxbincontent = 0;                           //maxbincontent (needed if more plots are made in the same canvas)
-    double minbincontent = 0;                           //minbincontent...
+    double maxbincontent = 0;                           //maxbincontent (needed if more plots are made in the same canvas) 
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
 
     std::string savepath;
@@ -142,7 +141,7 @@ int main(int argc, char **argv) {
 
             motherhistp = vec[i] -> plot(kBlue, 1, norm); 
             maxbincontent = motherhistp -> GetMaximum();
-            minbincontent = motherhistp -> GetMinimum();
+            motherhistp -> SetMinimum(0);
             
 
                        
@@ -191,10 +190,7 @@ int main(int argc, char **argv) {
                 motherhistp -> SetMaximum(maxbincontent + maxbincontent/10);
             }
 
-            if(minbincontent > temphistp -> GetBinContent(temphistp->GetMinimumBin())) {
-                minbincontent = temphistp -> GetMinimum();
-                motherhistp -> SetMinimum(minbincontent - minbincontent/10);
-            }
+
 
 
             legendp->Draw();
