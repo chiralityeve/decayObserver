@@ -16,6 +16,7 @@
 #include "TTree.h"
 #include "TText.h"
 #include "TCanvas.h"
+#include "TBranch.h"
 #include "RooRealVar.h"
 #include "RooDataSet.h"
 #include "RooGaussian.h"
@@ -34,6 +35,9 @@ class Fitter
 public:
 	Fitter();
 	Fitter(const string& rootFilename, const string& treeName, 
+		   const string& branchName, const Interval& range, const string& branchUnit,  
+		   const string& plotTitle, const string& plotAxisLabel, const string& outputFilename);
+	Fitter(const vector<string>& rootFilenames, const vector<string>& treeNames, 
 		   const string& branchName, const Interval& range, const string& branchUnit,  
 		   const string& plotTitle, const string& plotAxisLabel, const string& outputFilename);
 	Fitter(const Fitter& other);
@@ -56,8 +60,8 @@ public:
 	
 	int Fit(bool showRooFitOutput=false, bool overwrite=false);
 	
-	string rootFilename;
-	string treeName;
+	vector<string> rootFilenames;
+	vector<string> treeNames;
 	string branchName;
 	Interval range;
 	string branchUnit;
@@ -66,8 +70,8 @@ public:
 	string outputFilename;
 	
 private:	
-	TFile* pFile;
-	TTree* pTree;
+	//TFile* pFile;
+	//TTree* pTree;
 	RooRealVar* pFitVar;
 	RooDataSet* pData;
 	

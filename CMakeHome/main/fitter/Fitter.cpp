@@ -40,7 +40,17 @@ Fitter::Fitter(){ InitPointers(); }
 Fitter::Fitter(const string& rootFilename, const string& treeName, 
                const string& branchName, const Interval& range, const string& branchUnit, 
 			   const string& plotTitle, const string& plotAxisLabel, const string& outputFilename):
-rootFilename(rootFilename),treeName(treeName),
+rootFilenames({rootFilename}),treeNames({treeName}),
+branchName(branchName),range(range),branchUnit(branchUnit),
+plotTitle(plotTitle),plotAxisLabel(plotAxisLabel),outputFilename(outputFilename)
+{
+	InitPointers();
+}
+
+Fitter::Fitter(const vector<string>& rootFilenames, const vector<string>& treeNames, 
+               const string& branchName, const Interval& range, const string& branchUnit, 
+			   const string& plotTitle, const string& plotAxisLabel, const string& outputFilename):
+rootFilenames(rootFilenames),treeNames(treeNames),
 branchName(branchName),range(range),branchUnit(branchUnit),
 plotTitle(plotTitle),plotAxisLabel(plotAxisLabel),outputFilename(outputFilename)
 {
@@ -60,14 +70,14 @@ Fitter::~Fitter()
 
 void Fitter::InitPointers()
 {
-	InitNULL(pFile, pTree, pFitVar, pData, pTotPdf, pResult);
+	InitNULL(pFitVar, pData, pTotPdf, pResult);
 }
 
 void Fitter::Clean()
 {
 	Delete(pData);
 	Delete(pFitVar);
-	Delete(pFile);
+	//Delete(pFile);
 	Delete(vec_pParam);
 	Delete(pTotPdf);
 	InitPointers();
@@ -77,8 +87,8 @@ Fitter& Fitter::operator =(const Fitter& other)
 {
 	Clean();
 	
-	rootFilename = other.rootFilename;
-	treeName = other.treeName;
+	rootFilenames = other.rootFilenames;
+	treeNames = other.treeNames;
 	branchName = other.branchName;
 	range = other.range;
 	branchUnit = other.branchUnit;
@@ -98,8 +108,12 @@ ostream& Fitter::Print(ostream& os) const
 		
 		oss << left << fixed << setprecision (2);
 			
-		oss << setw(w) << "Root file:" << rootFilename << endl;
-		oss << setw(w) << "Tree name:" << treeName << endl;
+		oss << setw(w) << "Data:";
+		int nFiles = min(rootFilenames.size(),treeNames.size());
+		for(int i=0; i<nFiles; ++i)	oss << "" << rootFilenames[i] << ':' << treeNames[i] << endl << setw(w);
+		//for(auto& filename : rootFilenames)	oss << "" << filename << endl << setw(w);
+		//oss << setw(w) << "Tree name:";
+		//for(auto& treeName : treeNames)	oss << "" << treeName << endl << setw(w);
 		oss << setw(w) << "Branch name:" << branchName << " (" << branchUnit << ')' << endl;
 		oss << setw(w) << "Fit interval:" << range.minimum << ' ' << branchUnit << " < " << branchName << " < " << range.maximum << ' ' << branchUnit << endl;
 		oss << setw(w) << "Signals:";
@@ -125,7 +139,7 @@ int Fitter::Fit(bool showRooFitOutput, bool overwrite)
 	{
 		for(int i=0; i<ms.numStreams(); ++i)
 			ms.setStreamStatus(i, false);
-		ms.addStream(RooFit::WARNING, RooFit::Prefix(false));
+		//ms.addStream(RooFit::WARNING, RooFit::Prefix(false));
 	}
 
 	if(LoadData()) return 1;
@@ -147,17 +161,17 @@ int Fitter::Plot(bool overwrite)
 	RooPlot* pFrame = pFitVar->frame(RooFit::Bins(50), RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
 	//RooPlot* pFrame = pFitVar->frame(RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
 	TFile* pFileOut = new TFile(outputFilename.c_str(), overwrite?"RECREATE":"UPDATE");
-	TCanvas* pCanvas = new TCanvas(branchName.c_str(), branchName.c_str(), 1000, 600);
+	//TCanvas* pCanvas = new TCanvas(branchName.c_str(), branchName.c_str(), 1000, 600);
 	RooArgList bkgComponent;
 	
 	for(auto& pdf : bkgPdfs)
 		bkgComponent.add(pdf.GetPdf());
 
 	pData->plotOn(pFrame, RooFit::MarkerSize(0.9));
-	pTotPdf->paramOn(pFrame, RooFit::Format("NELU", RooFit::AutoPrecision(2)));
 	pTotPdf->plotOn(pFrame, RooFit::Components(bkgComponent), RooFit::LineColor(kGreen) );
 	pTotPdf->plotOn(pFrame, RooFit::LineColor(kRed));	
-	pFrame->Draw();
+	pTotPdf->paramOn(pFrame, RooFit::Format("NELU", RooFit::AutoPrecision(2)));
+	pFrame->Write();
 	
 	//RooPlot* frame2 = pFitVar->frame(RooFit::Bins(50), RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
 	//pFrame->residHist()->Draw();
@@ -166,10 +180,10 @@ int Fitter::Plot(bool overwrite)
 	//frame2->SetMaximum(+5) ;
 	//frame2->Draw() ; 
 	
-	pCanvas->Write();
+	//pCanvas->Write();
 	
 	delete pFileOut;
-	delete pCanvas;
+	//delete pCanvas;
 	Clean();
 		
 	return 0;	
@@ -177,28 +191,65 @@ int Fitter::Plot(bool overwrite)
 
 int Fitter::LoadData()
 {
-	pFile = new TFile(rootFilename.c_str());
-	if(!pFile){ cerr << "Error opening " << rootFilename << endl; return 1; }	
+	enum BranchType:int{ CHAR_T, UCHAR_T, SHORT_T, USHORT_T, INT_T, UINT_T, FLOAT_T, DOUBLE_T, LONG64_T, ULONG64_T, BOOL_T };
+	auto getBranchType = [](TBranch* pBranch)
+	{
+		const unordered_map<char, BranchType> branchTypeMap = {{'C',CHAR_T},{'B',CHAR_T},{'b',UCHAR_T},{'S',SHORT_T},{'s',USHORT_T},{'I',INT_T},{'i',UINT_T},{'F',FLOAT_T},{'D',DOUBLE_T},{'L',LONG64_T},{'l',ULONG64_T},{'O',BOOL_T}};
+		string str=pBranch->GetTitle(); 
+		size_t p=str.find_last_of('/'); 
+		return p==string::npos? FLOAT_T : branchTypeMap.at(str[p+1]); 
+	};
 	
-	pTree = (TTree*) pFile->Get(treeName.c_str());
-	if(!pTree){ cerr << "Error opening " << rootFilename << ":" << treeName << endl; return 1; }
-
+	int nFiles = min(rootFilenames.size(), treeNames.size());
+	
 	cout << "Loading data" << endl;
 	
-	pTree->SetBranchStatus("*", 0);
-	pTree->SetBranchStatus(branchName.c_str(), 1);
-	
 	pFitVar = new RooRealVar(branchName.c_str(), plotAxisLabel.c_str(), range.minimum, range.maximum, branchUnit.c_str());
-	pData = new RooDataSet(pTree->GetName(), pTree->GetTitle(), pTree, RooArgSet(*pFitVar));
+	pData = new RooDataSet("data", "data", *pFitVar);
+	//pData = new RooDataSet(pTree->GetName(), pTree->GetTitle(), pTree, RooArgSet(*pFitVar));	
+	
+	for(int i=0; i<nFiles; ++i)
+	{
+		const string& rootFilename = rootFilenames[i];
+		const string& treeName = treeNames[i];
+		TFile* pFile = new TFile(rootFilename.c_str());
+		TTree* pTree = pFile? (TTree*) pFile->Get(treeName.c_str()) : NULL;
+		TBranch* pBranch = pTree? pTree->GetBranch(branchName.c_str()) : NULL;
+		BranchType branchType = pBranch? getBranchType(pBranch) : (BranchType)0;
+		bool isDouble = branchType == DOUBLE_T;
+		bool isFloat = branchType == FLOAT_T;
+		union { Double_t d; Float_t f; } val;
+		
+		if(!pFile){ cerr << "Error opening " << rootFilename << endl; return 1; }	
+		if(!pTree){ cerr << "Error opening " << rootFilename << ":" << treeName << endl; return 1; }
+		if(!pBranch){ cerr << "Branch " << branchName << " does not exist " << endl; return 1; }	
+		if(!(isDouble || isFloat)){ cerr << branchName << " is not a double or float" << endl; return 1; }
+				
+		pTree->SetBranchStatus("*", 0);
+		pTree->SetBranchStatus(branchName.c_str(), 1);
+		pTree->SetBranchAddress(branchName.c_str(), (void*) &val);
+		
+		Long64_t nEntries = pTree->GetEntries();
+		for(Long64_t j=0; j<nEntries; ++j)
+		{
+			pTree->GetEntry(j);
+			if(isFloat) val.d = (double) val.f;
+			if(!range.In(val.d)) continue;
+			*pFitVar = val.d;
+			pData->add(*pFitVar);
+		}
+		
+		delete pFile;
+	}
 	
 	return 0;
 }
 
 int Fitter::InitPdfs()
 {
-	auto AddSerial = [](const string& name)
+	map<string, int> serials;
+	auto AddSerial = [&serials](const string& name)
 	{
-		static map<string, int> serials;
 		ostringstream oss;
 		
 		oss << name << serials[name]++;

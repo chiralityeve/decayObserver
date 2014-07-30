@@ -76,9 +76,7 @@ int FitterPdf::Check()
 		case 3: cerr << "Invalid arguments: ";         break;
 		default: return e;
 	}
-	
-	cout << *this << endl;
-	
+		
 	return e;	
 }
 int FitterPdf::Init(const string& name, RooRealVar& fitVar, int nPdfs, int nEvents)
