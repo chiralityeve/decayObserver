@@ -36,7 +36,7 @@ class Plotvariable {
         TH1D* plot(Color_t color = kBlue, Style_t style = 1, std::string options = "");
     
     
-    private:
+    protected:
         std::string name_;           //Name in TTree
         std::string savename_;        //Name where it should be saved to
         TTree* tree_;                //TTree where the variable comes from

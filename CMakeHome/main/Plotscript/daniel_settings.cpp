@@ -2,6 +2,7 @@
 #include <string>
 #include <TH1D.h>
 #include "Plotvariable.h"
+#include "Plotvariable_2D.h"
 #include <TTree.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -13,7 +14,7 @@
 // 1. Vergleich Signal (MC) und background sample 
 // -----------------------------------------------
 
-void daniel_comparison_MC_BKG(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_comparison_MC_BKG(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D*> *vecp_2D, bool &normalized_plots, int &nbins, std::string &saveto) {
     
     TChain* Bkgrtree = new TChain("DecayTree");                                                               //Background tree (B_M > 5500)
     Bkgrtree -> Add("/afs/cern.ch/work/d/dberning/private/Subsamples/Bsf2mumu_Data2011_background_subsample.root");
@@ -151,7 +152,7 @@ void daniel_comparison_MC_BKG(std::vector<Plotvariable*> *vecp, bool &normalized
 // Cut on TMVA-Variable
 // -----------------------------------
 
-void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_cutTMVAresponse(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D*> *vecp_2D, bool &normalized_plots, int &nbins, std::string &saveto) {
     
     TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Output/Data_preselected_TMVAresponse.root", "update");
     TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");
@@ -225,6 +226,49 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
 
 
+// ----------------------------------------
+// Investigate bump at ~5800 MeV in B0_M
+// ---------------------------------------
+
+void daniel_current(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D*> *vecp_2D, bool &normalized_plots, int &nbins, std::string &saveto) {
+    
+    TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned.root", "READ");
+    TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");
+    
+    
+    //Define cuts
+     std::string cut_f2 = "phi_1020_M > 1300 && phi_1020_M < 1800 &&";
+    
+    std::string cut_pidk0 = cut_f2 + "Kplus_PIDK > 0 && Kminus_PIDK > 0";
+    std::string cut_pidk5 = cut_f2 + "Kplus_PIDK > 5 && Kminus_PIDK > 5";
+    std::string cut_pidk10 = cut_f2 + "Kplus_PIDK > 10 && Kminus_PIDK > 10";
+    
+    
+  
+
+
+    normalized_plots = false;                                   //<-------- Normalized plots?
+    nbins = 200;                                                //<-------- Default number of bins
+    saveto = "../plots/Bump_investigation/";                   //<-------- Path to save it
+
+
+    //There are basically two types of Constructos:
+    //
+    //Type1: First (or only) histogram on one canvas
+    //Plotvariable Type1(variable to plot, pointer to Tree, Title of Canvas, Label in legend, #bins, lower bound, upper bound, x-axis label, unit, cuts (optional), container (do not edit))
+    //
+    //Type2: Additional histogram(s) on same canvas
+    //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
+
+
+    new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 0", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk0, vecp);
+    //new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 5", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk5, vecp);
+    //new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 10", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk10, vecp);
+
+
+    new Plotvariable_2D("B0_M:J_psi_1S_M", tree, "2D-Plot m_{B_{s}} : m_{J#psi}", nbins, 2000, 5000, 4500, 7000, "m_{J#psi}", "MeV", "m_{B_{s}}", "MeV", vecp_2D, "colz");
+   
+}
 
 
 
@@ -242,7 +286,7 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 // -----------------------------------
 // Test
 // -----------------------------------
-void daniel_test(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_test(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D*> *vecp_2D ,bool &normalized_plots, int &nbins, std::string &saveto) {
     
     TChain* MCtree = new TChain("Bs2phimumuTuple/DecayTree");
     MCtree -> Add("/afs/cern.ch/work/c/clinn/public/f2mumu/Bsf2mumu_MC_down.root");
