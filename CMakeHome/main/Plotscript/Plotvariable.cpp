@@ -23,6 +23,9 @@
 // -----------------------------------
 
 
+
+
+
 //--------------------------------------------------------------------------------------->
 //Constructor of Plotvariable which shall be plotted on a new canvas
 Plotvariable::Plotvariable(std::string name, TTree* tree,  std::string title, std::string legendname, int nbins, double xlow, double xup, std::string xlabel, std::string unit, std::vector<Plotvariable*> *Plotvector, std::string options /*= "" */)                   //Variant without cuts
@@ -44,6 +47,11 @@ Plotvariable::Plotvariable(std::string name, TTree* tree, std::string title, std
         
         Plotvector -> push_back(this);
     }  
+
+
+
+
+
 
 //--------------------------------------------------------------------------------------->
 //Constructor of Plotvariable which shall be plotted on the same canvas as the previous one
@@ -92,6 +100,12 @@ Plotvariable::Plotvariable(std::string name, TTree* tree, std::string legendname
     }  
 
 
+
+
+
+
+
+
 //--------------------------------------------------------------------------------------->
 //Member-Functions
 std::string Plotvariable::Getname() { return name_; }
@@ -107,6 +121,10 @@ std::string Plotvariable::Getcuts() { return cuts_; }
 bool Plotvariable::Getsamecanvas() { return show_on_same_canvas_; }
 std::string Plotvariable::Getoptions() { return options_; }
 
+
+
+
+// Plotfunction
 TH1D* Plotvariable::plot(Color_t color /*= kBlue*/, Style_t style/* = 1*/, std::string options/* = ""*/) {
 
     clock_t clocktime = clock();
@@ -164,7 +182,7 @@ TH1D* Plotvariable::plot(Color_t color /*= kBlue*/, Style_t style/* = 1*/, std::
     htemp -> GetXaxis() -> SetTitleOffset(1.18);
 
     htemp -> GetYaxis() -> SetTitle(ylabel.c_str());
-    htemp -> GetYaxis() -> SetTitleOffset(1.38);
+    htemp -> GetYaxis() -> SetTitleOffset(1.48);
 
     return htemp;
 }
