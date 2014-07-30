@@ -27,6 +27,12 @@
 #include "RooFitResult.h"
 #include "RooExponential.h"
 
+#include "TAxis.h"
+#include "TApplication.h"
+#include "TStyle.h"
+#include "TPad.h"
+#include "TF1.h"
+
 
 using namespace std;
 
@@ -85,6 +91,8 @@ private:
 	int LoadData();
 	int InitPdfs();
 	int Plot(bool overwrite);
+	
+	void MakePlots(RooPlot*& pPlot1, RooPlot*& pPlot2);
 	
 	void InitPointers();
 	void Clean();

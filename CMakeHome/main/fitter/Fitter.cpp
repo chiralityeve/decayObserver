@@ -1,39 +1,4 @@
 #include "Fitter.h"
-/*
-Fitter::Fitter():
-rootFilename(),treeName(),
-branchName(),range(),branchUnit(),
-plotTitle(),plotAxisLabel(),outputFilename(),
-sigPdfs(),bkgPdfs(),
-
-//pBkgPdf(NULL),
-vec_pParam()//pBkgYield(NULL),
-//pTotPdf(NULL)
-{
-	InitPointers();
-}
-
-Fitter::Fitter(const string& rootFilename, const string& treeName, 
-               const string& branchName, const Interval& range, const string& branchUnit, 
-			   const string& plotTitle, const string& plotAxisLabel, const string& outputFilename):
-rootFilename(rootFilename),treeName(treeName),
-branchName(branchName),range(range),branchUnit(branchUnit),
-//sigTypes(),sigLocations(),sigBounds(),
-//bkgType(bkgType),
-plotTitle(plotTitle),plotAxisLabel(plotAxisLabel),outputFilename(outputFilename),
-
-//pFile(NULL),pTree(NULL),
-
-//pFitVar(),
-//pData(NULL),
-//vec_pSigPdf(),vec_pSigYield(),
-sigPdfs(),bkgPdfs(),
-//pBkgPdf(NULL),
-vec_pParam()//pBkgYield(NULL),
-//pTotPdf(NULL)
-{
-	InitPointers();
-}*/
 
 Fitter::Fitter(){ InitPointers(); }
 
@@ -77,7 +42,6 @@ void Fitter::Clean()
 {
 	Delete(pData);
 	Delete(pFitVar);
-	//Delete(pFile);
 	Delete(vec_pParam);
 	Delete(pTotPdf);
 	InitPointers();
@@ -155,38 +119,95 @@ int Fitter::Fit(bool showRooFitOutput, bool overwrite)
 	return 0;
 }
 
-int Fitter::Plot(bool overwrite)
-{
-	auto int2str = [](int n){ ostringstream oss; oss << n; return oss.str(); };
-	RooPlot* pFrame = pFitVar->frame(RooFit::Bins(50), RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
-	//RooPlot* pFrame = pFitVar->frame(RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
-	TFile* pFileOut = new TFile(outputFilename.c_str(), overwrite?"RECREATE":"UPDATE");
-	//TCanvas* pCanvas = new TCanvas(branchName.c_str(), branchName.c_str(), 1000, 600);
-	RooArgList bkgComponent;
-	
-	for(auto& pdf : bkgPdfs)
-		bkgComponent.add(pdf.GetPdf());
 
-	pData->plotOn(pFrame, RooFit::MarkerSize(0.9));
-	pTotPdf->plotOn(pFrame, RooFit::Components(bkgComponent), RooFit::LineColor(kGreen) );
-	pTotPdf->plotOn(pFrame, RooFit::LineColor(kRed));	
-	pTotPdf->paramOn(pFrame, RooFit::Format("NELU", RooFit::AutoPrecision(2)));
+
+
+int Fitter::Plot(bool overwrite)
+{	
+	// Open the output file and open or create sub directories
+	TFile* pFile = new TFile(outputFilename.c_str(), overwrite?"RECREATE":"UPDATE");
+	TDirectory* pPlotDir = pFile->GetDirectory("plots");
+	TDirectory* pRawDir = pFile->GetDirectory("rawRooPlots");
+	
+	if(!pPlotDir) pPlotDir = pFile->mkdir("plots");
+	if(!pRawDir) pRawDir = pFile->mkdir("rawRooPlots");	
+	
+	
+	// Make the plots
+	RooPlot* pFrame = NULL;
+	RooPlot* pFramePull = NULL;
+	
+	MakePlots(pFrame, pFramePull);
+	
+	// Save the plots
+	pRawDir->cd();
 	pFrame->Write();
+	pFramePull->Write();
 	
-	//RooPlot* frame2 = pFitVar->frame(RooFit::Bins(50), RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
-	//pFrame->residHist()->Draw();
-	//frame2->addObject(pFrame->residHist()) ;
-	//frame2->SetMinimum(-5) ;
-	//frame2->SetMaximum(+5) ;
-	//frame2->Draw() ; 
 	
-	//pCanvas->Write();
+	// Put Them in a canvas
+	TCanvas* pCanvas = new TCanvas(branchName.c_str(), branchName.c_str(), 800, 600);
+	TPad* pPadTop = new TPad("upperPad", "upperPad", 0., .2, 1., 1.);
+	TPad* pPadBottom = new TPad("lowerPad", "lowerPad", 0., 0., 1., .2);
+	TF1 *pFuncDummy = new TF1("dummyfunc", "0", range.minimum, range.maximum);
 	
-	delete pFileOut;
-	//delete pCanvas;
+	pPadTop->Draw();
+	pPadBottom->Draw();
+	
+	pPadTop->cd();
+	pFrame->Draw();
+	
+	pPadBottom->cd();
+	pPadBottom->SetTopMargin(0.);
+	pPadBottom->SetTicks(1, 1);
+	pFramePull->SetTitle("");
+	pFramePull->GetYaxis()->SetNdivisions(205, true);	
+	pFramePull->GetYaxis()->SetLabelSize(pFrame->GetYaxis()->GetLabelSize()*pPadTop->GetAbsHNDC()/pPadBottom->GetAbsHNDC());
+	pFramePull->GetXaxis()->SetLabelSize(0.);
+	pFramePull->GetXaxis()->SetTitleSize(0.);
+	pFramePull->Draw();
+	pFuncDummy->Draw("same");
+	
+	// Save the canvas
+	pPlotDir->cd();
+	pCanvas->Write();
+
+	
+	delete pFrame;
+	delete pFramePull;
+	delete pPadTop;
+	delete pPadBottom;
+	delete pCanvas;
+	delete pFuncDummy;
+	delete pFile;
+	
 	Clean();
 		
 	return 0;	
+}
+
+void Fitter::MakePlots(RooPlot*& pPlot1, RooPlot*& pPlot2)
+{
+	RooPlot* pFrame = pFitVar->frame(RooFit::Bins(50), RooFit::Name(branchName.c_str()), RooFit::Title(plotTitle.c_str()));
+	RooPlot* pFramePull = pFitVar->frame(RooFit::Bins(50), RooFit::Name((branchName+"_Pull").c_str()), RooFit::Title((plotTitle+" Pull").c_str()));
+	RooHist* pHisPull = NULL;
+	RooArgList bkgComponent;
+	double pullMax = 0.;
+	
+	for(auto& pdf : bkgPdfs) bkgComponent.add(pdf.GetPdf());
+	pData->plotOn(pFrame, RooFit::MarkerSize(0.9));
+	pTotPdf->plotOn(pFrame, RooFit::Components(bkgComponent), RooFit::LineColor(kGreen) );
+	pTotPdf->plotOn(pFrame, RooFit::LineColor(kRed));	
+	pTotPdf->paramOn(pFrame, RooFit::Format("NEU", RooFit::AutoPrecision(1)), RooFit::Layout(0.65, 0.99, 0.93));
+	pFrame->getAttText()->SetTextSize(0.75*pFrame->GetYaxis()->GetLabelSize());
+	
+	pHisPull = pFrame->pullHist();
+	pFramePull->addPlotable(pHisPull, "P");
+	pullMax = max(fabs(pFramePull->GetMinimum()), pFramePull->GetMaximum());
+	pFramePull->GetYaxis()->SetRangeUser(-pullMax,pullMax);
+	
+	pPlot1 = pFrame;
+	pPlot2 = pFramePull;
 }
 
 int Fitter::LoadData()
