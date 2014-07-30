@@ -104,9 +104,9 @@ int main(int argc, char **argv) {
 
     int pdfpage = 0;                           //number of pages in pdf
     
-
-    if(vector_size > 0) std::string pdfname = saveto + (vec[0] -> Getsavename()) + "_etc.pdf";
-    else if(vector_size_2D > 0) std::string pdfname = saveto + (vec_2D[0] -> Getsavename()) + "_etc.pdf";
+    std::string pdfname;
+    if(vector_size > 0) pdfname = saveto + (vec[0] -> Getsavename()) + "_etc.pdf";
+    else if(vector_size_2D > 0) pdfname = saveto + (vec_2D[0] -> Getsavename()) + "_etc.pdf";
     else {
         std::cout << "No histograms to plot" << std::endl;
         return 1;
