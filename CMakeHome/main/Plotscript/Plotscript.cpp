@@ -29,7 +29,7 @@ using std::endl;
 // --------------------------------------------------------
 
 //Define setting-functions
-void daniel_current(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D*> *vecp_2D, bool &normalized_plots, int &nbins, std::string &saveto);
+void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto);
 void kevin_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto);
 void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto);
 
@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
     std::vector<Plotvariable*> vec;
     std::vector<Plotvariable*> *vecp = &vec;
 
-    std::vector<Plotvariable_2D*> vec_2D;
-    std::vector<Plotvariable_2D*> *vecp_2D = &vec_2D;
+   
+    
 
     bool normalized_plots;
     int nbins;
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 
     //Settings are loaded here (depending on the main parameter given)
     std::string compare = argv[1];
-    if(compare == "daniel") daniel_current(vecp, vecp_2D, normalized_plots, nbins, saveto);
+    if(compare == "daniel") daniel_current(vecp, normalized_plots, nbins, saveto);
     else if(compare == "kevin") kevin_current(vecp, normalized_plots, nbins, saveto);
     else if(compare == "vitali") vitali_current(vecp, normalized_plots, nbins, saveto);
     else{
@@ -89,10 +89,11 @@ int main(int argc, char **argv) {
     TH1D temphist;                                     //temporary histogram (for daughter histograms = histograms plotted on same canvas as motherhist)
     TH1D* temphistp = &temphist;
 
+    Plotvariable_2D* plotv_2Dtemp;
     TH2D* hist_2D;                                       
 
     unsigned int vector_size = vecp -> size();
-    unsigned int vector_size_2D = vecp_2D -> size();
+    
 
     double maxbincontent = 0;                           //maxbincontent (needed if more plots are made in the same canvas) 
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
@@ -103,10 +104,9 @@ int main(int argc, char **argv) {
     std::string savename;
 
     int pdfpage = 0;                           //number of pages in pdf
-    
+
     std::string pdfname;
-    if(vector_size > 0) pdfname = saveto + (vec[0] -> Getsavename()) + "_etc.pdf";
-    else if(vector_size_2D > 0) pdfname = saveto + (vec_2D[0] -> Getsavename()) + "_etc.pdf";
+    if(vector_size > 0) pdfname = saveto + (vec[0] -> Getsavename()) + "_etc.pdf"; 
     else {
         std::cout << "No histograms to plot" << std::endl;
         return 1;
@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
             if(pdfpage > 0) {
                 cp -> SaveAs(savepath.c_str());
                 cp -> SaveAs(pdfname.c_str());
-                
+
 
             }
             pdfpage += 1;                                           //Note: Plot of last canvas is done after this loops
@@ -155,46 +155,59 @@ int main(int argc, char **argv) {
 
             norm = defnorm;                                         //Restore default settings for norm(same)
             normsame = defnormsame;
-            if((vec[i] -> Getoptions()).find("norm") != std::string::npos) {        //Find if canvas should be normalised
-                norm = "norm";
-                normsame = "normsame";
-            }
-
-
-
-            motherhistp = vec[i] -> plot(kBlue, 1, norm); 
-            maxbincontent = motherhistp -> GetMaximum();
-            motherhistp -> SetMinimum(0);
-
-
 
             savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";          //note: savepath is used within the next loop iteration
 
-            //Set logy or logx Scale
-            if((vec[i] -> Getoptions()).find("logx") != std::string::npos) cp -> SetLogx(1);
-            else cp -> SetLogx(0);
-            if((vec[i] -> Getoptions()).find("logy") != std::string::npos) cp -> SetLogy(1);
-            else cp -> SetLogy(0);
+            //Only things that need to be done for 1-D histograms
+            if((vec[i] -> Getname()).find(":") == std::string::npos) {
+                if((vec[i] -> Getoptions()).find("norm") != std::string::npos) {        //Find if canvas should be normalised
+                    norm = "norm";
+                    normsame = "normsame";
+                }
+
+                motherhistp = vec[i] -> plot(kBlue, 1, norm); 
+                maxbincontent = motherhistp -> GetMaximum();
+                motherhistp -> SetMinimum(0);
 
 
-            //Save to ROOT-File (therefore add to title the legendname for distignuishing purposes)
-            if(vec[i]->Getlegendname() != "") {
-                temptitle_before = motherhistp->GetTitle();
-                temptitle_root = temptitle_before + " | " + vec[i] -> Getlegendname();
-                motherhistp-> SetTitle(temptitle_root.c_str());
-                motherhistp -> Write();      
-                std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
-                motherhistp -> SetTitle(temptitle_before.c_str());
-            }
-            else { 
-                motherhistp -> Write();
-                std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
-            }
+                //Set logy or logx Scale
+                if((vec[i] -> Getoptions()).find("logx") != std::string::npos) cp -> SetLogx(1);
+                else cp -> SetLogx(0);
+                if((vec[i] -> Getoptions()).find("logy") != std::string::npos) cp -> SetLogy(1);
+                else cp -> SetLogy(0);
+
+
+                //Save to ROOT-File (therefore add to title the legendname for distinguishing purposes)
+                if(vec[i]->Getlegendname() != "") {
+                    temptitle_before = motherhistp->GetTitle();
+                    temptitle_root = temptitle_before + " | " + vec[i] -> Getlegendname();
+                    motherhistp-> SetTitle(temptitle_root.c_str());
+                    motherhistp -> Write();      
+                    std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
+                    motherhistp -> SetTitle(temptitle_before.c_str());
+                }
+                else { 
+                    motherhistp -> Write();
+                    std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
+                }
+            }       //end: things to be done for 1-D histograms
+            else {  //things to be done for 2-D histograms
+                cp -> SetRightMargin(0.13);
+
+                plotv_2Dtemp = (Plotvariable_2D*)vec[i];        //Cast vec[i] to pointer to type Plotvariable_2D so that right method is used for plot();
+
+                hist_2D = (TH2D*)plotv_2Dtemp -> plot();
+
+                
+                savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";
+                hist_2D -> Write();
+                std::cout << "Info in <TCanvas::Print>: Current 2D-histogram " << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
+            }       //end: things to be done for 2-D histograms
 
 
 
         }
-        else{                                                                                       //Plot it on the same canvas  
+        else{                                                                                       //Plot it on the same canvas  (only relevant for 1-D histos)
             nplots += 1;                                                                            //(number+1) of plots on same canvas (raise by one)
 
             if(nplots == 1) {
@@ -234,24 +247,11 @@ int main(int argc, char **argv) {
 
 
 
-    //Plotting for 2D-Histograms
-    for(unsigned int i = 0; i < vector_size_2D; i++) {
-        if(i == 0) cp -> SetRightMargin(0.13); 
-        hist_2D = (TH2D*)vec_2D[i] -> plot();
-
-        savepathnr += 1;
-        str_savepathnr = std::to_string(savepathnr);
-
-        savepath = saveto + str_savepathnr + "_" + vec_2D[i]->Getsavename() + ".png";
-        hist_2D -> Write();
-        std::cout << "Info in <TCanvas::Print>: Current histogram " << vec_2D[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
-
-        cp -> SaveAs(savepath.c_str());
-        cp -> SaveAs(pdfname.c_str());
-    }
-
 
     std::cout << std:: endl <<"Info in <TCanvas::Print>: Close pdf file:" << std::endl;
+
+
+
     cp -> SaveAs( (pdfname + "]").c_str());                                                         //finish PDF plotting
 
 

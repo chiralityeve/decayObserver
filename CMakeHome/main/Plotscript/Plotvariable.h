@@ -33,7 +33,7 @@ class Plotvariable {
         std::string Getoptions();
         bool Getsamecanvas();
 
-        TH1D* plot(Color_t color = kBlue, Style_t style = 1, std::string options = "");
+        virtual TH1D* plot(Color_t color = kBlue, Style_t style = 1, std::string options = "");
     
     
     protected:

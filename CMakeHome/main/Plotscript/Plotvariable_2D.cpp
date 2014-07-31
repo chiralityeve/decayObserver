@@ -31,10 +31,11 @@
 
 //--------------------------------------------------------------------------------------->
 //2D Konstruktor without CUTS
-Plotvariable_2D::Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::vector<Plotvariable_2D*> *Plotvector, std::string options /*= ""*/) : Plotvariable(name, tree, title, "", nbins, xlow, xup, xlabel, unit, (std::vector<Plotvariable*>*)Plotvector, options),  xlow_2_(xlow_2), xup_2_(xup_2), ylabel_(ylabel), y_unit_(y_unit) { };        
+Plotvariable_2D::Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::vector<Plotvariable*> *Plotvector, std::string options /*= ""*/) : Plotvariable(name, tree, title, "", nbins, xlow, xup, xlabel, unit, Plotvector, options),  xlow_2_(xlow_2), xup_2_(xup_2), ylabel_(ylabel), y_unit_(y_unit) { }
+ 
 
 //2D Konstruktor with CUTS
-Plotvariable_2D::Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::string cuts, std::vector<Plotvariable_2D*> *Plotvector, std::string options /*= ""*/) : Plotvariable(name, tree, title, "", nbins, xlow, xup, xlabel, unit, cuts, (std::vector<Plotvariable*>*)Plotvector, options), xlow_2_(xlow_2), xup_2_(xup_2), ylabel_(ylabel), y_unit_(y_unit) { };
+Plotvariable_2D::Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::string cuts, std::vector<Plotvariable*> *Plotvector, std::string options /*= ""*/) : Plotvariable(name, tree, title, "", nbins, xlow, xup, xlabel, unit, cuts, Plotvector, options), xlow_2_(xlow_2), xup_2_(xup_2), ylabel_(ylabel), y_unit_(y_unit) { }
 
 
 

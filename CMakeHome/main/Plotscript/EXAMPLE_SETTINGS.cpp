@@ -6,7 +6,7 @@
 #include <TChain.h>
 
 
-void kevin_current(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D*> *vecp_2D, bool &normalized_plots, int &nbins, std::string &saveto) {
+void kevin_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
    
     //Load your data here (either as TChain's or TTree's - note that these files have to be created on the HEAP with the command NEW)
     TChain* MCtree = new TChain("Bs2phimumuTuple/DecayTree");
@@ -50,7 +50,7 @@ void kevin_current(std::vector<Plotvariable*> *vecp, std::vector<Plotvariable_2D
     //                x-axis-label, x-axis-unit, y-axis-label, y-axis-unit, container (DO NOT EDIT!), options(optional) )
     //NOTE: variable before the ":" is plotted on the y-axis!
 
-    new Plotvariable_2D("B0_M:J_psi_1S_M", tree, "2D-Plot m_{B_{s}} : m_{J#psi}", nbins, 2000, 5000, 4500, 7000, "m_{J#psi}", "MeV", "m_{B_{s}}", "MeV", vecp_2D, "colz");
+    new Plotvariable_2D("B0_M:J_psi_1S_M", tree, "2D-Plot m_{B_{s}} : m_{J#psi}", nbins, 2000, 5000, 4500, 7000, "m_{J#psi}", "MeV", "m_{B_{s}}", "MeV", vecp, "colz");
 }
 
 

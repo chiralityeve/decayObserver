@@ -13,9 +13,9 @@
 class Plotvariable_2D : public Plotvariable{
     public:
         //Constructor: Name = Branchname in TTree. Title = Title on canvas. After creation, a pointer to the Plotvariable will be pushed to the vector in the first argument
-        Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::vector<Plotvariable_2D*> *Plotvector, std::string options = "");                 //no cuts
+        Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::vector<Plotvariable*> *Plotvector, std::string options = "");                 //no cuts
 
-        Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::string cuts, std::vector<Plotvariable_2D*> *Plotvector, std::string options = "");                 //with cuts
+        Plotvariable_2D(std::string name, TTree* tree, std::string title, int nbins, double xlow, double xup, double xlow_2, double xup_2, std::string xlabel, std::string unit, std::string ylabel, std::string y_unit, std::string cuts, std::vector<Plotvariable*> *Plotvector, std::string options = "");                 //with cuts
 
         
         double Getxlow_2();
