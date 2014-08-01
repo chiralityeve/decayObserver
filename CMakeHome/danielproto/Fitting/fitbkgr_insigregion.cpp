@@ -36,7 +36,7 @@ int main() {
     
     
     // Open Data 
-    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/Pruned/BDT_Background.root");
+    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Input/BDT_Background.root");
     if (fileReal == 0) {
         // if we cannot open the file, print an error message and return immediatly
         printf("Error: cannot open RealData");
@@ -59,7 +59,7 @@ int main() {
     //--------------------
     
     //Lade Daten aus Tree
-    RooRealVar Bs_M("B0_M", "Masse B_{s}", 5316.3, 7000, "MeV");                   //Erstelle Variable Masse für gewünschte Range
+    RooRealVar Bs_M("B0_M", "Masse B_{s}", 5300, 5800, "MeV");                   //Erstelle Variable Masse für gewünschte Range
     
     
 
@@ -70,10 +70,10 @@ int main() {
 
     //Fiting Parameter definieren
     //Background
-    RooRealVar background_parameter("bkgrd_param", "Parameter für Background e Fkt", -0.001, -100, 0.0, "1/MeV");           //Definiere Parameter der e-Fkt
+    RooRealVar background_parameter("bkgrd_param", "Parameter für Background e Fkt", -0.0015, -1, 0.0, "1/MeV");           //Definiere Parameter der e-Fkt
     RooExponential background("bkgrd", "Exponentialfkt für Background", Bs_M, background_parameter);
 
-    RooRealVar background_yield("bkgrd_yield", "Yield des Background", 250000, 150000, 400000);
+    RooRealVar background_yield("bkgrd_yield", "Yield des Background", 93000, 30000, 150000);
 
     //Füge PDFs zu Listen hinzu
     RooArgList shapes;
@@ -85,27 +85,32 @@ int main() {
 
     RooAddPdf totalPdf("totalPdf", "Summe aus Signal und Background", shapes, yields);
 
-    totalPdf.fitTo(*ReducedDataSet, Extended(), Range(5500, 7000) );
+    Bs_M.setRange("fitrange", 5500, 5800);  
+    Bs_M.setRange("signalrange", 5316.3, 5416.3);
+    Bs_M.setRange("extrapolationrange", 5300, 5500);
+
+    totalPdf.fitTo(*ReducedDataSet, Extended(), Range("fitrange") );
 
     //----------------------
     //Plotte den ganzen Spaß
     //----------------------
-    Bs_M.setRange("fitrange", 5500, 7000);  
-    Bs_M.setRange("signalrange", 5316.3, 5416.3);
-    Bs_M.setRange("plotrange", 5316.3, 7000);
+ 
 
     //Open TFile to save Plots
     TFile* f = new TFile("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation.root", "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
-    RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Backgroundfit"));
+    RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Backgroundfit (dashed: extrapolation)"));
     
     //Plot histogram of Mass
     ReducedDataSet->plotOn(DMassFrame, MarkerSize(0.9));
 
 
     //Plot total PDF
-    totalPdf.plotOn(DMassFrame, LineColor(kRed), Range("plotrange"));
+    totalPdf.plotOn(DMassFrame, LineColor(kRed));
+
+    //Plot extrapolated line
+    totalPdf.plotOn(DMassFrame, LineColor(kRed), LineStyle(2), Range("extrapolationrange"));
 
     //Display fit parameters
     totalPdf.paramOn(DMassFrame, Format("NELU", AutoPrecision(2)), Layout(0.5, 1.0, 0.9));
@@ -114,10 +119,19 @@ int main() {
     
     //Create Canvas and put Plot on the screen
     TCanvas* DMassCanvas = new TCanvas("DMassCanvas", "Fit of Mass", 200, 10,1000, 600);
+    
     DMassFrame->Draw();
+    DMassCanvas -> SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation.png");
+
+    DMassFrame -> SetTitle("Backgroundfit (dashed: extrapolation) - logarithmic scale");
+    DMassFrame -> SetAxisRange(1000, 3000, "Y");
+    DMassCanvas -> SetLogy(1);
+
 
     DMassFrame -> Write();
-    DMassCanvas->SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation.png");
+    DMassCanvas->SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_logy.png");
+    
+    
 
     f -> Close();
     

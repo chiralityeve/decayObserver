@@ -93,7 +93,7 @@ Plotvariable::Plotvariable(std::string name, TTree* tree, std::string legendname
         xlabel_ = motherpv -> Getxlabel();
         unit_ = motherpv -> Getunit();
         title_ = motherpv -> Gettitle();
-        title_ = title_ + " | " + legendname;
+        
 
 
         Plotvector-> push_back(this); 

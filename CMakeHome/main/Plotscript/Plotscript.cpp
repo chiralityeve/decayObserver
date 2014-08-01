@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
     std::vector<Plotvariable*> vec;
     std::vector<Plotvariable*> *vecp = &vec;
 
-   
-    
+
+
 
     bool normalized_plots;
     int nbins;
@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
     TH2D* hist_2D;                                       
 
     unsigned int vector_size = vecp -> size();
-    
+
 
     double maxbincontent = 0;                           //maxbincontent (needed if more plots are made in the same canvas) 
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
@@ -198,7 +198,7 @@ int main(int argc, char **argv) {
 
                 hist_2D = (TH2D*)plotv_2Dtemp -> plot();
 
-                
+
                 savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";
                 hist_2D -> Write();
                 std::cout << "Info in <TCanvas::Print>: Current 2D-histogram " << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
@@ -235,11 +235,14 @@ int main(int argc, char **argv) {
 
             legendp->Draw();
 
-            //Save to ROOT-File (adding the Legendname to the title is already included in the class itself here)
-            temphistp -> Write();          
-            std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << " added to .ROOT-File" << std::endl;
-
-
+            //Save to ROOT-File (adding legendname to the title before)
+            temptitle_before = temphistp->GetTitle();
+            temptitle_root = temptitle_before + " | " + vec[i] -> Getlegendname();
+            temphistp-> SetTitle(temptitle_root.c_str());
+            temphistp -> Write();      
+            std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << "_subplot" << nplots << " added to .ROOT-File" << std::endl;
+            temphistp -> SetTitle(temptitle_before.c_str());
+            
         }
     }
     cp -> SaveAs(savepath.c_str());                                                                 //Plot last canvas (.PNG)

@@ -152,9 +152,9 @@ void daniel_comparison_MC_BKG(std::vector<Plotvariable*> *vecp, bool &normalized
 // Cut on TMVA-Variable
 // -----------------------------------
 
-void daniel_cutTMVAresponse(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
     
-    TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Output/Data_preselected_TMVAresponse.root", "update");
+    TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Bs2mumuf2_BDTselection_FINAL_newInput.root", "update");
     TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");
     
     
@@ -162,6 +162,10 @@ void daniel_cutTMVAresponse(std::vector<Plotvariable*> *vecp, bool &normalized_p
     //Cut auf Background: schließe J_psi-Resonanz und Psi(2S) aus und Schneide auf f2_mass (official exclude areas)
     std::string cutres_jpsi_wo_response = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
     std::string cutres_jpsi = "TMVAResponse > 0 && J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
+
+    std::string cutres_new_jpsi = "TMVAResponse > 0.152508 && " + cutres_jpsi_wo_response;
+
+    std::string cutres_new_jpsi_bcut = cutres_new_jpsi + " && B0_M > 5316.3 && B0_M < 5416.3";
 
     std::string cutres_phi2s_wo_response = "J_psi_1S_M > 3636 && J_psi_1S_M < 3736";
     std::string cutres_phi2s = "TMVAResponse > 0 && J_psi_1S_M > 3636 && J_psi_1S_M < 3736";
@@ -185,7 +189,7 @@ void daniel_cutTMVAresponse(std::vector<Plotvariable*> *vecp, bool &normalized_p
     //Type2: Additional histogram(s) on same canvas
     //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
-
+    /*
     //normalised Plots
     //J_psi_1S
     new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp, "norm");
@@ -200,23 +204,32 @@ void daniel_cutTMVAresponse(std::vector<Plotvariable*> *vecp, bool &normalized_p
 
     new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_phi2s_wo_response, vecp, "norm");
     new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
-
+    */
 
     //unnormalised Plots
     //J_psi_1S
     new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp);
     new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
+    new Plotvariable("B0_M", tree, "TMVAResponse > 0.152508", cutres_new_jpsi, vecp);
   
     new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_jpsi_wo_response, vecp);
     new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
+    new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0.152508", cutres_new_jpsi, vecp);
 
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi with TMVA-Cut at 0.15", "with cut on Bs", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_new_jpsi_bcut, vecp);
+    new Plotvariable("phi_1020_M", tree, "without cut on Bs", cutres_new_jpsi, vecp);
+    
+
+
+
+    /*
     //psi(2S)
     new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_phi2s_wo_response, vecp);
     new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
 
     new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_phi2s_wo_response, vecp);
     new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
-   
+    */
 }
 
 
@@ -230,7 +243,7 @@ void daniel_cutTMVAresponse(std::vector<Plotvariable*> *vecp, bool &normalized_p
 // Investigate bump at ~5800 MeV in B0_M
 // ---------------------------------------
 
-void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_current2(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
     
     TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned.root", "READ");
     TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");
@@ -238,18 +251,19 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     
     //Define cuts
      std::string cut_f2 = "phi_1020_M > 1300 && phi_1020_M < 1800 &&";
-    
+   
+    std::string cut_pidkm3 = cut_f2 + "Kplus_PIDK > -3 && Kminus_PIDK > -3";
     std::string cut_pidk0 = cut_f2 + "Kplus_PIDK > 0 && Kminus_PIDK > 0";
     std::string cut_pidk5 = cut_f2 + "Kplus_PIDK > 5 && Kminus_PIDK > 5";
     std::string cut_pidk10 = cut_f2 + "Kplus_PIDK > 10 && Kminus_PIDK > 10";
-    
+
     
   
 
 
     normalized_plots = false;                                   //<-------- Normalized plots?
     nbins = 200;                                                //<-------- Default number of bins
-    saveto = "../plots/Bump_investigation_test/";                   //<-------- Path to save it
+    saveto = "../plots/Bump_investigation/";                   //<-------- Path to save it
 
 
     //There are basically two types of Constructos:
@@ -261,13 +275,16 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
 
-    new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 0", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk0, vecp);
-    //new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 5", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk5, vecp);
-    //new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 10", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk10, vecp);
+    new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 0 after stripping", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk0, vecp);
+    new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 5 after stripping", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk5, vecp);
+    new Plotvariable("B0_M", tree, "B_{s} Mass with Kaon PID_K > 10 after stripping", "", nbins, 5200, 6200, "m_{B_{s}}", "MeV", cut_pidk10, vecp);
 
 
-    new Plotvariable_2D("B0_M:J_psi_1S_M", tree, "2D-Plot m_{B_{s}} : m_{J#psi}", nbins, 2000, 5000, 4500, 7000, "m_{J#psi}", "MeV", "m_{B_{s}}", "MeV", vecp, "colz");
-   
+    new Plotvariable_2D("B0_M:J_psi_1S_M", tree, "2D-Plot m_{B_{s}} : m_{J#psi} after preselection", nbins, 2000, 5000, 4500, 7000, "m_{J#psi}", "MeV", "m_{B_{s}}", "MeV", cut_pidkm3, vecp, "colz");
+    new Plotvariable_2D("B0_M:J_psi_1S_M", tree, "2D-Plot m_{B_{s}} : m_{J#psi} after preselection", nbins, 2000, 5000, 4500, 7000, "m_{J#psi}", "MeV", "m_{B_{s}}", "MeV", cut_pidkm3, vecp, "");
+    
+    new Plotvariable_2D("B0_M:phi_1020_M", tree, "2D-Plot m_{B_{s}} : m_{f_{2}} after preselection", nbins, 1280, 1820, 4500, 7000, "m_{f_{2}}", "MeV", "m_{B_{s}}", "MeV", cut_pidkm3, vecp, "colz");
+    new Plotvariable_2D("B0_M:phi_1020_M", tree, "2D-Plot m_{B_{s}} : m_{f_{2}} after preselection", nbins, 1280, 1820, 4500, 7000, "m_{f_{2}}", "MeV", "m_{B_{s}}", "MeV", cut_pidkm3, vecp, "");
 }
 
 
