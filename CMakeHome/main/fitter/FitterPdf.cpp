@@ -1,5 +1,7 @@
 #include "FitterPdf.h"
 
+using namespace std;
+
 #define AddPdf(name, ...) {#name, {&FitterPdf::Init ## name, &FitterPdf::Check ## name } }
 
 const map<string, vector<function<int(FitterPdf*)> > > FitterPdf::dispatch = {
@@ -55,6 +57,19 @@ ostream& FitterPdf::Print(ostream& os) const
 	os << type;
 	for(int i=0; i<args.NumArgs(); ++i) os << ' ' << args[i];
 	return os;
+}
+
+void FitterPdf::FixParameters(bool fix)
+{
+	for(auto pAbsVar : vec_pParam)
+	{
+		RooRealVar* pVar = dynamic_cast<RooRealVar*>(pAbsVar);
+		
+		if(pAbsVar == vec_pParam.front()) continue;
+		if(!pVar) continue;
+		
+		pVar->setConstant(fix);
+	}
 }
 
 int FitterPdf::Check()
@@ -116,7 +131,7 @@ int FitterPdf::InitGaussian()
 	if(args.Scan(mean, sigma, sigma_max) > 3 - nArgs){ cerr << "Error parsing arguments: " << *this << endl; return 1; }
 	if(nArgs == 2) sigma_max = 3*sigma;
 	
-	cout << type << " " << basename << ": " << mean << ", " << sigma << ", " << sigma_max << endl;
+	//cout << type << " " << basename << ": " << mean << ", " << sigma << ", " << sigma_max << endl;
 	
 	RooRealVar* pMean = NewVar("mean", fitUnit, mean, mean-sigma, mean+sigma);
 	RooRealVar* pSigma = NewVar("sigma", fitUnit, sigma, 0., sigma_max);
