@@ -8,10 +8,17 @@
 #include <tuple>
 #include <vector>
 
-using namespace std;
+//using namespace std;
 
 class ArgParser
 {
+	using string = std::string;
+	using istringstream = std::istringstream;
+	using ostringstream = std::ostringstream;
+	template<class T> using vector = std::vector<T>;
+	template<class T> using char_traits = std::char_traits<T>;
+	template<class T, class S> using map = std::map<T, S>;
+	template<class... Ts> using tuple = std::tuple<Ts...>;
 public:
 	ArgParser():args(),nArgs(0),index(0),parseError(false){ }
 	ArgParser(const string& line):args(),nArgs(0),index(0),parseError(false){ InitArgs(line); }
@@ -41,10 +48,10 @@ public:
 	void Delete(int i, int n=1)
 	{
 		if(i >= nArgs) return;
-		int m = min(i + n, nArgs);
+		int m = std::min(i + n, nArgs);
 		args.erase(args.begin() + i, args.begin() + m);
 		if(i < index)
-			index -= min(m, index - i);
+			index -= std::min(m, index - i);
 		nArgs = args.size();
 	}
 	
@@ -121,13 +128,13 @@ inline T ArgParser::Get()
 }
 
 template<class T1, class T2, class... Ts> 
-inline tuple<T1, T2, Ts...> ArgParser::Get()
+inline ArgParser::tuple<T1, T2, Ts...> ArgParser::Get()
 {
 	return {Get<T1>(), Get<T2>(), Get<Ts>()...}; 
 }
 
 template<class T, int N> 
-inline vector<T> ArgParser::Get()
+inline ArgParser::vector<T> ArgParser::Get()
 {
 	vector<T> vec;
 	for(int i=0; i<N; ++i) 
@@ -145,19 +152,19 @@ inline T ArgParser::Get(int n) const
 }
 
 template<> 
-inline string ArgParser::Get<string>(int n) const 
+inline ArgParser::string ArgParser::Get<ArgParser::string>(int n) const 
 { 
 	return n<nArgs?args[n]:string(); 
 }
 
 template<class T1, class T2, class... Ts> 
-inline tuple<T1, T2, Ts...> ArgParser::Get(int n) const
+inline ArgParser::tuple<T1, T2, Ts...> ArgParser::Get(int n) const
 {
 	return { Get<T1>(n++), Get<T2>(n++), Get<Ts>(n++)... };
 }
  
 template<class T, int N> 
-inline vector<T> ArgParser::Get(int n) const
+inline ArgParser::vector<T> ArgParser::Get(int n) const
 {
 	vector<T> vec;
 	for(int i=0; i<N; ++i)

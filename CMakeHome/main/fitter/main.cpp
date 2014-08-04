@@ -16,6 +16,11 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters);
 
 int main(int argc, char** argv)
 {
+	//string strtemp = "";
+	//vector<string> fnames ={"A","B","C"};
+	//vector<string> tnames ={"1","2","3","4"};
+	//Fitter ftest(fnames,tnames,strtemp,Interval(),strtemp,strtemp,strtemp,strtemp); return 0;
+
 	bool argErr = argc == 1 || argc > 3;
 	bool showRooFitOutput = false;
 	string configFilename;
@@ -158,6 +163,7 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 	keyfnc["FIT"   ] = [&](const string& line)
 	{
 		Fitter f;
+		keyfnc["SWEIGHTS"] = [&](const string& line){ f.outputSweights = line; };
 		keyfnc["SIGNAL"] = [&](const string& line){ parseError = f.AddSignal(line); };
 		keyfnc["BACKGROUND"] = [&](const string& line){ parseError = f.AddBackground(line); };
 		
@@ -168,11 +174,12 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 			return;
 		}
 		
-		f.rootFilenames = filenames;
-		f.treeNames = treeNames;
+		f.AddData(filenames, treeNames);
+		//f.rootFilenames = filenames;
+		//f.treeNames = treeNames;
 		f.outputFilename = outputFilename;
 		
-		parseAll({"SIGNAL", "BACKGROUND"});
+		parseAll({"SWEIGHTS", "SIGNAL", "BACKGROUND"});
 		
 		fitters.push_back(f);
 	};

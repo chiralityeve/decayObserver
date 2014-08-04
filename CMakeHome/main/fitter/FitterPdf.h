@@ -2,7 +2,8 @@
 #define _FITTERPDF_H
 
 #include <iostream>
-#include <string>
+#include <sstream>
+//#include <string>
 #include <vector>
 #include <map>
 #include <functional>
@@ -16,10 +17,15 @@
 #include "RooFormulaVar.h"
 #include "RooHist.h"
 
-using namespace std;
+//using namespace std;
 
 class FitterPdf
 {
+	using string = std::string;
+	using ostream = std::ostream;
+	template<class T> using vector = std::vector<T>;
+	template<class T, class S> using map = std::map<T, S>;
+	//template<class R, class... Ts> using function = std::function<R(Ts...)>; doesn't work
 public:
 	FitterPdf();
 	FitterPdf(const FitterPdf& other);
@@ -36,6 +42,8 @@ public:
 	//operator RooAbsPdf*(){ return pPdf; }
 	RooAbsPdf& GetPdf(){ return *pPdf; }
 	RooAbsReal& GetYld(){ return *pYld; }
+	
+	void FixParameters(bool fix=true);
 	
 	int Check();	
 	int Init(const string& name, RooRealVar& fitVar, int nPdfs, int nEvents);
@@ -69,7 +77,7 @@ private:
 	void InitPointers();
 	void Clean();
 	
-	static const map<string, vector<function<int(FitterPdf*)> > > dispatch;
+	static const map<string, vector<std::function<int(FitterPdf*)> > > dispatch;
 	
 	template<class... Ts> RooRealVar* NewVar(const string& name, const string& unit, Ts... vs)
 	{
