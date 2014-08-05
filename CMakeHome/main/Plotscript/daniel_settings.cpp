@@ -163,15 +163,20 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     std::string cutres_jpsi_wo_response = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
     std::string cutres_jpsi = "TMVAResponse > 0 && J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
 
+    //Using a cut on TMVAresponse calculated with common FOM
     std::string cutres_new_jpsi = "TMVAResponse > 0.152508 && " + cutres_jpsi_wo_response;
-
     std::string cutres_new_jpsi_bcut = cutres_new_jpsi + " && B0_M > 5316.3 && B0_M < 5416.3";
 
-    std::string cutres_phi2s_wo_response = "J_psi_1S_M > 3636 && J_psi_1S_M < 3736";
-    std::string cutres_phi2s = "TMVAResponse > 0 && J_psi_1S_M > 3636 && J_psi_1S_M < 3736";
+    //Using a cut on TMVAresponse calculated with Punzi FOM
+    std::string cutres_punzi_jpsi = "TMVAResponse > 0.269563 && " + cutres_jpsi_wo_response;
+    std::string cutres_punzi_jpsi_bcut = cutres_punzi_jpsi + " && B0_M > 5316.3 && B0_M < 5416.3";
 
 
-    
+
+
+
+
+       
     
     //std::string cutnonres = "TMVAResponse > 0 && (J_psi_1S_M < 2997 || J_psi_1S_M > 3197)";
 
@@ -189,48 +194,65 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //Type2: Additional histogram(s) on same canvas
     //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
-    /*
-    //normalised Plots
-    //J_psi_1S
-    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp, "norm");
-    new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
+   
+    for(int i = 0; i < 2; i++) {
 
-    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_jpsi_wo_response, vecp, "norm");
-    new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
-     
-    //Psi(2S)
-    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_phi2s_wo_response, vecp, "norm");
-    new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
+    //Comparison while looking at Bs-Mass
+    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp); 
+    new Plotvariable("B0_M", tree, "Common-FOM Cut", cutres_new_jpsi, vecp);
+    new Plotvariable("B0_M", tree, "Punzi-FOM Cut", cutres_punzi_jpsi, vecp);
 
-    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_phi2s_wo_response, vecp, "norm");
-    new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
-    */
+    //only Common-FOM
+    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi  (Common-FOM Cut)", "", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_new_jpsi, vecp); 
 
-    //unnormalised Plots
-    //J_psi_1S
-    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_jpsi_wo_response, vecp);
-    new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
-    new Plotvariable("B0_M", tree, "TMVAResponse > 0.152508", cutres_new_jpsi, vecp);
-  
-    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_jpsi_wo_response, vecp);
-    new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_jpsi, vecp);
-    new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0.152508", cutres_new_jpsi, vecp);
+    //only Punzi-FOM
+    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi  (Punzi-FOM Cut)", "", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_punzi_jpsi, vecp); 
 
-    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi with TMVA-Cut at 0.15", "with cut on Bs", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_new_jpsi_bcut, vecp);
+    //only between different FOMs
+    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "Common-FOM Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_new_jpsi, vecp);  
+    new Plotvariable("B0_M", tree, "Punzi-FOM Cut", cutres_punzi_jpsi, vecp);
+ 
+
+    
+    
+    
+    
+    //Comparison while looking at f2-Mass
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_jpsi_wo_response, vecp); 
+    new Plotvariable("phi_1020_M", tree, "Common-FOM Cut", cutres_new_jpsi, vecp);
+    new Plotvariable("phi_1020_M", tree, "Punzi-FOM Cut", cutres_punzi_jpsi, vecp);
+
+    //only Common-FOM
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (Cut with Common-FOM)", "", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_new_jpsi, vecp); 
+
+    //only Punzi-FOM
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (Cut with Punzi-FOM)", "", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_punzi_jpsi, vecp); 
+
+    //only between different FOMs
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi", "Common-FOM Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_new_jpsi, vecp); 
+    new Plotvariable("phi_1020_M", tree, "Punzi-FOM Cut", cutres_punzi_jpsi, vecp);
+
+
+
+
+
+
+
+    //Comparison of f2-Mass with and without cut on Bs-Mass
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (TMVA-Cut at 0.15 (Common-FOM))", "with cut on Bs", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_new_jpsi_bcut, vecp);
     new Plotvariable("phi_1020_M", tree, "without cut on Bs", cutres_new_jpsi, vecp);
     
+    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (TMVA-Cut at 0.27 (Punzi-FOM))", "with cut on Bs", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_punzi_jpsi_bcut, vecp);
+    new Plotvariable("phi_1020_M", tree, "without cut on Bs", cutres_punzi_jpsi, vecp);
+
+    nbins = 80;
+
+    }
 
 
 
-    /*
-    //psi(2S)
-    new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 5200, 5550, "m_{B_{s}}", "MeV", cutres_phi2s_wo_response, vecp);
-    new Plotvariable("B0_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
 
-    new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay #psi(2S)", "without TMVA-Cut", nbins, 1250, 1850, "m_{f_{2}}", "MeV", cutres_phi2s_wo_response, vecp);
-    new Plotvariable("phi_1020_M", tree, "TMVAResponse > 0", cutres_phi2s, vecp);
-    */
-}
+   }
 
 
 
