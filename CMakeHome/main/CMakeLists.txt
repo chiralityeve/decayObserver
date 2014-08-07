@@ -11,4 +11,5 @@ add_subdirectory(Plotscript)
 add_subdirectory(secateur)
 add_subdirectory(fitter)
 add_subdirectory(bdtana)
+add_subdirectory(Getlumi)
 

@@ -96,6 +96,7 @@ int main(int argc, char **argv) {
 
 
     double maxbincontent = 0;                           //maxbincontent (needed if more plots are made in the same canvas) 
+    double minbincontent = 0;
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
 
     std::string savepath;
@@ -167,13 +168,19 @@ int main(int argc, char **argv) {
 
                 motherhistp = vec[i] -> plot(kBlue, 1, norm); 
                 maxbincontent = motherhistp -> GetMaximum();
-                motherhistp -> SetMinimum(0);
-
+                
+                //Check if it is a normal histogram which means bin contents of 0 or above
+                minbincontent = motherhistp -> GetMinimum();
+                if(minbincontent < 0) motherhistp -> SetMinimum(minbincontent + minbincontent/10);
+                else motherhistp -> SetMinimum(0);
 
                 //Set logy or logx Scale
                 if((vec[i] -> Getoptions()).find("logx") != std::string::npos) cp -> SetLogx(1);
                 else cp -> SetLogx(0);
-                if((vec[i] -> Getoptions()).find("logy") != std::string::npos) cp -> SetLogy(1);
+                if((vec[i] -> Getoptions()).find("logy") != std::string::npos) {
+                    motherhistp -> SetMinimum(0.5);
+                    cp -> SetLogy(1);
+                }
                 else cp -> SetLogy(0);
 
 
