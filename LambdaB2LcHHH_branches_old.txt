@@ -1,0 +1,200 @@
+Type      Variable Name                Values of #               
+UInt_t    BCID                         -                         
+Int_t     BCType                       -                         
+ULong64_t EventInSequence              -                         
+ULong64_t GpsTime                      -                         
+UInt_t    HLTTCK                       -                         
+UInt_t    L0DUTCK                      -                         
+UInt_t    OdinTCK                      -                         
+Float_t   PVCHI2[nPV]                  -                         
+Float_t   PVNDOF[nPV]                  -                         
+Float_t   PVNTRACKS[nPV]               -                         
+Float_t   PVXERR[nPV]                  -                         
+Float_t   PVX[nPV]                     -                         
+Float_t   PVYERR[nPV]                  -                         
+Float_t   PVY[nPV]                     -                         
+Float_t   PVZERR[nPV]                  -                         
+Float_t   PVZ[nPV]                     -                         
+Short_t   Polarity                     -                         
+ULong64_t eventNumber                  -                         
+Int_t     nBackTracks                  -                         
+UInt_t    nCandidate                   -                         
+Int_t     nDownstreamTracks            -                         
+Int_t     nITClusters                  -                         
+Int_t     nLongTracks                  -                         
+Int_t     nMuonCoordsS0                -                         
+Int_t     nMuonCoordsS1                -                         
+Int_t     nMuonCoordsS2                -                         
+Int_t     nMuonCoordsS3                -                         
+Int_t     nMuonCoordsS4                -                         
+Int_t     nMuonTracks                  -                         
+Int_t     nOTClusters                  -                         
+Int_t     nPV                          -                         
+Int_t     nPVs                         -                         
+Int_t     nRich1Hits                   -                         
+Int_t     nRich2Hits                   -                         
+Int_t     nSPDHits                     -                         
+Int_t     nTTClusters                  -                         
+Int_t     nTTracks                     -                         
+Int_t     nTracks                      -                         
+Int_t     nUpstreamTracks              -                         
+Int_t     nVeloClusters                -                         
+Int_t     nVeloTracks                  -                         
+UInt_t    runNumber                    -                         
+ULong64_t totCandidates                -                         
+Double_t  lab#_AtVtx_PE                2, 3, 4, 6, 7, 8          
+Double_t  lab#_AtVtx_PX                2, 3, 4, 6, 7, 8          
+Double_t  lab#_AtVtx_PY                2, 3, 4, 6, 7, 8          
+Double_t  lab#_AtVtx_PZ                2, 3, 4, 6, 7, 8          
+Double_t  lab#_BremPIDe                2, 3, 4, 6, 7, 8          
+Double_t  lab#_CaloEcalE               2, 3, 4, 6, 7, 8          
+Double_t  lab#_CaloHcalE               2, 3, 4, 6, 7, 8          
+Double_t  lab#_CaloPrsE                2, 3, 4, 6, 7, 8          
+Double_t  lab#_CaloSpdE                2, 3, 4, 6, 7, 8          
+Double_t  lab#_CombDLLMu               2, 3, 4, 6, 7, 8          
+Double_t  lab#_DIRA_ORIVX              1, 5                      
+Double_t  lab#_DIRA_OWNPV              0, 1, 5                   
+Double_t  lab#_DIRA_TOPPV              0, 1, 5                   
+Double_t  lab#_ENDVERTEX_CHI2          0, 1, 5                   
+Float_t   lab#_ENDVERTEX_COV_[3][3]    0, 1, 5                   
+Int_t     lab#_ENDVERTEX_NDOF          0, 1, 5                   
+Double_t  lab#_ENDVERTEX_X             0, 1, 5                   
+Double_t  lab#_ENDVERTEX_XERR          0, 1, 5                   
+Double_t  lab#_ENDVERTEX_Y             0, 1, 5                   
+Double_t  lab#_ENDVERTEX_YERR          0, 1, 5                   
+Double_t  lab#_ENDVERTEX_Z             0, 1, 5                   
+Double_t  lab#_ENDVERTEX_ZERR          0, 1, 5                   
+Double_t  lab#_EcalPIDe                2, 3, 4, 6, 7, 8          
+Double_t  lab#_EcalPIDmu               2, 3, 4, 6, 7, 8          
+Double_t  lab#_FDCHI2_ORIVX            1, 5                      
+Double_t  lab#_FDCHI2_OWNPV            0, 1, 5                   
+Double_t  lab#_FDCHI2_TOPPV            0, 1, 5                   
+Double_t  lab#_FD_ORIVX                1, 5                      
+Double_t  lab#_FD_OWNPV                0, 1, 5                   
+Double_t  lab#_FD_TOPPV                0, 1, 5                   
+Double_t  lab#_HcalPIDe                2, 3, 4, 6, 7, 8          
+Double_t  lab#_HcalPIDmu               2, 3, 4, 6, 7, 8          
+Int_t     lab#_ID                      0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_IPCHI2_ORIVX            1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_IPCHI2_OWNPV            0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_IPCHI2_TOPPV            0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_IP_ORIVX                1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_IP_OWNPV                0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_IP_TOPPV                0, 1, 2, 3, 4, 5, 6, 7, 8 
+Bool_t    lab#_InAccBrem               2, 3, 4, 6, 7, 8          
+Bool_t    lab#_InAccEcal               2, 3, 4, 6, 7, 8          
+Bool_t    lab#_InAccHcal               2, 3, 4, 6, 7, 8          
+Bool_t    lab#_InAccMuon               2, 3, 4, 6, 7, 8          
+Bool_t    lab#_InAccPrs                2, 3, 4, 6, 7, 8          
+Bool_t    lab#_InAccSpd                2, 3, 4, 6, 7, 8          
+Double_t  lab#_InMuonAcc               2, 3, 4, 6, 7, 8          
+Double_t  lab#_M                       0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_MINIP                   0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_MINIPCHI2               0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_MINIPCHI2NEXTBEST       0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_MINIPNEXTBEST           0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_MM                      0, 1, 5                   
+Double_t  lab#_MMERR                   0, 1, 5                   
+Double_t  lab#_MuonBkgLL               2, 3, 4, 6, 7, 8          
+Double_t  lab#_MuonDist2               2, 3, 4, 6, 7, 8          
+Double_t  lab#_MuonLLbg                2, 3, 4, 6, 7, 8          
+Double_t  lab#_MuonLLmu                2, 3, 4, 6, 7, 8          
+Double_t  lab#_MuonMuLL                2, 3, 4, 6, 7, 8          
+Int_t     lab#_MuonNShared             2, 3, 4, 6, 7, 8          
+Int_t     lab#_NShared                 2, 3, 4, 6, 7, 8          
+Double_t  lab#_ORIVX_CHI2              1, 2, 3, 4, 5, 6, 7, 8    
+Float_t   lab#_ORIVX_COV_[3][3]        1, 2, 3, 4, 5, 6, 7, 8    
+Int_t     lab#_ORIVX_NDOF              1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_ORIVX_X                 1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_ORIVX_XERR              1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_ORIVX_Y                 1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_ORIVX_YERR              1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_ORIVX_Z                 1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_ORIVX_ZERR              1, 2, 3, 4, 5, 6, 7, 8    
+Double_t  lab#_OWNPV_CHI2              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Float_t   lab#_OWNPV_COV_[3][3]        0, 1, 2, 3, 4, 5, 6, 7, 8 
+Int_t     lab#_OWNPV_NDOF              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_OWNPV_X                 0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_OWNPV_XERR              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_OWNPV_Y                 0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_OWNPV_YERR              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_OWNPV_Z                 0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_OWNPV_ZERR              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_P                       0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_PE                      0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_PIDK                    2, 3, 4, 6, 7, 8          
+Double_t  lab#_PIDe                    2, 3, 4, 6, 7, 8          
+Double_t  lab#_PIDmu                   2, 3, 4, 6, 7, 8          
+Double_t  lab#_PIDp                    2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_CombDLLe             2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_CombDLLk             2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_CombDLLmu            2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_CombDLLp             2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_CombDLLpi            2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_ProbNNe              2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_ProbNNghost          2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_ProbNNk              2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_ProbNNmu             2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_ProbNNp              2, 3, 4, 6, 7, 8          
+Double_t  lab#_PP_ProbNNpi             2, 3, 4, 6, 7, 8          
+Double_t  lab#_PT                      0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_PX                      0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_PY                      0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_PZ                      0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_ProbNNe                 2, 3, 4, 6, 7, 8          
+Double_t  lab#_ProbNNghost             2, 3, 4, 6, 7, 8          
+Double_t  lab#_ProbNNk                 2, 3, 4, 6, 7, 8          
+Double_t  lab#_ProbNNmu                2, 3, 4, 6, 7, 8          
+Double_t  lab#_ProbNNp                 2, 3, 4, 6, 7, 8          
+Double_t  lab#_ProbNNpi                2, 3, 4, 6, 7, 8          
+Double_t  lab#_PrsPIDe                 2, 3, 4, 6, 7, 8          
+Double_t  lab#_REFPX                   0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_REFPY                   0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_REFPZ                   0, 1, 2, 3, 4, 5, 6, 7, 8 
+Bool_t    lab#_RichAboveElThres        2, 3, 4, 6, 7, 8          
+Bool_t    lab#_RichAboveKaThres        2, 3, 4, 6, 7, 8          
+Bool_t    lab#_RichAboveMuThres        2, 3, 4, 6, 7, 8          
+Bool_t    lab#_RichAbovePiThres        2, 3, 4, 6, 7, 8          
+Bool_t    lab#_RichAbovePrThres        2, 3, 4, 6, 7, 8          
+Double_t  lab#_RichDLLbt               2, 3, 4, 6, 7, 8          
+Double_t  lab#_RichDLLe                2, 3, 4, 6, 7, 8          
+Double_t  lab#_RichDLLk                2, 3, 4, 6, 7, 8          
+Double_t  lab#_RichDLLmu               2, 3, 4, 6, 7, 8          
+Double_t  lab#_RichDLLp                2, 3, 4, 6, 7, 8          
+Double_t  lab#_RichDLLpi               2, 3, 4, 6, 7, 8          
+Double_t  lab#_TOPPV_CHI2              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Float_t   lab#_TOPPV_COV_[3][3]        0, 1, 2, 3, 4, 5, 6, 7, 8 
+Int_t     lab#_TOPPV_NDOF              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TOPPV_X                 0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TOPPV_XERR              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TOPPV_Y                 0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TOPPV_YERR              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TOPPV_Z                 0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TOPPV_ZERR              0, 1, 2, 3, 4, 5, 6, 7, 8 
+Double_t  lab#_TRACK_CHI2              2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_CHI2NDOF          2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_CloneDist         2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_FirstMeasurementX 2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_FirstMeasurementY 2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_FirstMeasurementZ 2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_GhostProb         2, 3, 4, 6, 7, 8          
+Int_t     lab#_TRACK_Key               2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_Likelihood        2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_MatchCHI2         2, 3, 4, 6, 7, 8          
+Int_t     lab#_TRACK_NDOF              2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_PCHI2             2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_TCHI2NDOF         2, 3, 4, 6, 7, 8          
+Int_t     lab#_TRACK_Type              2, 3, 4, 6, 7, 8          
+Double_t  lab#_TRACK_VeloCHI2NDOF      2, 3, 4, 6, 7, 8          
+Bool_t    lab#_UsedRich1Gas            2, 3, 4, 6, 7, 8          
+Bool_t    lab#_UsedRich2Gas            2, 3, 4, 6, 7, 8          
+Bool_t    lab#_UsedRichAerogel         2, 3, 4, 6, 7, 8          
+Double_t  lab#_VELO_UTID               2, 3, 4, 6, 7, 8          
+Double_t  lab#_VeloCharge              2, 3, 4, 6, 7, 8          
+Bool_t    lab#_hasCalo                 2, 3, 4, 6, 7, 8          
+Bool_t    lab#_hasMuon                 2, 3, 4, 6, 7, 8          
+Bool_t    lab#_hasRich                 2, 3, 4, 6, 7, 8          
+Bool_t    lab#_isMuon                  2, 3, 4, 6, 7, 8          
+Int_t     lab#_isMuonFromProto         2, 3, 4, 6, 7, 8          
+Bool_t    lab#_isMuonLoose             2, 3, 4, 6, 7, 8          
+Int_t     lab#_regionInM2              2, 3, 4, 6, 7, 8          
