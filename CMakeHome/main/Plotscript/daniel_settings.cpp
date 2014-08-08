@@ -20,7 +20,7 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
     //Define Cuts
     std::string Bscut = "B0_M > 5341.3 && B0_M < 5391.3";       //+- 25 MeV around nominal Mass
-
+    std::string f2cut = "phi_1020_M > 1300 && phi_1020_M < 1800";
 
 
 
@@ -48,10 +48,10 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
         //Bs-Mass (s. Ana-Note page 4)
         new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV",  vecp); 
-
+        new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp); 
 
         //f2-Mass (s. Paper page 2)
-        new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (cut on Bs-Mass)", "", nbins, 900, 2400, "m_{f_{2}}", "MeV", Bscut, vecp, "logy"); 
+        new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (with cut on Bs-Mass)", "", nbins, 900, 2400, "m_{f_{2}}", "MeV", Bscut, vecp, "logy"); 
 
 
 

@@ -16,6 +16,7 @@
 #include <algorithm>
 
 #include <ctime>
+#include <cstdlib>
 
 
 
@@ -61,7 +62,8 @@ TH1* Plotvariable_2D::plot() {
 
     clock_t clocktime = clock();
     std::stringstream ss;
-    ss << savename_ << "_2D_" << clocktime;
+    int randnr = rand() % 100;
+    ss << savename_ << "_2D_" << clocktime << "_" << randnr;
     std::string histid;
     histid = ss.str();
 

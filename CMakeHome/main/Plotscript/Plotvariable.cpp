@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include <ctime>
+#include <cstdlib>
 
 
 
@@ -129,7 +130,8 @@ TH1D* Plotvariable::plot(Color_t color /*= kBlue*/, Style_t style/* = 1*/, std::
 
     clock_t clocktime = clock();
     std::stringstream ss;
-    ss << savename_ << "_" << clocktime;
+    int randnr = rand() % 100;
+    ss << savename_ << "_" << clocktime << "_" << randnr;
     std::string histid;
     histid = ss.str();
 
