@@ -236,7 +236,13 @@ int main(int argc, char **argv) {
                 maxbincontent = temphistp -> GetMaximum();
                 motherhistp -> SetMaximum(maxbincontent + maxbincontent/10);
             }
-
+            
+            //minbincontent
+            if(minbincontent > temphistp -> GetMinimum()) {
+                minbincontent = temphistp -> GetMinimum();
+                if(minbincontent < 0) motherhistp -> SetMinimum(minbincontent + minbincontent/10);
+            }
+    
 
 
 
