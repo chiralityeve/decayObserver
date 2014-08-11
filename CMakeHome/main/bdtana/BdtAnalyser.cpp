@@ -30,20 +30,25 @@ void BdtAnalyser::Train()
 		if(input.weight.empty()) continue;
 		if(sig) pFactory->SetSignalWeightExpression(input.weight); else pFactory->SetBackgroundWeightExpression(input.weight);
 	}
-	
+	cout << "A" << endl;
 	// Generate training and testing samples
 	pFactory->PrepareTrainingAndTestTree("", "SplitMode=random:!V");
 	
+	cout << "A" << endl;
 	// Add variables
 	for(auto& var : variables)
+	{
+		if(!pFirstTree->GetBranch(var.c_str())){ cerr << "No branch named " << var << endl; return; }
 		pFactory->AddVariable(var, GetBranchType(pFirstTree, var)?'I':'F');
-	
+	}
+	cout << "A" << endl;
 	// Run the training and testing
 	pFactory->BookMethod(TMVA::Types::kBDT, "BDT", bdtOptions);
 	pFactory->TrainAllMethods();
 	pFactory->TestAllMethods();
 	pFactory->EvaluateAllMethods();	
 	
+	cout << "A" << endl;
 	delete pFileOut;
 	for(auto& file : files) delete file.second;
 	delete pFactory;
