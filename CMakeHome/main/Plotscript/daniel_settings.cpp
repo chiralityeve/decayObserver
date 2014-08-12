@@ -8,31 +8,58 @@
 #include <TFile.h>
 
 
-// -----------------------------------
-// Check of previous Analysis
-// -----------------------------------
+// ----------------------------------------------
+// BDT vs  previous Analysis  (performance Check)
+// ----------------------------------------------
 
 void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
 
     TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/Prev_Analysis/Selected_and_Pruned.root", "update");
     TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");
 
+    TFile* file_BDT = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Bs2mumuf2_BDTselection_FINAL_newInput.root", "update");
+    TTree* tree_BDT = (TTree*)file_BDT->Get("Bs2phimumuTuple/DecayTree");
 
-    //Define Cuts
+    TFile* file_BDTrareDecay = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Bs2mumuf2_rareDecay_blinded.root", "update");
+    TTree* tree_BDTrareDecay = (TTree*)file_BDTrareDecay->Get("Bs2phimumuTuple/DecayTree");
+
+
+    //Define cuts for BDT
+    //Cut on Jpsi_Mass 
+    std::string cutres_jpsi_wo_response = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
+    std::string cutres_jpsi = "TMVAResponse > 0 && J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
+
+    //Using a cut on TMVAresponse calculated with common FOM
+    std::string cutres_common_jpsi = "TMVAResponse > 0.152508 && " + cutres_jpsi_wo_response;
+    std::string cutres_common_jpsi_bcut = cutres_common_jpsi + " && B0_M > 5316.3 && B0_M < 5416.3";
+
+    //Using a cut on TMVAresponse calculated with Punzi FOM
+    std::string cutres_punzi_jpsi = "TMVAResponse > 0.269563 && " + cutres_jpsi_wo_response;
+    std::string cutres_punzi_jpsi_bcut = cutres_punzi_jpsi + " && B0_M > 5316.3 && B0_M < 5416.3";
+
+
+    //Define Cuts for prev Analysis
     std::string Bscut = "B0_M > 5341.3 && B0_M < 5391.3";       //+- 25 MeV around nominal Mass
     std::string f2cut = "phi_1020_M > 1300 && phi_1020_M < 1800";
 
 
+    //Cuts for Selection of rare Decay (BDT) (resonances exlusion already done in the file)
+    std::string raredecay_common = "TMVAResponse > 0.152508";
+    std::string raredecay_punzi = "TMVAResponse > 0.269563";
 
+    /*
+    std::string proton = "  && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
 
-
+    cutres_common_jpsi += proton;
+    cutres_punzi_jpsi += proton;
+    */
 
     //std::string cutnonres = "TMVAResponse > 0 && (J_psi_1S_M < 2997 || J_psi_1S_M > 3197)";
 
-
-    normalized_plots = false;                               //<-------- Normalized plots?
-    nbins = 100;                                           //<-------- Default number of bins
-    saveto = "../plots/Prev_Analysis/";                   //<-------- Path to save it
+    
+    normalized_plots = false;                                //<-------- Normalized plots?
+    nbins = 125;                                             //<-------- Default number of bins
+    saveto = "../plots/BDTvsPrevAna/";                       //<-------- Path to save it
 
 
     //There are basically two types of Constructos:
@@ -44,24 +71,44 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
 
 
-  
+        //Prev. Analysis (f2 Mass cut)
+        new Plotvariable("B0_M", tree, "B_{s} Mass res. Decay, cutbased Selection (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp);
 
+        //BDT with cut after Common FOM
+        new Plotvariable("B0_M", tree_BDT, "B_{s} Mass res. Decay, BDT cut with common FOM (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", 
+                cutres_common_jpsi, vecp);
+
+        //BDT with cut after Punzi FOM
+        new Plotvariable("B0_M", tree_BDT, "B_{s} Mass res. Decay, BDT cut with Punzi FOM (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", 
+                cutres_punzi_jpsi,vecp);
+
+        //All together
+        new Plotvariable("B0_M", tree, "B_{s} Mass res. Decay (with cut on f2 Mass)", "cutbased", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp);
+        new Plotvariable("B0_M", tree_BDT, "BDT common FOM", cutres_common_jpsi, vecp);
+        new Plotvariable("B0_M", tree_BDT, "BDT Punzi FOM", cutres_punzi_jpsi, vecp);
+
+
+
+        //Check Backgroundlevel in rareDecay (under exclusion of the resonances) after applying both BDT cuts
+        new Plotvariable("B0_M", tree_BDTrareDecay, "B_{s} Mass rare Decay with Common FOM (Backgroundlevel after excluded resonances)", "", nbins, 
+                5100, 5600, "m_{B_{s}}", "MeV", raredecay_common, vecp);
+        new Plotvariable("B0_M", tree_BDTrareDecay, "B_{s} Mass rare Decay with Punzi FOM (Backgroundlevel after excluded resonances)", "", nbins, 
+                5100, 5600, "m_{B_{s}}", "MeV", raredecay_punzi, vecp);
+
+
+
+
+
+
+
+        /*
         //Bs-Mass (s. Ana-Note page 4)
         new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV",  vecp); 
         new Plotvariable("B0_M", tree, "B_{s} Mass resonant Decay J/#psi (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp); 
 
         //f2-Mass (s. Paper page 2)
         new Plotvariable("phi_1020_M", tree, "f_{2} Mass resonant Decay J/#psi (with cut on Bs-Mass)", "", nbins, 900, 2400, "m_{f_{2}}", "MeV", Bscut, vecp, "logy"); 
-
-
-
-
-
-
-
-
-
-
+        */
 
 }
 
