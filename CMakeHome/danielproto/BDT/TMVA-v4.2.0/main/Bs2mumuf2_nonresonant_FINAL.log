@@ -1,0 +1,696 @@
+--- Factory                  : You are running ROOT Version: 5.34/10, Aug 29, 2013
+--- Factory                  : 
+--- Factory                  : _/_/_/_/_/ _|      _|  _|      _|    _|_|   
+--- Factory                  :    _/      _|_|  _|_|  _|      _|  _|    _| 
+--- Factory                  :   _/       _|  _|  _|  _|      _|  _|_|_|_| 
+--- Factory                  :  _/        _|      _|    _|  _|    _|    _| 
+--- Factory                  : _/         _|      _|      _|      _|    _| 
+--- Factory                  : 
+--- Factory                  : ___________TMVA Version 4.2.0, Sep 19, 2013
+--- Factory                  : 
+--- DataSetInfo              : Added class "Signal"	 with internal class number 0
+--- Factory                  : Add Tree DecayTree of type Signal with 354724 events
+--- DataSetInfo              : Added class "Background"	 with internal class number 1
+--- Factory                  : Add Tree DecayTree of type Background with 129146 events
+--- DataSetInfo              : Class index : 0  name : Signal
+--- DataSetInfo              : Class index : 1  name : Background
+--- Factory                  : Booking method: [1mBDT_depth2[0m
+--- DataSetFactory           : Splitmode is: "RANDOM" the mixmode is: "SAMEASSPLITMODE"
+--- DataSetFactory           : Create training and testing trees -- looping over class "Signal" ...
+--- DataSetFactory           : Weight expression for class 'Signal': ""
+--- DataSetFactory           : Create training and testing trees -- looping over class "Background" ...
+--- DataSetFactory           : Weight expression for class 'Background': ""
+--- DataSetFactory           : Number of events in input trees (after possible flattening of arrays):
+--- DataSetFactory           :     Signal          -- number of events       : 354724  / sum of weights: 354724
+--- DataSetFactory           :     Background      -- number of events       : 129146  / sum of weights: 129146
+--- DataSetFactory           :     Signal     tree -- total number of entries: 354724
+--- DataSetFactory           :     Background tree -- total number of entries: 129146
+--- DataSetFactory           : Preselection: (will NOT affect number of requested training and testing events)
+--- DataSetFactory           :     No preselection cuts applied on event classes
+--- DataSetFactory           : Weight renormalisation mode: "EqualNumEvents": renormalises all event classes ...
+--- DataSetFactory           :  such that the effective (weighted) number of events in each class is the same 
+--- DataSetFactory           :  (and equals the number of events (entries) given for class=0 )
+--- DataSetFactory           : ... i.e. such that Sum[i=1..N_j]{w_i} = N_classA, j=classA, classB, ...
+--- DataSetFactory           : ... (note that N_j is the sum of TRAINING events
+--- DataSetFactory           :  ..... Testing events are not renormalised nor included in the renormalisation factor!)
+--- DataSetFactory           : --> Rescale Signal     event weights by factor: 1
+--- DataSetFactory           : --> Rescale Background event weights by factor: 2.74669
+--- DataSetFactory           : Number of training and testing events after rescaling:
+--- DataSetFactory           : ------------------------------------------------------
+--- DataSetFactory           : Signal     -- training events            : 177362 (sum of weights: 177362) - requested were 0 events
+--- DataSetFactory           : Signal     -- testing events             : 177362 (sum of weights: 177362) - requested were 0 events
+--- DataSetFactory           : Signal     -- training and testing events: 354724 (sum of weights: 354724)
+--- DataSetFactory           : Background -- training events            : 64573 (sum of weights: 177362) - requested were 0 events
+--- DataSetFactory           : Background -- testing events             : 64573 (sum of weights: 64573) - requested were 0 events
+--- DataSetFactory           : Background -- training and testing events: 129146 (sum of weights: 241935)
+--- DataSetFactory           : Create internal training tree
+--- DataSetFactory           : Create internal testing tree
+--- DataSetInfo              : Correlation matrix (Signal):
+--- DataSetInfo              : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--- DataSetInfo              :                            B0_PT B0_IPCHI2_OWNPV B0_FDCHI2_OWNPV B0_DIRA_OWNPV B0_ENDVERTEX_CHI2 Kplus_IPCHI2_OWNPV Kminus_IPCHI2_OWNPV muminus_IPCHI2_OWNPV muplus_IPCHI2_OWNPV Kplus_PIDK Kminus_PIDK muminus_PIDmu muplus_PIDmu Kminus_PT Kplus_PT    B0_P Kplus_P Kminus_P phi_1020_PT phi_1020_P phi_1020_ENDVERTEX_CHI2 Kplus_PIDp Kminus_PIDp Kplus_TRACK_CHI2NDOF Kminus_TRACK_CHI2NDOF muplus_TRACK_CHI2NDOF muminus_TRACK_CHI2NDOF
+--- DataSetInfo              :                   B0_PT:  +1.000          -0.004          +0.154        +0.157            +0.027             +0.062              +0.061               +0.046              +0.046     -0.025      -0.029        -0.084       -0.080    +0.565   +0.564  +0.488  +0.312   +0.313      +0.715     +0.376                  +0.009     -0.231      -0.230               -0.013                -0.011                -0.013                 -0.009
+--- DataSetInfo              :         B0_IPCHI2_OWNPV:  -0.004          +1.000          +0.011        -0.342            +0.083             +0.012              +0.010               +0.011              +0.010     -0.016      -0.018        -0.015       -0.014    -0.003   -0.008  +0.026  +0.012   +0.015      -0.007     +0.016                  +0.026     -0.009      -0.014               +0.022                +0.016                +0.015                 +0.015
+--- DataSetInfo              :         B0_FDCHI2_OWNPV:  +0.154          +0.011          +1.000        +0.129            +0.016             +0.432              +0.417               +0.488              +0.515     -0.014      -0.013        -0.012       -0.009    +0.092   +0.099  +0.085  +0.073   +0.070      +0.122     +0.086                  +0.008     -0.056      -0.052               -0.001                -0.001                +0.002                 +0.003
+--- DataSetInfo              :           B0_DIRA_OWNPV:  +0.157          -0.342          +0.129        +1.000            -0.043             +0.136              +0.137               +0.150              +0.147     -0.024      -0.029        -0.083       -0.079    +0.085   +0.086  +0.270  +0.178   +0.178      +0.110     +0.214                  -0.015     -0.132      -0.134               -0.007                -0.004                +0.001                 -0.005
+--- DataSetInfo              :       B0_ENDVERTEX_CHI2:  +0.027          +0.083          +0.016        -0.043            +1.000             +0.005              +0.006               +0.003              +0.001     -0.018      -0.013        -0.008       -0.008    +0.017   +0.015  -0.003  -0.003   -0.004      +0.020     -0.004                  +0.420     -0.003      -0.003               +0.022                +0.024                +0.024                 +0.025
+--- DataSetInfo              :      Kplus_IPCHI2_OWNPV:  +0.062          +0.012          +0.432        +0.136            +0.005             +1.000              +0.236               +0.215              +0.216     +0.039      -0.017        -0.023       -0.020    -0.044   +0.044  +0.001  -0.057   -0.069      +0.001     -0.076                  +0.003     +0.049      +0.039               -0.011                +0.007                -0.002                 +0.001
+--- DataSetInfo              :     Kminus_IPCHI2_OWNPV:  +0.061          +0.010          +0.417        +0.137            +0.006             +0.236              +1.000               +0.211              +0.204     -0.015      +0.041        -0.018       -0.022    +0.045   -0.042  -0.006  -0.069   -0.060      +0.003     -0.078                  +0.001     +0.039      +0.049               +0.007                -0.009                -0.001                 -0.001
+--- DataSetInfo              :    muminus_IPCHI2_OWNPV:  +0.046          +0.011          +0.488        +0.150            +0.003             +0.215              +0.211               +1.000              +0.203     -0.009      -0.007        +0.080       -0.023    +0.061   +0.061  +0.007  +0.069   +0.070      +0.078     +0.083                  +0.001     -0.054      -0.054               -0.003                -0.003                +0.005                 -0.001
+--- DataSetInfo              :     muplus_IPCHI2_OWNPV:  +0.046          +0.010          +0.515        +0.147            +0.001             +0.216              +0.204               +0.203              +1.000     -0.008      -0.008        -0.017       +0.080    +0.059   +0.063  +0.006  +0.068   +0.068      +0.078     +0.081                  -0.001     -0.056      -0.053               -0.003                +0.000                -0.003                 +0.004
+--- DataSetInfo              :              Kplus_PIDK:  -0.025          -0.016          -0.014        -0.024            -0.018             +0.039              -0.015               -0.009              -0.008     +1.000      +0.117        +0.070       +0.069    -0.021   +0.009  -0.166  -0.184   -0.106      -0.003     -0.174                  -0.013     +0.364      +0.033               -0.083                -0.035                -0.034                 -0.029
+--- DataSetInfo              :             Kminus_PIDK:  -0.029          -0.018          -0.013        -0.029            -0.013             -0.017              +0.041               -0.007              -0.008     +0.117      +1.000        +0.072       +0.066    +0.002   -0.019  -0.170  -0.108   -0.190      -0.005     -0.179                  -0.008     +0.033      +0.360               -0.034                -0.082                -0.035                 -0.035
+--- DataSetInfo              :           muminus_PIDmu:  -0.084          -0.015          -0.012        -0.083            -0.008             -0.023              -0.018               +0.080              -0.017     +0.070      +0.072        +1.000       +0.036    -0.011   -0.013  -0.206  -0.090   -0.088      -0.014     -0.107                  -0.002     +0.052      +0.053               -0.015                -0.022                -0.022                 -0.009
+--- DataSetInfo              :            muplus_PIDmu:  -0.080          -0.014          -0.009        -0.079            -0.008             -0.020              -0.022               -0.023              +0.080     +0.069      +0.066        +0.036       +1.000    -0.013   -0.010  -0.203  -0.088   -0.089      -0.013     -0.106                  -0.003     +0.057      +0.056               -0.015                -0.014                -0.011                 -0.021
+--- DataSetInfo              :               Kminus_PT:  +0.565          -0.003          +0.092        +0.085            +0.017             -0.044              +0.045               +0.061              +0.059     -0.021      +0.002        -0.011       -0.013    +1.000   +0.250  +0.287  +0.121   +0.655      +0.791     +0.466                  +0.004     -0.087      -0.455               +0.003                -0.046                +0.010                 +0.009
+--- DataSetInfo              :                Kplus_PT:  +0.564          -0.008          +0.099        +0.086            +0.015             +0.044              -0.042               +0.061              +0.063     +0.009      -0.019        -0.013       -0.010    +0.250   +1.000  +0.290  +0.656   +0.122      +0.787     +0.467                  +0.008     -0.457      -0.083               -0.048                +0.003                +0.012                 +0.006
+--- DataSetInfo              :                    B0_P:  +0.488          +0.026          +0.085        +0.270            -0.003             +0.001              -0.006               +0.007              +0.006     -0.166      -0.170        -0.206       -0.203    +0.287   +0.290  +1.000  +0.660   +0.659      +0.365     +0.792                  +0.005     -0.351      -0.352               +0.000                +0.001                +0.011                 +0.002
+--- DataSetInfo              :                 Kplus_P:  +0.312          +0.012          +0.073        +0.178            -0.003             -0.057              -0.069               +0.069              +0.068     -0.184      -0.108        -0.090       -0.088    +0.121   +0.656  +0.660  +1.000   +0.386      +0.490     +0.832                  +0.007     -0.534      -0.200               -0.022                +0.008                +0.019                 +0.006
+--- DataSetInfo              :                Kminus_P:  +0.313          +0.015          +0.070        +0.178            -0.004             -0.069              -0.060               +0.070              +0.068     -0.106      -0.190        -0.088       -0.089    +0.655   +0.122  +0.659  +0.386   +1.000      +0.493     +0.833                  +0.001     -0.200      -0.534               +0.007                -0.022                +0.015                 +0.009
+--- DataSetInfo              :             phi_1020_PT:  +0.715          -0.007          +0.122        +0.110            +0.020             +0.001              +0.003               +0.078              +0.078     -0.003      -0.005        -0.014       -0.013    +0.791   +0.787  +0.365  +0.490   +0.493      +1.000     +0.591                  +0.007     -0.345      -0.343               -0.029                -0.028                +0.014                 +0.009
+--- DataSetInfo              :              phi_1020_P:  +0.376          +0.016          +0.086        +0.214            -0.004             -0.076              -0.078               +0.083              +0.081     -0.174      -0.179        -0.107       -0.106    +0.466   +0.467  +0.792  +0.832   +0.833      +0.591     +1.000                  +0.005     -0.440      -0.441               -0.009                -0.009                +0.020                 +0.009
+--- DataSetInfo              : phi_1020_ENDVERTEX_CHI2:  +0.009          +0.026          +0.008        -0.015            +0.420             +0.003              +0.001               +0.001              -0.001     -0.013      -0.008        -0.002       -0.003    +0.004   +0.008  +0.005  +0.007   +0.001      +0.007     +0.005                  +1.000     -0.007      -0.003               +0.014                +0.017                +0.006                 +0.001
+--- DataSetInfo              :              Kplus_PIDp:  -0.231          -0.009          -0.056        -0.132            -0.003             +0.049              +0.039               -0.054              -0.056     +0.364      +0.033        +0.052       +0.057    -0.087   -0.457  -0.351  -0.534   -0.200      -0.345     -0.440                  -0.007     +1.000      +0.108               +0.011                -0.010                -0.013                 -0.007
+--- DataSetInfo              :             Kminus_PIDp:  -0.230          -0.014          -0.052        -0.134            -0.003             +0.039              +0.049               -0.054              -0.053     +0.033      +0.360        +0.053       +0.056    -0.455   -0.083  -0.352  -0.200   -0.534      -0.343     -0.441                  -0.003     +0.108      +1.000               -0.008                +0.010                -0.014                 -0.014
+--- DataSetInfo              :    Kplus_TRACK_CHI2NDOF:  -0.013          +0.022          -0.001        -0.007            +0.022             -0.011              +0.007               -0.003              -0.003     -0.083      -0.034        -0.015       -0.015    +0.003   -0.048  +0.000  -0.022   +0.007      -0.029     -0.009                  +0.014     +0.011      -0.008               +1.000                +0.022                +0.018                 +0.019
+--- DataSetInfo              :   Kminus_TRACK_CHI2NDOF:  -0.011          +0.016          -0.001        -0.004            +0.024             +0.007              -0.009               -0.003              +0.000     -0.035      -0.082        -0.022       -0.014    -0.046   +0.003  +0.001  +0.008   -0.022      -0.028     -0.009                  +0.017     -0.010      +0.010               +0.022                +1.000                +0.021                 +0.019
+--- DataSetInfo              :   muplus_TRACK_CHI2NDOF:  -0.013          +0.015          +0.002        +0.001            +0.024             -0.002              -0.001               +0.005              -0.003     -0.034      -0.035        -0.022       -0.011    +0.010   +0.012  +0.011  +0.019   +0.015      +0.014     +0.020                  +0.006     -0.013      -0.014               +0.018                +0.021                +1.000                 +0.018
+--- DataSetInfo              :  muminus_TRACK_CHI2NDOF:  -0.009          +0.015          +0.003        -0.005            +0.025             +0.001              -0.001               -0.001              +0.004     -0.029      -0.035        -0.009       -0.021    +0.009   +0.006  +0.002  +0.006   +0.009      +0.009     +0.009                  +0.001     -0.007      -0.014               +0.019                +0.019                +0.018                 +1.000
+--- DataSetInfo              : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--- DataSetInfo              : Correlation matrix (Background):
+--- DataSetInfo              : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--- DataSetInfo              :                            B0_PT B0_IPCHI2_OWNPV B0_FDCHI2_OWNPV B0_DIRA_OWNPV B0_ENDVERTEX_CHI2 Kplus_IPCHI2_OWNPV Kminus_IPCHI2_OWNPV muminus_IPCHI2_OWNPV muplus_IPCHI2_OWNPV Kplus_PIDK Kminus_PIDK muminus_PIDmu muplus_PIDmu Kminus_PT Kplus_PT    B0_P Kplus_P Kminus_P phi_1020_PT phi_1020_P phi_1020_ENDVERTEX_CHI2 Kplus_PIDp Kminus_PIDp Kplus_TRACK_CHI2NDOF Kminus_TRACK_CHI2NDOF muplus_TRACK_CHI2NDOF muminus_TRACK_CHI2NDOF
+--- DataSetInfo              :                   B0_PT:  +1.000          +0.096          -0.024        +0.150            -0.062             +0.032              +0.026               -0.009              -0.003     +0.014      +0.008        +0.005       +0.003    +0.293   +0.416  +0.686  +0.218   +0.130      +0.457     +0.219                  -0.011     -0.019      -0.025               +0.017                +0.015                -0.005                 -0.001
+--- DataSetInfo              :         B0_IPCHI2_OWNPV:  +0.096          +1.000          +0.021        -0.193            -0.032             +0.020              +0.048               +0.042              +0.045     -0.007      -0.015        -0.011       -0.009    +0.002   +0.003  +0.174  +0.046   +0.051      +0.009     +0.061                  -0.020     -0.032      -0.044               +0.003                +0.005                -0.042                 -0.051
+--- DataSetInfo              :         B0_FDCHI2_OWNPV:  -0.024          +0.021          +1.000        +0.060            -0.011             +0.780              +0.120               +0.098              +0.257     -0.001      -0.008        -0.013       -0.010    -0.001   +0.003  -0.015  -0.005   -0.007      +0.001     -0.007                  -0.003     +0.005      -0.003               +0.010                +0.008                +0.013                 +0.014
+--- DataSetInfo              :           B0_DIRA_OWNPV:  +0.150          -0.193          +0.060        +1.000            -0.088             +0.054              +0.093               +0.063              +0.065     -0.006      -0.006        -0.029       -0.029    +0.004   +0.004  +0.241  +0.040   +0.037      +0.016     +0.049                  -0.027     -0.047      -0.036               +0.006                +0.002                -0.062                 -0.045
+--- DataSetInfo              :       B0_ENDVERTEX_CHI2:  -0.062          -0.032          -0.011        -0.088            +1.000             -0.038              -0.066               -0.048              -0.052     -0.054      -0.046        +0.019       +0.020    -0.018   -0.023  -0.045  +0.016   +0.019      -0.030     +0.022                  +0.193     -0.043      -0.034               +0.032                +0.031                +0.015                 +0.013
+--- DataSetInfo              :      Kplus_IPCHI2_OWNPV:  +0.032          +0.020          +0.780        +0.054            -0.038             +1.000              +0.073               +0.108              +0.267     +0.051      -0.025        -0.009       -0.013    -0.029   +0.041  +0.014  -0.015   -0.035      +0.014     -0.031                  -0.019     +0.050      -0.015               -0.006                +0.014                -0.002                 -0.003
+--- DataSetInfo              :     Kminus_IPCHI2_OWNPV:  +0.026          +0.048          +0.120        +0.093            -0.066             +0.073              +1.000               +0.042              +0.106     -0.042      +0.086        -0.019       -0.005    +0.084   -0.046  +0.008  -0.065   -0.031      +0.017     -0.060                  -0.027     -0.027      +0.082               +0.023                -0.015                -0.010                 -0.014
+--- DataSetInfo              :    muminus_IPCHI2_OWNPV:  -0.009          +0.042          +0.098        +0.063            -0.048             +0.108              +0.042               +1.000              +0.081     +0.018      -0.006        +0.060       -0.020    +0.000   +0.022  -0.018  +0.061   +0.043      +0.017     +0.065                  -0.019     -0.003      -0.021               -0.019                -0.011                -0.002                 +0.030
+--- DataSetInfo              :     muplus_IPCHI2_OWNPV:  -0.003          +0.045          +0.257        +0.065            -0.052             +0.267              +0.106               +0.081              +1.000     +0.001      +0.012        -0.016       +0.062    +0.020   +0.012  -0.014  +0.050   +0.064      +0.023     +0.071                  -0.019     -0.022      -0.016               -0.007                -0.017                +0.028                 +0.005
+--- DataSetInfo              :              Kplus_PIDK:  +0.014          -0.007          -0.001        -0.006            -0.054             +0.051              -0.042               +0.018              +0.001     +1.000      -0.110        +0.023       +0.058    -0.109   +0.177  -0.025  +0.069   -0.109      +0.067     -0.024                  -0.026     +0.646      -0.055               -0.163                +0.032                -0.049                 +0.000
+--- DataSetInfo              :             Kminus_PIDK:  +0.008          -0.015          -0.008        -0.006            -0.046             -0.025              +0.086               -0.006              +0.012     -0.110      +1.000        +0.055       +0.019    +0.229   -0.074  -0.032  -0.094   +0.065      +0.076     -0.019                  -0.030     -0.060      +0.655               +0.021                -0.160                -0.000                 -0.050
+--- DataSetInfo              :           muminus_PIDmu:  +0.005          -0.011          -0.013        -0.029            +0.019             -0.009              -0.019               +0.060              -0.016     +0.023      +0.055        +1.000       +0.069    -0.023   -0.020  -0.063  -0.016   -0.015      -0.028     -0.020                  +0.015     +0.012      +0.037               -0.014                -0.021                -0.013                 -0.100
+--- DataSetInfo              :            muplus_PIDmu:  +0.003          -0.009          -0.010        -0.029            +0.020             -0.013              -0.005               -0.020              +0.062     +0.058      +0.019        +0.069       +1.000    -0.032   -0.021  -0.059  -0.014   -0.024      -0.033     -0.023                  +0.013     +0.033      +0.015               -0.027                -0.010                -0.091                 -0.018
+--- DataSetInfo              :               Kminus_PT:  +0.293          +0.002          -0.001        +0.004            -0.018             -0.029              +0.084               +0.000              +0.020     -0.109      +0.229        -0.023       -0.032    +1.000   +0.226  +0.173  +0.132   +0.685      +0.718     +0.509                  -0.043     -0.112      +0.058               +0.012                -0.160                +0.064                 +0.053
+--- DataSetInfo              :                Kplus_PT:  +0.416          +0.003          +0.003        +0.004            -0.023             +0.041              -0.046               +0.022              +0.012     +0.177      -0.074        -0.020       -0.021    +0.226   +1.000  +0.222  +0.622   +0.103      +0.828     +0.458                  -0.040     +0.045      -0.080               -0.113                +0.013                +0.045                 +0.056
+--- DataSetInfo              :                    B0_P:  +0.686          +0.174          -0.015        +0.241            -0.045             +0.014              +0.008               -0.018              -0.014     -0.025      -0.032        -0.063       -0.059    +0.173   +0.222  +1.000  +0.374   +0.296      +0.259     +0.420                  -0.024     -0.093      -0.098               -0.031                -0.029                -0.073                 -0.064
+--- DataSetInfo              :                 Kplus_P:  +0.218          +0.046          -0.005        +0.040            +0.016             -0.015              -0.065               +0.061              +0.050     +0.069      -0.094        -0.016       -0.014    +0.132   +0.622  +0.374  +1.000   +0.271      +0.517     +0.801                  -0.025     -0.129      -0.139               -0.175                -0.021                +0.028                 +0.037
+--- DataSetInfo              :                Kminus_P:  +0.130          +0.051          -0.007        +0.037            +0.019             -0.035              -0.031               +0.043              +0.064     -0.109      +0.065        -0.015       -0.024    +0.685   +0.103  +0.296  +0.271   +1.000      +0.460     +0.793                  -0.026     -0.150      -0.140               -0.029                -0.185                +0.034                 +0.032
+--- DataSetInfo              :             phi_1020_PT:  +0.457          +0.009          +0.001        +0.016            -0.030             +0.014              +0.017               +0.017              +0.023     +0.067      +0.076        -0.028       -0.033    +0.718   +0.828  +0.259  +0.517   +0.460      +1.000     +0.613                  -0.051     -0.035      -0.030               -0.074                -0.080                +0.066                 +0.068
+--- DataSetInfo              :              phi_1020_P:  +0.219          +0.061          -0.007        +0.049            +0.022             -0.031              -0.060               +0.065              +0.071     -0.024      -0.019        -0.020       -0.023    +0.509   +0.458  +0.420  +0.801   +0.793      +0.613     +1.000                  -0.032     -0.175      -0.175               -0.128                -0.128                +0.039                 +0.043
+--- DataSetInfo              : phi_1020_ENDVERTEX_CHI2:  -0.011          -0.020          -0.003        -0.027            +0.193             -0.019              -0.027               -0.019              -0.019     -0.026      -0.030        +0.015       +0.013    -0.043   -0.040  -0.024  -0.025   -0.026      -0.051     -0.032                  +1.000     -0.024      -0.023               +0.034                +0.042                -0.000                 +0.007
+--- DataSetInfo              :              Kplus_PIDp:  -0.019          -0.032          +0.005        -0.047            -0.043             +0.050              -0.027               -0.003              -0.022     +0.646      -0.060        +0.012       +0.033    -0.112   +0.045  -0.093  -0.129   -0.150      -0.035     -0.175                  -0.024     +1.000      -0.003               -0.054                +0.035                -0.027                 +0.003
+--- DataSetInfo              :             Kminus_PIDp:  -0.025          -0.044          -0.003        -0.036            -0.034             -0.015              +0.082               -0.021              -0.016     -0.055      +0.655        +0.037       +0.015    +0.058   -0.080  -0.098  -0.139   -0.140      -0.030     -0.175                  -0.023     -0.003      +1.000               +0.032                -0.050                -0.006                 -0.029
+--- DataSetInfo              :    Kplus_TRACK_CHI2NDOF:  +0.017          +0.003          +0.010        +0.006            +0.032             -0.006              +0.023               -0.019              -0.007     -0.163      +0.021        -0.014       -0.027    +0.012   -0.113  -0.031  -0.175   -0.029      -0.074     -0.128                  +0.034     -0.054      +0.032               +1.000                +0.023                +0.028                 +0.008
+--- DataSetInfo              :   Kminus_TRACK_CHI2NDOF:  +0.015          +0.005          +0.008        +0.002            +0.031             +0.014              -0.015               -0.011              -0.017     +0.032      -0.160        -0.021       -0.010    -0.160   +0.013  -0.029  -0.021   -0.185      -0.080     -0.128                  +0.042     +0.035      -0.050               +0.023                +1.000                +0.009                 +0.032
+--- DataSetInfo              :   muplus_TRACK_CHI2NDOF:  -0.005          -0.042          +0.013        -0.062            +0.015             -0.002              -0.010               -0.002              +0.028     -0.049      -0.000        -0.013       -0.091    +0.064   +0.045  -0.073  +0.028   +0.034      +0.066     +0.039                  -0.000     -0.027      -0.006               +0.028                +0.009                +1.000                 +0.029
+--- DataSetInfo              :  muminus_TRACK_CHI2NDOF:  -0.001          -0.051          +0.014        -0.045            +0.013             -0.003              -0.014               +0.030              +0.005     +0.000      -0.050        -0.100       -0.018    +0.053   +0.056  -0.064  +0.037   +0.032      +0.068     +0.043                  +0.007     +0.003      -0.029               +0.008                +0.032                +0.029                 +1.000
+--- DataSetInfo              : --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--- DataSetFactory           :  
+--- Factory                  : 
+--- Factory                  : current transformation string: 'I'
+--- Factory                  : Create Transformation "I" with events from all classes.
+--- Id                       : Transformation, Variable selection : 
+--- Id                       : Input : variable 'B0_PT' (index=0).   <---> Output : variable 'B0_PT' (index=0).
+--- Id                       : Input : variable 'B0_IPCHI2_OWNPV' (index=1).   <---> Output : variable 'B0_IPCHI2_OWNPV' (index=1).
+--- Id                       : Input : variable 'B0_FDCHI2_OWNPV' (index=2).   <---> Output : variable 'B0_FDCHI2_OWNPV' (index=2).
+--- Id                       : Input : variable 'B0_DIRA_OWNPV' (index=3).   <---> Output : variable 'B0_DIRA_OWNPV' (index=3).
+--- Id                       : Input : variable 'B0_ENDVERTEX_CHI2' (index=4).   <---> Output : variable 'B0_ENDVERTEX_CHI2' (index=4).
+--- Id                       : Input : variable 'Kplus_IPCHI2_OWNPV' (index=5).   <---> Output : variable 'Kplus_IPCHI2_OWNPV' (index=5).
+--- Id                       : Input : variable 'Kminus_IPCHI2_OWNPV' (index=6).   <---> Output : variable 'Kminus_IPCHI2_OWNPV' (index=6).
+--- Id                       : Input : variable 'muminus_IPCHI2_OWNPV' (index=7).   <---> Output : variable 'muminus_IPCHI2_OWNPV' (index=7).
+--- Id                       : Input : variable 'muplus_IPCHI2_OWNPV' (index=8).   <---> Output : variable 'muplus_IPCHI2_OWNPV' (index=8).
+--- Id                       : Input : variable 'Kplus_PIDK' (index=9).   <---> Output : variable 'Kplus_PIDK' (index=9).
+--- Id                       : Input : variable 'Kminus_PIDK' (index=10).   <---> Output : variable 'Kminus_PIDK' (index=10).
+--- Id                       : Input : variable 'muminus_PIDmu' (index=11).   <---> Output : variable 'muminus_PIDmu' (index=11).
+--- Id                       : Input : variable 'muplus_PIDmu' (index=12).   <---> Output : variable 'muplus_PIDmu' (index=12).
+--- Id                       : Input : variable 'Kminus_PT' (index=13).   <---> Output : variable 'Kminus_PT' (index=13).
+--- Id                       : Input : variable 'Kplus_PT' (index=14).   <---> Output : variable 'Kplus_PT' (index=14).
+--- Id                       : Input : variable 'B0_P' (index=15).   <---> Output : variable 'B0_P' (index=15).
+--- Id                       : Input : variable 'Kplus_P' (index=16).   <---> Output : variable 'Kplus_P' (index=16).
+--- Id                       : Input : variable 'Kminus_P' (index=17).   <---> Output : variable 'Kminus_P' (index=17).
+--- Id                       : Input : variable 'phi_1020_PT' (index=18).   <---> Output : variable 'phi_1020_PT' (index=18).
+--- Id                       : Input : variable 'phi_1020_P' (index=19).   <---> Output : variable 'phi_1020_P' (index=19).
+--- Id                       : Input : variable 'phi_1020_ENDVERTEX_CHI2' (index=20).   <---> Output : variable 'phi_1020_ENDVERTEX_CHI2' (index=20).
+--- Id                       : Input : variable 'Kplus_PIDp' (index=21).   <---> Output : variable 'Kplus_PIDp' (index=21).
+--- Id                       : Input : variable 'Kminus_PIDp' (index=22).   <---> Output : variable 'Kminus_PIDp' (index=22).
+--- Id                       : Input : variable 'Kplus_TRACK_CHI2NDOF' (index=23).   <---> Output : variable 'Kplus_TRACK_CHI2NDOF' (index=23).
+--- Id                       : Input : variable 'Kminus_TRACK_CHI2NDOF' (index=24).   <---> Output : variable 'Kminus_TRACK_CHI2NDOF' (index=24).
+--- Id                       : Input : variable 'muplus_TRACK_CHI2NDOF' (index=25).   <---> Output : variable 'muplus_TRACK_CHI2NDOF' (index=25).
+--- Id                       : Input : variable 'muminus_TRACK_CHI2NDOF' (index=26).   <---> Output : variable 'muminus_TRACK_CHI2NDOF' (index=26).
+--- Factory                  : 
+--- Factory                  : current transformation string: 'G'
+--- Factory                  : Create Transformation "G" with events from all classes.
+--- Gauss                    : Transformation, Variable selection : 
+--- Gauss                    : Input : variable 'B0_PT' (index=0).   <---> Output : variable 'B0_PT' (index=0).
+--- Gauss                    : Input : variable 'B0_IPCHI2_OWNPV' (index=1).   <---> Output : variable 'B0_IPCHI2_OWNPV' (index=1).
+--- Gauss                    : Input : variable 'B0_FDCHI2_OWNPV' (index=2).   <---> Output : variable 'B0_FDCHI2_OWNPV' (index=2).
+--- Gauss                    : Input : variable 'B0_DIRA_OWNPV' (index=3).   <---> Output : variable 'B0_DIRA_OWNPV' (index=3).
+--- Gauss                    : Input : variable 'B0_ENDVERTEX_CHI2' (index=4).   <---> Output : variable 'B0_ENDVERTEX_CHI2' (index=4).
+--- Gauss                    : Input : variable 'Kplus_IPCHI2_OWNPV' (index=5).   <---> Output : variable 'Kplus_IPCHI2_OWNPV' (index=5).
+--- Gauss                    : Input : variable 'Kminus_IPCHI2_OWNPV' (index=6).   <---> Output : variable 'Kminus_IPCHI2_OWNPV' (index=6).
+--- Gauss                    : Input : variable 'muminus_IPCHI2_OWNPV' (index=7).   <---> Output : variable 'muminus_IPCHI2_OWNPV' (index=7).
+--- Gauss                    : Input : variable 'muplus_IPCHI2_OWNPV' (index=8).   <---> Output : variable 'muplus_IPCHI2_OWNPV' (index=8).
+--- Gauss                    : Input : variable 'Kplus_PIDK' (index=9).   <---> Output : variable 'Kplus_PIDK' (index=9).
+--- Gauss                    : Input : variable 'Kminus_PIDK' (index=10).   <---> Output : variable 'Kminus_PIDK' (index=10).
+--- Gauss                    : Input : variable 'muminus_PIDmu' (index=11).   <---> Output : variable 'muminus_PIDmu' (index=11).
+--- Gauss                    : Input : variable 'muplus_PIDmu' (index=12).   <---> Output : variable 'muplus_PIDmu' (index=12).
+--- Gauss                    : Input : variable 'Kminus_PT' (index=13).   <---> Output : variable 'Kminus_PT' (index=13).
+--- Gauss                    : Input : variable 'Kplus_PT' (index=14).   <---> Output : variable 'Kplus_PT' (index=14).
+--- Gauss                    : Input : variable 'B0_P' (index=15).   <---> Output : variable 'B0_P' (index=15).
+--- Gauss                    : Input : variable 'Kplus_P' (index=16).   <---> Output : variable 'Kplus_P' (index=16).
+--- Gauss                    : Input : variable 'Kminus_P' (index=17).   <---> Output : variable 'Kminus_P' (index=17).
+--- Gauss                    : Input : variable 'phi_1020_PT' (index=18).   <---> Output : variable 'phi_1020_PT' (index=18).
+--- Gauss                    : Input : variable 'phi_1020_P' (index=19).   <---> Output : variable 'phi_1020_P' (index=19).
+--- Gauss                    : Input : variable 'phi_1020_ENDVERTEX_CHI2' (index=20).   <---> Output : variable 'phi_1020_ENDVERTEX_CHI2' (index=20).
+--- Gauss                    : Input : variable 'Kplus_PIDp' (index=21).   <---> Output : variable 'Kplus_PIDp' (index=21).
+--- Gauss                    : Input : variable 'Kminus_PIDp' (index=22).   <---> Output : variable 'Kminus_PIDp' (index=22).
+--- Gauss                    : Input : variable 'Kplus_TRACK_CHI2NDOF' (index=23).   <---> Output : variable 'Kplus_TRACK_CHI2NDOF' (index=23).
+--- Gauss                    : Input : variable 'Kminus_TRACK_CHI2NDOF' (index=24).   <---> Output : variable 'Kminus_TRACK_CHI2NDOF' (index=24).
+--- Gauss                    : Input : variable 'muplus_TRACK_CHI2NDOF' (index=25).   <---> Output : variable 'muplus_TRACK_CHI2NDOF' (index=25).
+--- Gauss                    : Input : variable 'muminus_TRACK_CHI2NDOF' (index=26).   <---> Output : variable 'muminus_TRACK_CHI2NDOF' (index=26).
+--- Id                       : Preparing the Identity transformation...
+--- TFHandler_Factory        : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_Factory        :                Variable                       Mean                       RMS               [        Min                       Max ]
+--- TFHandler_Factory        : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_Factory        :                   B0_PT:                   5883.2                   5560.8   [                   4.2337               7.2179e+05 ]
+--- TFHandler_Factory        :         B0_IPCHI2_OWNPV:                   4.1012                   3.9555   [               3.0071e-06                   28.105 ]
+--- TFHandler_Factory        :         B0_FDCHI2_OWNPV:                   7865.0                   48710.   [                   120.63               1.2268e+07 ]
+--- TFHandler_Factory        :           B0_DIRA_OWNPV:                  0.99998               2.5865e-05   [                  0.99990                   1.0000 ]
+--- TFHandler_Factory        :       B0_ENDVERTEX_CHI2:                   15.159                   11.262   [                 0.045180                   40.000 ]
+--- TFHandler_Factory        :      Kplus_IPCHI2_OWNPV:                   591.87                   2354.3   [                   9.0001               4.4866e+05 ]
+--- TFHandler_Factory        :     Kminus_IPCHI2_OWNPV:                   587.04                   2005.7   [                   9.0000               1.1670e+05 ]
+--- TFHandler_Factory        :    muminus_IPCHI2_OWNPV:                   962.52                   3059.4   [                   9.0009               1.3588e+05 ]
+--- TFHandler_Factory        :     muplus_IPCHI2_OWNPV:                   977.98                   3179.5   [                   9.0000               2.0811e+05 ]
+--- TFHandler_Factory        :              Kplus_PIDK:                   19.765                   20.612   [                  -77.615                   177.44 ]
+--- TFHandler_Factory        :             Kminus_PIDK:                   19.740                   20.710   [                  -106.02                   155.81 ]
+--- TFHandler_Factory        :           muminus_PIDmu:                   5.7869                   3.3713   [                  -2.9999                   14.767 ]
+--- TFHandler_Factory        :            muplus_PIDmu:                   5.7876                   3.3722   [                  -3.0000                   14.700 ]
+--- TFHandler_Factory        :               Kminus_PT:                   1357.9                   1467.9   [                   46.439                   56067. ]
+--- TFHandler_Factory        :                Kplus_PT:                   1354.2                   1548.0   [                   48.791               1.9498e+05 ]
+--- TFHandler_Factory        :                    B0_P:               1.1836e+05                   88475.   [                   19490.               1.5763e+07 ]
+--- TFHandler_Factory        :                 Kplus_P:                   20535.                   24469.   [                   1167.2               1.1106e+06 ]
+--- TFHandler_Factory        :                Kminus_P:                   20581.                   24407.   [                   1146.0               6.7832e+05 ]
+--- TFHandler_Factory        :             phi_1020_PT:                   2506.5                   2562.3   [                   3.0003               2.3319e+05 ]
+--- TFHandler_Factory        :              phi_1020_P:                   41096.                   40627.   [                   3281.0               1.4089e+06 ]
+--- TFHandler_Factory        : phi_1020_ENDVERTEX_CHI2:                   2.2513                   2.8326   [               1.4691e-22                   11.998 ]
+--- TFHandler_Factory        :              Kplus_PIDp:                   10.698                   15.795   [                  -105.08                   105.09 ]
+--- TFHandler_Factory        :             Kminus_PIDp:                   10.606                   15.794   [                  -107.07                   85.890 ]
+--- TFHandler_Factory        :    Kplus_TRACK_CHI2NDOF:                   1.2266                  0.46285   [                  0.18271                   2.9998 ]
+--- TFHandler_Factory        :   Kminus_TRACK_CHI2NDOF:                   1.2321                  0.46801   [                  0.14240                   2.9999 ]
+--- TFHandler_Factory        :   muplus_TRACK_CHI2NDOF:                   1.1076                  0.37488   [                  0.10958                   2.9999 ]
+--- TFHandler_Factory        :  muminus_TRACK_CHI2NDOF:                   1.1082                  0.37661   [                  0.20959                   2.9999 ]
+--- TFHandler_Factory        : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_Factory        : Plot event variables for Id
+--- TFHandler_Factory        : [32m
+--- TFHandler_Factory        : <PlotVariables> Will not produce scatter plots ==> 
+--- TFHandler_Factory        : |  The number of 27 input variables and 0 target values would require 351 two-dimensional
+--- TFHandler_Factory        : |  histograms, which would occupy the computer's memory. Note that this
+--- TFHandler_Factory        : |  suppression does not have any consequences for your analysis, other
+--- TFHandler_Factory        : |  than not disposing of these scatter plots. You can modify the maximum
+--- TFHandler_Factory        : |  number of input variables allowed to generate scatter plots in your
+--- TFHandler_Factory        : |  script via the command line:
+--- TFHandler_Factory        : |  "(TMVA::gConfig().GetVariablePlotting()).fMaxNumOfAllowedVariablesForScatterPlots = <some int>;"[0m
+--- TFHandler_Factory        : 
+--- TFHandler_Factory        : Some more output
+--- Gauss                    : Preparing the Gaussian transformation...
+--- TFHandler_Factory        : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_Factory        :                Variable                       Mean                       RMS               [        Min                       Max ]
+--- TFHandler_Factory        : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_Factory        :                   B0_PT:                0.0016649                  0.99937   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :         B0_IPCHI2_OWNPV:                0.0016295                  0.99962   [                  -3.5324                   5.7307 ]
+--- TFHandler_Factory        :         B0_FDCHI2_OWNPV:                  0.16007                  0.77537   [                 -0.69399                   5.7307 ]
+--- TFHandler_Factory        :           B0_DIRA_OWNPV:                  0.13020                   1.2968   [                  -3.3534                   5.7307 ]
+--- TFHandler_Factory        :       B0_ENDVERTEX_CHI2:                0.0021493                   1.0014   [                  -5.0682                   5.7307 ]
+--- TFHandler_Factory        :      Kplus_IPCHI2_OWNPV:                  0.18220                  0.75858   [                 -0.59541                   5.7307 ]
+--- TFHandler_Factory        :     Kminus_IPCHI2_OWNPV:                 0.062423                  0.89443   [                  -1.2269                   5.7307 ]
+--- TFHandler_Factory        :    muminus_IPCHI2_OWNPV:                 0.028695                  0.94545   [                  -1.6127                   5.7307 ]
+--- TFHandler_Factory        :     muplus_IPCHI2_OWNPV:                 0.043136                  0.92166   [                  -1.4061                   5.7307 ]
+--- TFHandler_Factory        :              Kplus_PIDK:                0.0050483                  0.99849   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :             Kminus_PIDK:                0.0058101                  0.99859   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :           muminus_PIDmu:                0.0018047                   1.0011   [                  -4.6808                   5.7307 ]
+--- TFHandler_Factory        :            muplus_PIDmu:                0.0018769                   1.0014   [                  -4.6951                   5.7307 ]
+--- TFHandler_Factory        :               Kminus_PT:                0.0018467                  0.99983   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :                Kplus_PT:                0.0021909                  0.99901   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :                    B0_P:                0.0018022                  0.99938   [                  -4.5395                   5.7307 ]
+--- TFHandler_Factory        :                 Kplus_P:                0.0018530                  0.99946   [                  -4.0360                   5.7307 ]
+--- TFHandler_Factory        :                Kminus_P:                0.0017382                  0.99960   [                  -4.8386                   5.7307 ]
+--- TFHandler_Factory        :             phi_1020_PT:                0.0018231                  0.99990   [                  -3.8959                   5.7307 ]
+--- TFHandler_Factory        :              phi_1020_P:                0.0020438                   1.0002   [                  -4.3216                   5.7307 ]
+--- TFHandler_Factory        : phi_1020_ENDVERTEX_CHI2:                0.0046706                  0.99460   [                  -2.3937                   5.7307 ]
+--- TFHandler_Factory        :              Kplus_PIDp:                0.0037469                   1.0006   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :             Kminus_PIDp:                0.0039756                   1.0003   [                  -5.7307                   5.7307 ]
+--- TFHandler_Factory        :    Kplus_TRACK_CHI2NDOF:                0.0021417                   1.0013   [                  -5.0328                   5.7307 ]
+--- TFHandler_Factory        :   Kminus_TRACK_CHI2NDOF:                0.0022164                   1.0016   [                  -5.0689                   5.7307 ]
+--- TFHandler_Factory        :   muplus_TRACK_CHI2NDOF:                0.0023072                   1.0019   [                  -5.0791                   5.7307 ]
+--- TFHandler_Factory        :  muminus_TRACK_CHI2NDOF:                0.0020449                   1.0027   [                  -4.9983                   5.7307 ]
+--- TFHandler_Factory        : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_Factory        : Plot event variables for Gauss
+--- TFHandler_Factory        : [32m
+--- TFHandler_Factory        : <PlotVariables> Will not produce scatter plots ==> 
+--- TFHandler_Factory        : |  The number of 27 input variables and 0 target values would require 351 two-dimensional
+--- TFHandler_Factory        : |  histograms, which would occupy the computer's memory. Note that this
+--- TFHandler_Factory        : |  suppression does not have any consequences for your analysis, other
+--- TFHandler_Factory        : |  than not disposing of these scatter plots. You can modify the maximum
+--- TFHandler_Factory        : |  number of input variables allowed to generate scatter plots in your
+--- TFHandler_Factory        : |  script via the command line:
+--- TFHandler_Factory        : |  "(TMVA::gConfig().GetVariablePlotting()).fMaxNumOfAllowedVariablesForScatterPlots = <some int>;"[0m
+--- TFHandler_Factory        : 
+--- TFHandler_Factory        : Some more output
+--- TFHandler_Factory        :  
+--- TFHandler_Factory        : Ranking input variables (method unspecific)...
+--- IdTransformation         : Ranking result (top variable is best ranked)
+--- IdTransformation         : ------------------------------------------------
+--- IdTransformation         : Rank : Variable                : Separation
+--- IdTransformation         : ------------------------------------------------
+--- IdTransformation         :    1 : B0_ENDVERTEX_CHI2       : 5.167e-01
+--- IdTransformation         :    2 : Kminus_PIDK             : 3.683e-01
+--- IdTransformation         :    3 : phi_1020_PT             : 3.671e-01
+--- IdTransformation         :    4 : Kplus_PIDK              : 3.578e-01
+--- IdTransformation         :    5 : B0_DIRA_OWNPV           : 3.044e-01
+--- IdTransformation         :    6 : Kminus_PT               : 2.647e-01
+--- IdTransformation         :    7 : Kminus_PIDp             : 2.607e-01
+--- IdTransformation         :    8 : Kplus_PT                : 2.572e-01
+--- IdTransformation         :    9 : Kplus_PIDp              : 2.501e-01
+--- IdTransformation         :   10 : phi_1020_P              : 1.626e-01
+--- IdTransformation         :   11 : B0_PT                   : 1.543e-01
+--- IdTransformation         :   12 : muminus_IPCHI2_OWNPV    : 1.437e-01
+--- IdTransformation         :   13 : B0_IPCHI2_OWNPV         : 1.435e-01
+--- IdTransformation         :   14 : muplus_IPCHI2_OWNPV     : 1.429e-01
+--- IdTransformation         :   15 : Kminus_TRACK_CHI2NDOF   : 1.396e-01
+--- IdTransformation         :   16 : Kplus_TRACK_CHI2NDOF    : 1.329e-01
+--- IdTransformation         :   17 : Kminus_P                : 1.173e-01
+--- IdTransformation         :   18 : Kminus_IPCHI2_OWNPV     : 1.132e-01
+--- IdTransformation         :   19 : Kplus_P                 : 1.115e-01
+--- IdTransformation         :   20 : Kplus_IPCHI2_OWNPV      : 1.029e-01
+--- IdTransformation         :   21 : phi_1020_ENDVERTEX_CHI2 : 9.565e-02
+--- IdTransformation         :   22 : muminus_PIDmu           : 8.291e-02
+--- IdTransformation         :   23 : muplus_PIDmu            : 8.267e-02
+--- IdTransformation         :   24 : B0_FDCHI2_OWNPV         : 7.608e-02
+--- IdTransformation         :   25 : muminus_TRACK_CHI2NDOF  : 4.408e-02
+--- IdTransformation         :   26 : muplus_TRACK_CHI2NDOF   : 4.283e-02
+--- IdTransformation         :   27 : B0_P                    : 1.227e-02
+--- IdTransformation         : ------------------------------------------------
+--- Factory                  :  
+--- Factory                  : Train all methods for Classification ...
+--- Factory                  : Train method: BDT_depth2 for Classification
+--- BDT_depth2               : Begin training
+--- BDT_depth2               :  found and suggest the following possible pre-selection cuts 
+--- BDT_depth2               : as option DoPreselection was not used, these cuts however will not be performed, but the training will see the full sample
+--- BDT_depth2               : re-normlise events such that Sig and Bkg have respective sum of weights = 1
+--- BDT_depth2               :   sig->sig*0.682037ev. bkg->bkg*0.682037ev.
+--- BDT_depth2               : #events: (reweighted) sig: 120968 bkg: 120968
+--- BDT_depth2               : #events: (unweighted) sig: 177362 bkg: 64573
+--- BDT_depth2               : Training 800 Decision Trees ... patience please
+--- BinaryTree               : The minimal node size MinNodeSize=2.5 fMinNodeSize=2.5% is translated to an actual number of events = 6048.38
+--- BinaryTree               : Note: This number will be taken as absolute minimum in the node, 
+--- BinaryTree               :       in terms of 'weighted events' and unweighted ones !! 
+--- BDT_depth2               : <Train> elapsed time: [1;31m724 sec[0m                              
+--- BDT_depth2               : <Train> average number of nodes (w/o pruning) : 5
+--- BDT_depth2               : End of training                                              
+--- BDT_depth2               : Elapsed time for training with 241935 events: [1;31m734 sec[0m         
+--- BDT_depth2               : Create MVA output for classification on training sample
+--- BDT_depth2               : Evaluation of BDT_depth2 on training sample (241935 events)
+--- BDT_depth2               : Elapsed time for evaluation of 241935 events: [1;31m24.5 sec[0m       
+--- BDT_depth2               : Creating weight file in xml format: [0;36mweights/Bs2mumuf2_nonresonant_FINAL_BDT_depth2.weights.xml[0m
+--- BDT_depth2               : Creating standalone response class: [0;36mweights/Bs2mumuf2_nonresonant_FINAL_BDT_depth2.class.C[0m
+--- BDT_depth2               : Write monitoring histograms to file: Bs2mumuf2_nonresonant_FINAL.root:/Method_BDT/BDT_depth2
+--- Factory                  : Training finished
+--- Factory                  : 
+--- Factory                  : Ranking input variables (method specific)...
+--- BDT_depth2               : Ranking result (top variable is best ranked)
+--- BDT_depth2               : ---------------------------------------------------------
+--- BDT_depth2               : Rank : Variable                : Variable Importance
+--- BDT_depth2               : ---------------------------------------------------------
+--- BDT_depth2               :    1 : B0_DIRA_OWNPV           : 7.199e-02
+--- BDT_depth2               :    2 : B0_ENDVERTEX_CHI2       : 6.792e-02
+--- BDT_depth2               :    3 : B0_P                    : 5.353e-02
+--- BDT_depth2               :    4 : Kplus_PIDK              : 5.053e-02
+--- BDT_depth2               :    5 : Kminus_PIDK             : 5.019e-02
+--- BDT_depth2               :    6 : Kminus_P                : 4.954e-02
+--- BDT_depth2               :    7 : Kplus_P                 : 4.798e-02
+--- BDT_depth2               :    8 : B0_PT                   : 4.376e-02
+--- BDT_depth2               :    9 : phi_1020_PT             : 4.023e-02
+--- BDT_depth2               :   10 : muminus_PIDmu           : 3.804e-02
+--- BDT_depth2               :   11 : B0_IPCHI2_OWNPV         : 3.669e-02
+--- BDT_depth2               :   12 : muplus_PIDmu            : 3.637e-02
+--- BDT_depth2               :   13 : muplus_TRACK_CHI2NDOF   : 3.443e-02
+--- BDT_depth2               :   14 : Kminus_TRACK_CHI2NDOF   : 3.337e-02
+--- BDT_depth2               :   15 : Kplus_PIDp              : 3.324e-02
+--- BDT_depth2               :   16 : Kplus_TRACK_CHI2NDOF    : 3.287e-02
+--- BDT_depth2               :   17 : Kminus_PIDp             : 3.261e-02
+--- BDT_depth2               :   18 : Kminus_PT               : 3.201e-02
+--- BDT_depth2               :   19 : muminus_TRACK_CHI2NDOF  : 3.102e-02
+--- BDT_depth2               :   20 : muminus_IPCHI2_OWNPV    : 2.970e-02
+--- BDT_depth2               :   21 : Kplus_PT                : 2.938e-02
+--- BDT_depth2               :   22 : phi_1020_P              : 2.896e-02
+--- BDT_depth2               :   23 : Kminus_IPCHI2_OWNPV     : 2.883e-02
+--- BDT_depth2               :   24 : Kplus_IPCHI2_OWNPV      : 2.192e-02
+--- BDT_depth2               :   25 : B0_FDCHI2_OWNPV         : 1.657e-02
+--- BDT_depth2               :   26 : muplus_IPCHI2_OWNPV     : 1.527e-02
+--- BDT_depth2               :   27 : phi_1020_ENDVERTEX_CHI2 : 1.304e-02
+--- BDT_depth2               : ---------------------------------------------------------
+--- Factory                  : 
+--- Factory                  : === Destroy and recreate all methods via weight files for testing ===
+--- Factory                  : 
+--- MethodBase               : Reading weight file: [0;36mweights/Bs2mumuf2_nonresonant_FINAL_BDT_depth2.weights.xml[0m
+--- BDT_depth2               : Read method "BDT_depth2" of type "BDT"
+--- BDT_depth2               : MVA method was trained with TMVA Version: 4.2.0
+--- BDT_depth2               : MVA method was trained with ROOT Version: 5.34/10
+--- Factory                  : Test all methods...
+--- Factory                  : Test method: BDT_depth2 for Classification performance
+--- BDT_depth2               : Evaluation of BDT_depth2 on testing sample (241935 events)
+--- BDT_depth2               : Elapsed time for evaluation of 241935 events: [1;31m23.4 sec[0m       
+--- Factory                  : Evaluate all methods...
+--- Factory                  : Evaluate classifier: BDT_depth2
+--- BDT_depth2               : Loop over test events and fill histograms with classifier response...
+--- Factory                  : Write evaluation histograms to file
+--- TFHandler_BDT_depth2     : Plot event variables for BDT_depth2
+--- TFHandler_BDT_depth2     : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_BDT_depth2     :                Variable                       Mean                       RMS               [        Min                       Max ]
+--- TFHandler_BDT_depth2     : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_BDT_depth2     :                   B0_PT:                   6581.1                   5046.2   [                   3.7659               3.3664e+05 ]
+--- TFHandler_BDT_depth2     :         B0_IPCHI2_OWNPV:                   3.3974                   3.4697   [               1.0607e-05                   16.082 ]
+--- TFHandler_BDT_depth2     :         B0_FDCHI2_OWNPV:                   9562.2                   36364.   [                   120.85               4.3871e+06 ]
+--- TFHandler_BDT_depth2     :           B0_DIRA_OWNPV:                  0.99999               2.2157e-05   [                  0.99990                   1.0000 ]
+--- TFHandler_BDT_depth2     :       B0_ENDVERTEX_CHI2:                   11.506                   9.8091   [                 0.051106                   40.000 ]
+--- TFHandler_BDT_depth2     :      Kplus_IPCHI2_OWNPV:                   771.79                   2325.1   [                   9.0006               1.5264e+05 ]
+--- TFHandler_BDT_depth2     :     Kminus_IPCHI2_OWNPV:                   770.50                   2367.1   [                   9.0000               1.2298e+05 ]
+--- TFHandler_BDT_depth2     :    muminus_IPCHI2_OWNPV:                   1302.5                   3653.8   [                   9.0005               1.7335e+05 ]
+--- TFHandler_BDT_depth2     :     muplus_IPCHI2_OWNPV:                   1303.7                   3614.6   [                   9.0002               1.6518e+05 ]
+--- TFHandler_BDT_depth2     :              Kplus_PIDK:                   24.950                   21.878   [                  -112.43                   169.30 ]
+--- TFHandler_BDT_depth2     :             Kminus_PIDK:                   24.892                   21.950   [                  -86.444                   163.55 ]
+--- TFHandler_BDT_depth2     :           muminus_PIDmu:                   6.2376                   3.2930   [                  -2.9993                   14.764 ]
+--- TFHandler_BDT_depth2     :            muplus_PIDmu:                   6.2269                   3.3070   [                  -3.0000                   14.748 ]
+--- TFHandler_BDT_depth2     :               Kminus_PT:                   1616.2                   1596.7   [                   50.369                   85386. ]
+--- TFHandler_BDT_depth2     :                Kplus_PT:                   1611.7                   1603.4   [                   49.468               1.5209e+05 ]
+--- TFHandler_BDT_depth2     :                    B0_P:               1.1825e+05                   77208.   [                   18878.               4.2187e+06 ]
+--- TFHandler_BDT_depth2     :                 Kplus_P:                   23124.                   26489.   [                   1185.9               3.0693e+06 ]
+--- TFHandler_BDT_depth2     :                Kminus_P:                   23178.                   26207.   [                   1150.8               2.2640e+06 ]
+--- TFHandler_BDT_depth2     :             phi_1020_PT:                   3039.3                   2685.5   [                   1.5528               1.7880e+05 ]
+--- TFHandler_BDT_depth2     :              phi_1020_P:                   46282.                   43894.   [                   3104.9               3.6083e+06 ]
+--- TFHandler_BDT_depth2     : phi_1020_ENDVERTEX_CHI2:                   1.8492                   2.4916   [               3.5611e-11                   12.000 ]
+--- TFHandler_BDT_depth2     :              Kplus_PIDp:                   11.900                   17.735   [                  -104.51                   95.585 ]
+--- TFHandler_BDT_depth2     :             Kminus_PIDp:                   11.813                   17.722   [                  -112.27                   107.18 ]
+--- TFHandler_BDT_depth2     :    Kplus_TRACK_CHI2NDOF:                   1.1528                  0.40871   [                  0.13143                   3.0000 ]
+--- TFHandler_BDT_depth2     :   Kminus_TRACK_CHI2NDOF:                   1.1557                  0.41338   [                  0.15127                   2.9997 ]
+--- TFHandler_BDT_depth2     :   muplus_TRACK_CHI2NDOF:                   1.0800                  0.33685   [                  0.17784                   2.9997 ]
+--- TFHandler_BDT_depth2     :  muminus_TRACK_CHI2NDOF:                   1.0802                  0.33926   [                  0.15977                   2.9999 ]
+--- TFHandler_BDT_depth2     : --------------------------------------------------------------------------------------------------------------------------------------
+--- TFHandler_BDT_depth2     : [32m
+--- TFHandler_BDT_depth2     : <PlotVariables> Will not produce scatter plots ==> 
+--- TFHandler_BDT_depth2     : |  The number of 27 input variables and 0 target values would require 351 two-dimensional
+--- TFHandler_BDT_depth2     : |  histograms, which would occupy the computer's memory. Note that this
+--- TFHandler_BDT_depth2     : |  suppression does not have any consequences for your analysis, other
+--- TFHandler_BDT_depth2     : |  than not disposing of these scatter plots. You can modify the maximum
+--- TFHandler_BDT_depth2     : |  number of input variables allowed to generate scatter plots in your
+--- TFHandler_BDT_depth2     : |  script via the command line:
+--- TFHandler_BDT_depth2     : |  "(TMVA::gConfig().GetVariablePlotting()).fMaxNumOfAllowedVariablesForScatterPlots = <some int>;"[0m
+--- TFHandler_BDT_depth2     : 
+--- TFHandler_BDT_depth2     : Some more output
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 5)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (1, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (3, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 1)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 3)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 5)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 6)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 7)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 8)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 9)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 10)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 11)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 14)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 15)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 17)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 18)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 19)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 20)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 22)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 23)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (5, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (5, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (6, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (7, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (8, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (9, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (10, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (11, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (14, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (15, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (17, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (18, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (19, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (20, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (22, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (23, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (0, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (1, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (2, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 1)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 2)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 5)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 6)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 7)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 8)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 9)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 10)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 11)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 12)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 13)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 14)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 15)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 17)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 18)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 19)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 21)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 22)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 23)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (4, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (5, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (6, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (7, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (8, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (9, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (10, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (11, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (12, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (13, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (14, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (15, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (17, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (18, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (19, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (21, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (22, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (23, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (24, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 26)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (25, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (26, 27)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 0)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 4)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 24)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 25)[0m
+[1;31m--- <WARNING> Tools                    : <GetCorrelationMatrix> zero variances for variables (27, 26)[0m
+--- Factory                  : Correlations between input variables and MVA response (signal):
+--- Factory                  : ----------------------
+--- Factory                  :                          BDT_depth2
+--- Factory                  :                   B0_PT:     +0.160
+--- Factory                  :         B0_IPCHI2_OWNPV:     +0.000
+--- Factory                  :         B0_FDCHI2_OWNPV:     +0.107
+--- Factory                  :           B0_DIRA_OWNPV:     +0.000
+--- Factory                  :       B0_ENDVERTEX_CHI2:     +0.000
+--- Factory                  :      Kplus_IPCHI2_OWNPV:     +0.081
+--- Factory                  :     Kminus_IPCHI2_OWNPV:     +0.086
+--- Factory                  :    muminus_IPCHI2_OWNPV:     +0.160
+--- Factory                  :     muplus_IPCHI2_OWNPV:     +0.141
+--- Factory                  :              Kplus_PIDK:     +0.412
+--- Factory                  :             Kminus_PIDK:     +0.422
+--- Factory                  :           muminus_PIDmu:     +0.000
+--- Factory                  :            muplus_PIDmu:     +0.000
+--- Factory                  :               Kminus_PT:     +0.205
+--- Factory                  :                Kplus_PT:     +0.202
+--- Factory                  :                    B0_P:     -0.061
+--- Factory                  :                 Kplus_P:     +0.042
+--- Factory                  :                Kminus_P:     +0.048
+--- Factory                  :             phi_1020_PT:     +0.264
+--- Factory                  :              phi_1020_P:     +0.054
+--- Factory                  : phi_1020_ENDVERTEX_CHI2:     +0.000
+--- Factory                  :              Kplus_PIDp:     +0.007
+--- Factory                  :             Kminus_PIDp:     -0.010
+--- Factory                  :    Kplus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  :   Kminus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  :   muplus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  :  muminus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  : ----------------------
+--- Factory                  : 
+--- Factory                  : Correlations between input variables and MVA response (background):
+--- Factory                  : ----------------------
+--- Factory                  :                          BDT_depth2
+--- Factory                  :                   B0_PT:     +0.111
+--- Factory                  :         B0_IPCHI2_OWNPV:     +0.000
+--- Factory                  :         B0_FDCHI2_OWNPV:     +0.030
+--- Factory                  :           B0_DIRA_OWNPV:     +0.000
+--- Factory                  :       B0_ENDVERTEX_CHI2:     -0.518
+--- Factory                  :      Kplus_IPCHI2_OWNPV:     +0.086
+--- Factory                  :     Kminus_IPCHI2_OWNPV:     +0.081
+--- Factory                  :    muminus_IPCHI2_OWNPV:     +0.108
+--- Factory                  :     muplus_IPCHI2_OWNPV:     +0.107
+--- Factory                  :              Kplus_PIDK:     +0.317
+--- Factory                  :             Kminus_PIDK:     +0.341
+--- Factory                  :           muminus_PIDmu:     +0.000
+--- Factory                  :            muplus_PIDmu:     +0.000
+--- Factory                  :               Kminus_PT:     +0.215
+--- Factory                  :                Kplus_PT:     +0.191
+--- Factory                  :                    B0_P:     -0.032
+--- Factory                  :                 Kplus_P:     +0.126
+--- Factory                  :                Kminus_P:     +0.139
+--- Factory                  :             phi_1020_PT:     +0.250
+--- Factory                  :              phi_1020_P:     +0.165
+--- Factory                  : phi_1020_ENDVERTEX_CHI2:     +0.000
+--- Factory                  :              Kplus_PIDp:     +0.174
+--- Factory                  :             Kminus_PIDp:     +0.189
+--- Factory                  :    Kplus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  :   Kminus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  :   muplus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  :  muminus_TRACK_CHI2NDOF:     +0.000
+--- Factory                  : ----------------------
+--- Factory                  : 
+--- Factory                  : The following "overlap" matrices contain the fraction of events for which 
+--- Factory                  : the MVAs 'i' and 'j' have returned conform answers about "signal-likeness"
+--- Factory                  : An event is signal-like, if its MVA output exceeds the following value:
+--- Factory                  : -----------------------
+--- Factory                  :     Method:  Cut value:
+--- Factory                  : -----------------------
+--- Factory                  : BDT_depth2:     +0.005
+--- Factory                  : -----------------------
+--- Factory                  : which correspond to the working point: eff(signal) = 1 - eff(background)
+--- Factory                  : 
+--- Factory                  : Evaluation results ranked by best signal efficiency and purity (area)
+--- Factory                  : --------------------------------------------------------------------------------
+--- Factory                  : MVA              Signal efficiency at bkg eff.(error):       | Sepa-    Signifi- 
+--- Factory                  : Method:          @B=0.01    @B=0.10    @B=0.30    ROC-integ. | ration:  cance:   
+--- Factory                  : --------------------------------------------------------------------------------
+--- Factory                  : BDT_depth2     : 0.923(00)  0.993(00)  1.000(00)    0.996    | 0.910    2.884
+--- Factory                  : --------------------------------------------------------------------------------
+--- Factory                  : 
+--- Factory                  : Testing efficiency compared to training efficiency (overtraining check)
+--- Factory                  : --------------------------------------------------------------------------------
+--- Factory                  : MVA              Signal efficiency: from test sample (from training sample) 
+--- Factory                  : Method:          @B=0.01             @B=0.10            @B=0.30   
+--- Factory                  : --------------------------------------------------------------------------------
+--- Factory                  : BDT_depth2     : 0.923 (0.929)       0.993 (0.993)      1.000 (1.000)
+--- Factory                  : --------------------------------------------------------------------------------
+--- Factory                  : 
+--- Dataset:Default          : Created tree 'TestTree' with 241935 events
+--- Dataset:Default          : Created tree 'TrainTree' with 241935 events
+--- Factory                  :   
+--- Factory                  : [1mThank you for using TMVA![0m
+--- Factory                  : [1mFor citation information, please visit: http://tmva.sf.net/citeTMVA.html[0m
