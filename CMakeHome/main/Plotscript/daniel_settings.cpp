@@ -14,14 +14,17 @@
 
 void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
 
-    TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/Prev_Analysis/Selected_and_Pruned.root", "update");
+    TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/Prev_Analysis/Selected_and_Pruned.root", "read");
     TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");
 
-    TFile* file_BDT = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Bs2mumuf2_BDTselection_FINAL_newInput.root", "update");
+    TFile* file_BDT = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Bs2mumuf2_BDTselection_FINAL_newInput.root", "read");
     TTree* tree_BDT = (TTree*)file_BDT->Get("Bs2phimumuTuple/DecayTree");
 
-    TFile* file_BDTrareDecay = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Bs2mumuf2_rareDecay_blinded.root", "update");
+    TFile* file_BDTrareDecay = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Bs2mumuf2_rareDecay_blinded.root", "read");
     TTree* tree_BDTrareDecay = (TTree*)file_BDTrareDecay->Get("Bs2phimumuTuple/DecayTree");
+
+    TFile* file_peakingBKGR = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/LambdaMuMu_MC/LambdaMuMu_MC_P8.root", "read");
+    TTree* tree_peakingBKGR = (TTree*)file_peakingBKGR->Get("Bs2phimumuTuple/DecayTree");
 
 
     //Define cuts for BDT
@@ -47,12 +50,12 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     std::string raredecay_common = "TMVAResponse > 0.152508";
     std::string raredecay_punzi = "TMVAResponse > 0.269563";
 
-    /*
-    std::string proton = "  && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
+    
+    std::string proton = "(Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
 
-    cutres_common_jpsi += proton;
-    cutres_punzi_jpsi += proton;
-    */
+    
+   
+    
 
     //std::string cutnonres = "TMVAResponse > 0 && (J_psi_1S_M < 2997 || J_psi_1S_M > 3197)";
 
@@ -72,20 +75,33 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
 
         //Prev. Analysis (f2 Mass cut)
-        new Plotvariable("B0_M", tree, "B_{s} Mass res. Decay, cutbased Selection (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp);
+        new Plotvariable("B0_M", tree, "B_{s} Mass res. Decay, cutbased Selection (with cut on f2 Mass)", "Data", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp, "norm");
+        
+        //Plot potential Peaking Background alone
+        new Plotvariable("B0_M", tree_peakingBKGR, "#Lambda_{b} #rightarrow #mu#muKp (p identified as K, pot. peaking BKGR, cut on f2)", "BKGR", nbins, 
+                5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp);
+        new Plotvariable("B0_M", tree_peakingBKGR, "#Lambda_{b} #rightarrow #mu#muKp (p identified as K, pot. peaking BKGR, without cut on f2)", "BKGR", nbins, 
+                5100, 5600, "m_{B_{s}}", "MeV", vecp);
+        new Plotvariable("B0_M", tree_peakingBKGR, "#Lambda_{b} #rightarrow #mu#muKp (p identified as K, pot. peaking BKGR, with cut on f2 and K_DLL(K-P) > -3)", "BKGR", 
+                nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut + "&&" + proton, vecp);
+
 
         //BDT with cut after Common FOM
-        new Plotvariable("B0_M", tree_BDT, "B_{s} Mass res. Decay, BDT cut with common FOM (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", 
-                cutres_common_jpsi, vecp);
+        new Plotvariable("B0_M", tree_BDT, "B_{s} Mass res. Decay, BDT cut with common FOM (with cut on f2 Mass)", "Data", nbins, 5100, 5600, "m_{B_{s}}", "MeV", 
+                cutres_common_jpsi, vecp, "norm");
+        new Plotvariable("B0_M", tree_peakingBKGR, "pot. peaking BKGR", f2cut,  vecp);
+        
 
         //BDT with cut after Punzi FOM
-        new Plotvariable("B0_M", tree_BDT, "B_{s} Mass res. Decay, BDT cut with Punzi FOM (with cut on f2 Mass)", "", nbins, 5100, 5600, "m_{B_{s}}", "MeV", 
-                cutres_punzi_jpsi,vecp);
-
+        new Plotvariable("B0_M", tree_BDT, "B_{s} Mass res. Decay, BDT cut with Punzi FOM (with cut on f2 Mass)", "Data", nbins, 5100, 5600, "m_{B_{s}}", "MeV", 
+                cutres_punzi_jpsi,vecp, "norm");
+        new Plotvariable("B0_M", tree_peakingBKGR, "pot. peaking BKGR", f2cut, vecp);
+        
+        
         //All together
         new Plotvariable("B0_M", tree, "B_{s} Mass res. Decay (with cut on f2 Mass)", "cutbased", nbins, 5100, 5600, "m_{B_{s}}", "MeV", f2cut, vecp);
         new Plotvariable("B0_M", tree_BDT, "BDT common FOM", cutres_common_jpsi, vecp);
-        new Plotvariable("B0_M", tree_BDT, "BDT Punzi FOM", cutres_punzi_jpsi, vecp);
+        new Plotvariable("B0_M", tree_BDT, "BDT punzi FOM", cutres_punzi_jpsi, vecp);
 
 
 
