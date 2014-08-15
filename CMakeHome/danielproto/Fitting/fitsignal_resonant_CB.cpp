@@ -19,7 +19,8 @@
 #include <RooAddPdf.h> 
 #include <RooGaussian.h> 
 #include <RooExponential.h>
-#include <RooArgusBG.h> 
+#include <RooArgusBG.h>
+#include <RooCBShape.h>
 #include <RooConstVar.h> 
 #include <RooPlot.h> 
 
@@ -70,9 +71,11 @@ int main() {
 
     //Fiting Parameter definieren
     //Signal
-    RooRealVar peak_gaussian_mean("gaus_mean", "Mittelwert für Gaussian des Signals", 5366, 5200, 5520, "MeV");        //Fitting parameter
-    RooRealVar peak_gaussian_sigma("gaus_sigma", "Sigma für Gaussian des Signals", 19, 0, 40, "MeV");
-    RooGaussian peak_gaussian("peak_gaussian", "Gaussian für Signal", Bs_M, peak_gaussian_mean, peak_gaussian_sigma);           //Erstelle Guass PDF für Signal
+    RooRealVar peak_cb_mean("gaus_mean", "Mittelwert für Gaussian des Signals", 5366, 5200, 5520, "MeV");        //Fitting parameter
+    RooRealVar peak_cb_sigma("gaus_sigma", "Sigma für Gaussian des Signals", 19, 0, 40, "MeV");
+    RooRealVar peak_cb_alpha("alpha", "alpha", 1, 0.1, 2);
+    RooRealVar peak_cb_n("n", "n", 35);
+    RooCBShape peak_crystalball("crystalball", "CB für Signal", Bs_M, peak_cb_mean, peak_cb_sigma, peak_cb_alpha, peak_cb_n);           //Erstelle Guass PDF für Signal
 
     RooRealVar peak_yield("peak_yield", "Yield des Signal-Peaks", 20000, 10000, 50000);                                          //Definiere Yield (Anz. Events im Gauss)
 
@@ -85,7 +88,7 @@ int main() {
     //Füge PDFs zu Listen hinzu
     RooArgList shapes;
     RooArgList yields;
-    shapes.add(peak_gaussian);
+    shapes.add(peak_crystalball);
     yields.add(peak_yield);
     shapes.add(background);
     yields.add(background_yield);
@@ -99,7 +102,7 @@ int main() {
     //----------------------
     
     //Open TFile to save Plots
-    TFile* f = new TFile("../plots/Fitplots/Signalfit_Bs2Jpsif2_newVars.root", "RECREATE");
+    TFile* f = new TFile("../plots/Fitplots/Signalfit_Bs2Jpsif2_CB_newVars.root", "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
     RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Signalfit Resonant Decay B_{s} -> J/#psi f_{2}"));
@@ -121,13 +124,13 @@ int main() {
     DMassFrame -> Draw();
 
     DMassFrame -> SetAxisRange(100, 6200, "Y");
-    DMassCanvas->SaveAs("../plots/Fitplots/Signalfit_Bs2Jpsif2_newVars.png");
+    DMassCanvas->SaveAs("../plots/Fitplots/Signalfit_Bs2Jpsif2_CB_newVars.png");
     
 
 
     DMassCanvas->SetLogy(1);
     DMassFrame -> Write();
-    DMassCanvas->SaveAs("../plots/Fitplots/Signalfit_Bs2Jpsif2_newVars_logy.png");
+    DMassCanvas->SaveAs("../plots/Fitplots/Signalfit_Bs2Jpsif2__CB_newVars_logy.png");
 
     f -> Close();
 
