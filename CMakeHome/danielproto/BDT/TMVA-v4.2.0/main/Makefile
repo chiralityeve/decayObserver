@@ -8,7 +8,7 @@ MAKEFLAGS = --no-print-directory -r -s
 INCLUDE = -I$(TMVASYS)/ $(shell root-config --cflags)
 LIBS    = -L$(TMVASYS)/lib -lTMVA.1 $(shell root-config --libs) -lMLP -lTreePlayer -lMinuit
 
-BINS = Run_BDT	
+BINS = Run_BDT 
 
 TMVALIB = $(TMVASYS)/lib/libTMVA.1.so
 

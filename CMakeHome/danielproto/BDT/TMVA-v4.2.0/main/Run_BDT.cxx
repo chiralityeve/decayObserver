@@ -96,12 +96,17 @@ int main( int argc, char** argv )
     // -----------------------------------
 
 
-
+    /* VORHER (ohne DLL(K-p) > -3 preselection)
     double nSig = 396.5, 
            nBkg = 24341.4;
+    */
 
-    TString fname1 = "/afs/cern.ch/work/d/dberning/private/BDT/Input/BDT_Signal.root";           //Signal
-    TString fname2 = "/afs/cern.ch/work/d/dberning/private/BDT/Input/BDT_Background.root";                     //Background      
+    //JETZT
+    double nSig = 270.7274,
+           nBkg = 9814.54;
+
+    TString fname1 = "/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Signal_triggered_newVars.root";           //Signal
+    TString fname2 = "/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Background_triggered_newVars.root";                     //Background      
     TFile *input1 = TFile::Open( fname1 );
     TFile *input2 = TFile::Open( fname2 );
     TTree *signal1     = (TTree*)input1->Get("Bs2phimumuTuple/DecayTree");
@@ -113,7 +118,7 @@ int main( int argc, char** argv )
 
     //Declaration of Variables for the training which are used for the application as well
     double cut_common, cut_punzi1, cut_punzi2, cut_punzi3, cut_punzi4, cut_punzi5;
-    TString id( "Bs2mumuf2_BDTselection_FINAL_newInput" );
+    TString id( "Bs2mumuf2_BDTselection_TRIGGERED_newVars" );
     TString save_path = ( "/afs/cern.ch/work/d/dberning/private/BDT/Trainingoutput/" );
 
 
@@ -166,10 +171,8 @@ int main( int argc, char** argv )
 
         factory1->BookMethod( TMVA::Types::kBDT, "BDT",
                 "!H:!V:NTrees=800:MinNodeSize=2.5%:MaxDepth=2:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=150");
-
-
-
-
+        
+      
 
         factory1->TrainAllMethods();
         factory1->TestAllMethods();
@@ -292,8 +295,12 @@ int main( int argc, char** argv )
 
 
 
-        
-        TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/" + id + ".root", "update");         //File which Tree with Data
+        //Add Branch to an existing Tree (dirty) 
+        //TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/" + id + ".root", "update");         //If filename is same as training
+        //TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Data_preselected_BDTResponse.root", "update");    //File which Tree with Data
+        TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/MC_truthmatched_BDTResponse.root", "update");    //Apply to MC
+
+
         TTree *tree     = (TTree*)output1->Get("Bs2phimumuTuple/DecayTree");
 
 
@@ -307,8 +314,7 @@ int main( int argc, char** argv )
         Double_t dkp_pidp, dkm_pidp, dkp_trackchi2, dkm_trackchi2, dmup_trackchi2, dmum_trackchi2;
 
         //SetBranchAddress for the outputtree
-        tree->SetBranchAddress( "B0_PT", &db_pt );
-        std::cout << "Branchadress B0_PT gesetzt" << std::endl;
+        tree->SetBranchAddress( "B0_PT", &db_pt ); 
         tree->SetBranchAddress( "B0_IPCHI2_OWNPV", &db_ipchi2 );
         tree->SetBranchAddress( "B0_FDCHI2_OWNPV", &db_fdchi2 );
         tree->SetBranchAddress( "B0_DIRA_OWNPV", &db_dira );
@@ -399,7 +405,7 @@ int main( int argc, char** argv )
     }   //End of application
 
     else {
-        std::cout << "Wrong argument: use training or application" << std::endl;
+        std::cout << "Wrong argument: use training, cutting or application" << std::endl;
     }
 
 }

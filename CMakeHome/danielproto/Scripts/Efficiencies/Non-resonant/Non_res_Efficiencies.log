@@ -1,0 +1,40 @@
+
+------ Generator level Cut Efficiency -------
+
+0.164960 +/- 0.000490
+
+------ Strippingefficiency -------
+
+Generated Events:  3510527.000000
+Events after Stripping (not-truthmatched): 513930.000000
+Events after Stripping (truthmatched): 354724.000000
+
+=> Effizienz: 0.101046 +/- 0.000161
+
+------ Preselectionefficiency -------
+
+Events before Cuts (Truthmatched):  354724.000000
+Events after Preselection: 202015.000000
+
+=> Effizienz: 0.569499 +/- 0.000831
+
+------ BDT Efficiency --------
+
+Events before BDT-cut (preselected, truthmatched):  202015.000000
+
+Events after Common-cut: 160469.000000		Effizienz: 0.794342 +/- 0.000899
+Events after Punzi-cut: 81074.000000		Effizienz: 0.401327 +/- 0.001091
+
+------ Trigger Efficiency --------
+
+Events after BDT Common-cut (preselected, truthmatched):  160469.000000
+Events after BDT Punzi-cut (preselected, truthmatched):  81074.000000
+
+Events after Common-cut and Triggerrequ.: 116081.000000		Effizienz: 0.723386 +/- 0.001117
+Events after Punzi-cut and Triggerrequ: 59912.000000		Effizienz: 0.738979 +/- 0.001542
+
+------ Total Efficiency --------
+
+With Common-Cut:0.005455 +/- 0.000499
+With Punzi-Cut:0.002815 +/- 0.000495
+
