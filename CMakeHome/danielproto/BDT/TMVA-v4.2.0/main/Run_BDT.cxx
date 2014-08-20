@@ -102,11 +102,11 @@ int main( int argc, char** argv )
     */
 
     //JETZT
-    double nSig = 284.24,
-           nBkg = 13679.7;
+    double nSig = 270.7274,
+           nBkg = 9814.54;
 
-    TString fname1 = "/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Signal_newVars.root";           //Signal
-    TString fname2 = "/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Background_newVars.root";                     //Background      
+    TString fname1 = "/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Signal_triggered_newVars.root";           //Signal
+    TString fname2 = "/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Background_triggered_newVars.root";                     //Background      
     TFile *input1 = TFile::Open( fname1 );
     TFile *input2 = TFile::Open( fname2 );
     TTree *signal1     = (TTree*)input1->Get("Bs2phimumuTuple/DecayTree");
@@ -118,7 +118,7 @@ int main( int argc, char** argv )
 
     //Declaration of Variables for the training which are used for the application as well
     double cut_common, cut_punzi1, cut_punzi2, cut_punzi3, cut_punzi4, cut_punzi5;
-    TString id( "Bs2mumuf2_BDTselection_FINAL_newVars" );
+    TString id( "Bs2mumuf2_BDTselection_TRIGGERED_newVars" );
     TString save_path = ( "/afs/cern.ch/work/d/dberning/private/BDT/Trainingoutput/" );
 
 
@@ -171,10 +171,8 @@ int main( int argc, char** argv )
 
         factory1->BookMethod( TMVA::Types::kBDT, "BDT",
                 "!H:!V:NTrees=800:MinNodeSize=2.5%:MaxDepth=2:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=150");
-
-
-
-
+        
+      
 
         factory1->TrainAllMethods();
         factory1->TestAllMethods();
@@ -298,7 +296,11 @@ int main( int argc, char** argv )
 
 
         //Add Branch to an existing Tree (dirty) 
-        TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/" + id + ".root", "update");         //File which Tree with Data
+        //TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/" + id + ".root", "update");         //If filename is same as training
+        //TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Data_preselected_BDTResponse.root", "update");    //File which Tree with Data
+        TFile *output1 = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/MC_truthmatched_BDTResponse.root", "update");    //Apply to MC
+
+
         TTree *tree     = (TTree*)output1->Get("Bs2phimumuTuple/DecayTree");
 
 

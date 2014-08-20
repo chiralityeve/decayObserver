@@ -1,5 +1,7 @@
 CXXFLAGS=-Wall -O2 -g $(shell root-config --cflags)
 LDLIBS=$(shell root-config --libs) 
 
+all: AddBranch 
 
-Efficiency: Efficiency.cpp
+AddBranch: AddBranch.cpp
+

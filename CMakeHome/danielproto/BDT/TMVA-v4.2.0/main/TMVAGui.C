@@ -47,7 +47,7 @@ void ActionButton( TControlBar* cbar,
 }
 
 // main GUI
-void TMVAGui( const char* fName = "Bs2mumuf2_BDTselection_FINAL_newVars.root" ) 
+void TMVAGui( const char* fName = "Bs2mumuf2_BDTselection_TRIGGERED_newVars.root" ) 
 {   
     // Use this script in order to run the various individual macros
     // that plot the output of TMVA (e.g. running TMVAClassification.C),

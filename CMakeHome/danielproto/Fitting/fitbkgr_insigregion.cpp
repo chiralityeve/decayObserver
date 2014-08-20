@@ -30,13 +30,13 @@ using namespace RooFit;
 int main() {
     
 // -----------------------------------------------------------------------
-// Get an estimate on the Signalevents for the resonant Bs2Jpsif2-Channel
+// Get an estimate on the Backgroundevents in the Signalregion (after preselection and triggererequ.)
 // -----------------------------------------------------------------------
     
     
     
     // Open Data 
-    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Background_newVars.root");
+    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Traininginput/BDT_Background_triggered_newVars.root");
     if (fileReal == 0) {
         // if we cannot open the file, print an error message and return immediatly
         printf("Error: cannot open RealData");

@@ -31,13 +31,13 @@ using namespace RooFit;
 int main() {
     
 // -----------------------------------------------------------------------
-// Get an estimate on the Signalevents for the resonant Bs2Jpsif2-Channel
+// Get an estimate on the Signalevents for the resonant Bs2Jpsif2-Channel (after preselection and triggerrequirements)
 // -----------------------------------------------------------------------
     
     
     
     // Open Data 
-    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Applicationoutput/Bs2mumuf2_BDTselection_FINAL_newVars.root");
+    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/Pruned/Data_preselected/Data_merged_pruned_preselected_triggered_newVars.root");
     if (fileReal == 0) {
         // if we cannot open the file, print an error message and return immediatly
         printf("Error: cannot open RealData");
@@ -102,7 +102,7 @@ int main() {
     //----------------------
     
     //Open TFile to save Plots
-    TFile* f = new TFile("../plots/Fitplots/Signalfit_Bs2Jpsif2_CB_newVars.root", "RECREATE");
+    TFile* f = new TFile("../plots/Fitplots/Signalfit_Bs2Jpsif2_CB_triggered_newVars.root", "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
     RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Signalfit Resonant Decay B_{s} -> J/#psi f_{2}"));
