@@ -36,7 +36,7 @@ int main() {
     
     
     // Open Data 
-    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Bs2mumuf2_rareDecay_blinded.root");
+    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Data_non-resonant_triggered_punzi.root");
     if (fileReal == 0) {
         // if we cannot open the file, print an error message and return immediatly
         printf("Error: cannot open RealData");
@@ -47,36 +47,36 @@ int main() {
 
     treeReal->SetBranchStatus("*",0);
     treeReal->SetBranchStatus("B0_M",1);                  //Bs_M aktivieren
-    treeReal->SetBranchStatus("TMVAResponse", 1);         //TMVA Response aktivieren (für Cut)
+    
 
     
 
 
     //Cuts anwenden
-    std::string punzicut = "TMVAResponse > 0.269563";
+    //std::string punzicut = "TMVAResponse > 0.269563";
 
     //---------------------
     //Let the FITTING BEGIN
     //--------------------
     
     //Lade Daten aus Tree
-    RooRealVar Bs_M("B0_M", "Masse B_{s}", 5100, 5600, "MeV");                   //Erstelle Variable Masse für gewünschte Range
+    RooRealVar Bs_M("B0_M", "Masse B_{s}", 5200, 5550, "MeV");                   //Erstelle Variable Masse für gewünschte Range
     
-    RooRealVar TMVARespo("TMVAResponse", "TMVA Response", -2, 2);
+    
     
     
 
-    RooArgSet VarSet(Bs_M, TMVARespo);
+    RooArgSet VarSet(Bs_M);
     
     RooDataSet dataSet("Datensatz_Masse", "Datensatz_Masse", treeReal, VarSet);     //Lade gewünschte Daten (Bplus_M) aus dem Tree
-    RooDataSet* ReducedDataSet = (RooDataSet*)dataSet.reduce(punzicut.c_str());
+    RooDataSet* ReducedDataSet = &dataSet;
 
     //Fiting Parameter definieren
     //Background
     RooRealVar background_parameter("bkgrd_param", "Parameter für Background e Fkt", -0.0015, -1, 0.0, "1/MeV");           //Definiere Parameter der e-Fkt
     RooExponential background("bkgrd", "Exponentialfkt für Background", Bs_M, background_parameter);
 
-    RooRealVar background_yield("bkgrd_yield", "Yield des Background", 40, 0, 100);
+    RooRealVar background_yield("bkgrd_yield", "Yield des Background", 40, 0, 200);
 
     //Füge PDFs zu Listen hinzu
     RooArgList shapes;
@@ -88,8 +88,8 @@ int main() {
 
     RooAddPdf totalPdf("totalPdf", "Summe aus Signal und Background", shapes, yields);
 
-    Bs_M.setRange("fitrange1", 5100, 5291);  
-    Bs_M.setRange("fitrange2", 5441, 5600);
+    Bs_M.setRange("fitrange1", 5200, 5291);  
+    Bs_M.setRange("fitrange2", 5441, 5550);
     Bs_M.setRange("signalrange", 5316.3, 5416.3);
     Bs_M.setRange("extrapolationrange", 5291, 5441);
 
@@ -101,7 +101,7 @@ int main() {
  
 
     //Open TFile to save Plots
-    TFile* f = new TFile("../plots/BDTrareDecay_Fits/Bkgrfit_Sigregion_extrap_Punzicut.root", "RECREATE");
+    TFile* f = new TFile("../plots/BDTrareDecay_Fits/Bkgrfit_Sigregion_extrap_triggered_Punzicut.root", "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
     RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Backgroundfit rare Decay after Punzicut (dashed: extrapolation)"));
@@ -129,7 +129,7 @@ int main() {
     TCanvas* DMassCanvas = new TCanvas("DMassCanvas", "Fit of Mass", 200, 10,1000, 600);
     
     DMassFrame->Draw();
-    DMassCanvas -> SaveAs("../plots/BDTrareDecay_Fits/Bkgrfit_Sigregion_extrap_Punzicut.png");
+    DMassCanvas -> SaveAs("../plots/BDTrareDecay_Fits/Bkgrfit_Sigregion_extrap_triggered_Punzicut.png");
 
     /*
     DMassFrame -> SetTitle("Backgroundfit (dashed: extrapolation) - logarithmic scale");

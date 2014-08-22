@@ -84,8 +84,8 @@ int main() {
     // Generator level cut efficiency
     // ---------------------------------
 
-    double generator_cut = 0.16496;
-    double err_generator_cut = 0.00049;
+    double generator_cut = 0.17171;
+    double err_generator_cut = 0.00684;
    
     cout << endl << "------ Generator level Cut Efficiency -------" << endl << endl;
     cout << generator_cut << " +/- " << err_generator_cut << endl << endl;

@@ -97,7 +97,7 @@ int main() {
  
 
     //Open TFile to save Plots
-    TFile* f = new TFile("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_newVars.root", "RECREATE");
+    TFile* f = new TFile("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_triggered.root", "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
     RooPlot* DMassFrame = Bs_M.frame(Bins(50), Name("Masse"), Title("Backgroundfit (dashed: extrapolation)"));
@@ -121,7 +121,7 @@ int main() {
     TCanvas* DMassCanvas = new TCanvas("DMassCanvas", "Fit of Mass", 200, 10,1000, 600);
     
     DMassFrame->Draw();
-    DMassCanvas -> SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_newVars.png");
+    DMassCanvas -> SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_triggered.png");
 
     
     DMassFrame -> SetTitle("Backgroundfit (dashed: extrapolation) - logarithmic scale");
@@ -130,7 +130,7 @@ int main() {
     
 
     DMassFrame -> Write();
-    DMassCanvas->SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_newVars_logy.png");
+    DMassCanvas->SaveAs("../plots/Fitplots/Bkgrfit_Sigregion_extrapolation_triggered_logy.png");
     
     
 
