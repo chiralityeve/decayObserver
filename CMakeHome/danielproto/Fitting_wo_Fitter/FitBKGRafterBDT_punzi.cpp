@@ -60,7 +60,7 @@ int main() {
     //--------------------
     
     //Lade Daten aus Tree
-    RooRealVar Bs_M("B0_M", "Masse B_{s}", 5200, 5550, "MeV");                   //Erstelle Variable Masse für gewünschte Range
+    RooRealVar Bs_M("B0_M", "m(B_{s})", 5200, 5550, "MeV");                   //Erstelle Variable Masse für gewünschte Range
     
     
     
@@ -121,7 +121,7 @@ int main() {
 
 
     //Display fit parameters
-    totalPdf.paramOn(DMassFrame, Format("NELU", AutoPrecision(2)), Layout(0.5, 1.0, 0.9));
+    //totalPdf.paramOn(DMassFrame, Format("NELU", AutoPrecision(2)), Layout(0.5, 1.0, 0.9));
 
     
     

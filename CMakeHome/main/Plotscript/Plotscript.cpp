@@ -77,10 +77,11 @@ int main(int argc, char **argv) {
 
 
 
-    TLegend legend(0.8, 0.85, 0.99, 0.99);               //Create legend
+    TLegend legend(0.7, 0.75, 0.89, 0.89);               //Create legend
     TLegend* legendp = &legend;
     legendp -> SetFillColor(kWhite);
     legendp -> Draw();
+    legendp -> SetBorderSize(4);    
 
 
     TH1D motherhist;                                  
@@ -100,6 +101,7 @@ int main(int argc, char **argv) {
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
 
     std::string savepath;
+    
     unsigned int savepathnr = 0;
     std::string str_savepathnr;
     std::string savename;
@@ -143,6 +145,7 @@ int main(int argc, char **argv) {
                 cp -> SaveAs(pdfname.c_str());
 
 
+
             }
             pdfpage += 1;                                           //Note: Plot of last canvas is done after this loops
 
@@ -158,6 +161,7 @@ int main(int argc, char **argv) {
             normsame = defnormsame;
 
             savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";          //note: savepath is used within the next loop iteration
+            savepath_singlepdf = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".pdf";
 
             //Only things that need to be done for 1-D histograms
             if((vec[i] -> Getname()).find(":") == std::string::npos) {
@@ -259,6 +263,7 @@ int main(int argc, char **argv) {
         }
     }
     cp -> SaveAs(savepath.c_str());                                                                 //Plot last canvas (.PNG)
+    
     cp -> SaveAs(pdfname.c_str());                                                                  //Plot last canvas (.PDF)
 
 

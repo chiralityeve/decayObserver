@@ -35,6 +35,6 @@ Events after Punzi-cut and Triggerrequ: 3050.000000		Effizienz: 0.878963 +/- 0.0
 
 ------ Total Efficiency --------
 
-With Common-Cut:0.008514 +/- 0.006868
-With Punzi-Cut:0.004258 +/- 0.006854
+With Common-Cut:0.008514 +/- 0.000355
+With Punzi-Cut:0.004258 +/- 0.000186
 
