@@ -59,12 +59,14 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     new Plotvariable("phi_1020_M", treeMC, "Simulation", vecp);      
 
     //Plot mumu-Mass after stripping (only in Data)
-    new Plotvariable("J_psi_1S_M", treedata, "", "Data", nbins, 2900, 3800, "m(#mu#mu)", "MeV/c^{2}", vecp);
+    new Plotvariable("J_psi_1S_M", treedata, "", "Data", nbins, 2500, 4200, "m(#mu#mu)", "MeV/c^{2}", vecp);
 
     //Plot resonant Bs-Mass before and after BDT punzi-Cut
     new Plotvariable("B0_M", treepresel, "", "Before BDT", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", resonant, vecp);
     new Plotvariable("B0_M", treerespunzi, "", "After BDT", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", vecp);
 
+    //Plot Bs-Mass after stripping
+    new Plotvariable("B0_M", treedata, "", "Data", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2]", vecp);
 }
 
 

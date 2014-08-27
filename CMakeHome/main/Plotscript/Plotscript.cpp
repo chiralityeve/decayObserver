@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
             normsame = defnormsame;
 
             savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";          //note: savepath is used within the next loop iteration
-            savepath_singlepdf = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".pdf";
+            
 
             //Only things that need to be done for 1-D histograms
             if((vec[i] -> Getname()).find(":") == std::string::npos) {
