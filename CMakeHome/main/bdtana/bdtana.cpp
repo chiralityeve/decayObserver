@@ -122,6 +122,13 @@ BdtAnalyser* CreateBdtAnalyser(const string& configFilename)
 			continue;
 		}
 		
+		if(key == "SAMPLES")
+		{
+			if(nArgs != 1){ nArgErrorMsg(); break; }
+			pBdt->SetSampleOptions(ap.Get<string>(1));
+			continue;
+		}
+		
 		if(key == "VAR" || key == "BRANCH")
 		{
 			if(nArgs != 1){ nArgErrorMsg(); break; }

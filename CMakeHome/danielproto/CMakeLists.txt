@@ -1,4 +1,4 @@
-add_subdirectory(Fitting)
+add_subdirectory(Fitting_wo_Fitter)
 
 
 

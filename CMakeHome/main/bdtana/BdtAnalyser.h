@@ -38,6 +38,7 @@ public:
 	void SetFactoryOptions(const string& options){ factoryOptions = options; }
 	void SetBdtOptions    (const string& options){ bdtOptions = options; }
 	void SetReaderOptions (const string& options){ readerOptions = options; }
+	void SetSampleOptions (const string& options){ sampleOptions = options; }
 	
 	void Train();
 	void Apply();
@@ -56,6 +57,7 @@ private:
 	string factoryOptions;
 	string bdtOptions;
 	string readerOptions;
+	string sampleOptions;
 	
 	TChain* CreateDataChain() const;
 	TFile* CreateApplyOutput() const;

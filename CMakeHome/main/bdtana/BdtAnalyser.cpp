@@ -32,7 +32,8 @@ void BdtAnalyser::Train()
 	}
 	
 	// Generate training and testing samples
-	pFactory->PrepareTrainingAndTestTree("", "SplitMode=random:!V");
+	//pFactory->PrepareTrainingAndTestTree("", "SplitMode=random:!V");
+	pFactory->PrepareTrainingAndTestTree("", sampleOptions.empty()? "SplitMode=random:!V" : sampleOptions);
 	
 	// Add variables
 	for(auto& var : variables)

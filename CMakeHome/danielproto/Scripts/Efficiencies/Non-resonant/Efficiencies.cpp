@@ -84,8 +84,10 @@ int main() {
     // Generator level cut efficiency
     // ---------------------------------
 
-    double generator_cut = 0.16496;
-    double err_generator_cut = 0.00049;
+    double generator_cut = 0.16496;                                                             // EDIT HERE
+    double err_generator_cut = 0.00049;                                                         // EDIT HERE
+
+    double rel_err_generator_cut = err_generator_cut / generator_cut;
    
     cout << endl << "------ Generator level Cut Efficiency -------" << endl << endl;
     cout << generator_cut << " +/- " << err_generator_cut << endl << endl;
@@ -98,7 +100,7 @@ int main() {
     double n_generated_events = tree_gen -> GetEntries();
     double n_after_stripping = tree_gen_after_stripping -> GetEntries();
 
-    std::string truthmatched = "B0_BKGCAT == 20";
+    std::string truthmatched = "B0_BKGCAT == 20";                                            // EDIT HERE
     double n_truthmatched = tree_gen_after_stripping -> GetEntries(truthmatched.c_str());
     double strippingerr = getEffError(n_generated_events, n_truthmatched);
 
@@ -172,7 +174,8 @@ int main() {
     
     cout << "Events after Common-cut and Triggerrequ.: " << n_after_trigger_common << "\t\tEffizienz: " << n_after_trigger_common / n_after_BDT_common << " +/- " 
         << getEffError(n_after_BDT_common, n_after_trigger_common) << endl;
-   
+   // EDIT HERE
+
     cout << "Events after Punzi-cut and Triggerrequ: " << n_after_trigger_punzi << "\t\tEffizienz: " << n_after_trigger_punzi / n_after_BDT_punzi<< " +/- " 
         << getEffError(n_after_BDT_punzi, n_after_trigger_punzi) << endl << endl;
 
@@ -182,15 +185,31 @@ int main() {
     // Totale Effizienz 
     // -------------------------
 
+    //Error of one factor
+    double eff_ohne_gencut_common = n_after_trigger_common / n_generated_events;
+    
     double err_ohne_gencut_common = getEffError(n_generated_events, n_after_trigger_common);
-    double err_ohne_gencut_punzi = getEffError(n_generated_events, n_after_trigger_punzi);
+    double rel_err_ohne_gencut_common = err_ohne_gencut_common / eff_ohne_gencut_common;
 
-    double total_error_common = sqrt( pow(err_ohne_gencut_common, 2) + pow(err_generator_cut, 2));
-    double total_error_punzi = sqrt( pow(err_ohne_gencut_punzi, 2) + pow(err_generator_cut, 2));
+    
+    
+    double eff_ohne_gencut_punzi = n_after_trigger_punzi / n_generated_events;
+    
+    double err_ohne_gencut_punzi = getEffError(n_generated_events, n_after_trigger_punzi);
+    double rel_err_ohne_gencut_punzi = err_ohne_gencut_punzi / eff_ohne_gencut_punzi;
+
+    //Error of second factor already calculated (gencut)
+    double total_eff_common = eff_ohne_gencut_common * generator_cut;
+    double total_rel_error_common = sqrt( pow(rel_err_ohne_gencut_common, 2) + pow(rel_err_generator_cut, 2));
+    double total_error_common = total_rel_error_common * total_eff_common;
+    
+    double total_eff_punzi = eff_ohne_gencut_punzi * generator_cut;
+    double total_rel_error_punzi = sqrt( pow(rel_err_ohne_gencut_punzi, 2) + pow(rel_err_generator_cut, 2));
+    double total_error_punzi = total_rel_error_punzi * total_eff_punzi;
     
     cout << "------ Total Efficiency --------" << endl << endl;
-    cout << "With Common-Cut:" << generator_cut * n_after_trigger_common / n_generated_events << " +/- " << total_error_common << endl;
-    cout << "With Punzi-Cut:" << generator_cut * n_after_trigger_punzi / n_generated_events << " +/- " << total_error_punzi << endl << endl;
+    cout << "With Common-Cut:" << total_eff_common << " +/- " << total_error_common << endl;
+    cout << "With Punzi-Cut:" << total_eff_punzi  << " +/- " << total_error_punzi << endl << endl;
 
    }
 

@@ -9,11 +9,74 @@
 
 
 
+
+
+// -----------------------------------------------
+// Plots for LHCb presentation 
+// -----------------------------------------------
+
+void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+
+    //Data (pruned) after stripping
+    TFile* filedata = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned_newVars.root", "READ");
+    TTree* treedata = (TTree*)filedata->Get("Bs2phimumuTuple/DecayTree");
+
+    //Preselected Data (+triggered | no cut on Jpsi mass so far)
+    TFile* filepresel = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data_preselected/Data_merged_pruned_preselected_triggered_newVars.root", "READ");
+    TTree* treepresel = (TTree*)filepresel->Get("Bs2phimumuTuple/DecayTree");
+
+    //Resonant decay after BDT punzi Cut (+ triggered)
+    TFile* filerespunzi = new TFile("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Data_resonant_triggered_punzi.root", "READ");
+    TTree* treerespunzi = (TTree*)filerespunzi->Get("Bs2phimumuTuple/DecayTree");
+
+
+
+    //Truthmatched MC
+    TFile* fileMC = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/MC_Truthmatched/MC_merged_pruned_truthmatched_newVars.root", "READ");
+    TTree* treeMC = (TTree*)fileMC->Get("Bs2phimumuTuple/DecayTree");
+
+ 
+    //Define Cut to select resonant Decay
+    std::string resonant = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
+
+
+    normalized_plots = false;                               //<-------- Normalized plots? | In case of false you can still make canvases normalised by writing "norm" in options
+    nbins = 200;                                           //<-------- Default number of bins
+    saveto = "../plots/0_For_Presentation/";                   //<-------- Path to save it
+
+
+    //There are basically two types of Constructos:
+    //
+    //Type1: First (or only) histogram on one canvas
+    //Plotvariable Type1(variable to plot, pointer to Tree, Title of Canvas, Label in legend, #bins, lower bound, upper bound, x-axis label, unit, cuts (optional), container (do not edit))
+    //
+    //Type2: Additional histogram(s) on same canvas
+    //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
+
+
+    //Plot KK-Mass after stripping
+    new Plotvariable("phi_1020_M", treedata, "", "Data", nbins, 1100, 2000, "m(KK)", "MeV/c^{2}", vecp, "norm");                   
+    new Plotvariable("phi_1020_M", treeMC, "Simulation", vecp);      
+
+    //Plot mumu-Mass after stripping (only in Data)
+    new Plotvariable("J_psi_1S_M", treedata, "", "Data", nbins, 2500, 4200, "m(#mu#mu)", "MeV/c^{2}", vecp);
+
+    //Plot resonant Bs-Mass before and after BDT punzi-Cut
+    new Plotvariable("B0_M", treepresel, "", "Before BDT", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", resonant, vecp);
+    new Plotvariable("B0_M", treerespunzi, "", "After BDT", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", vecp);
+
+    //Plot Bs-Mass after stripping
+    new Plotvariable("B0_M", treedata, "", "Data", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2]", vecp);
+}
+
+
+
+
 //-------------------------------------------------
 // Plots of new created branches: DiMasses of Kaon
 //-------------------------------------------------
 
-void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_newbranches(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
 
     TFile* file = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned_newVars.root", "READ");
     TTree* tree = (TTree*)file->Get("Bs2phimumuTuple/DecayTree");

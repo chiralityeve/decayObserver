@@ -1,7 +1,7 @@
 
 ------ Generator level Cut Efficiency -------
 
-0.164960 +/- 0.000490
+0.171710 +/- 0.006840
 
 ------ Stripping Efficiency -------
 
@@ -35,6 +35,6 @@ Events after Punzi-cut and Triggerrequ: 3050.000000		Effizienz: 0.878963 +/- 0.0
 
 ------ Total Efficiency --------
 
-With Common-Cut:0.008179 +/- 0.000789
-With Punzi-Cut:0.004091 +/- 0.000661
+With Common-Cut:0.008514 +/- 0.000355
+With Punzi-Cut:0.004258 +/- 0.000186
 
