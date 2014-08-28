@@ -17,7 +17,8 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     
    // MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagDown/LambdaB2LcHHH.root");
    // MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagUp/LambdaB2LcHHH.root");
-   MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagDown/LambdaB2LcHHH_preselect.root");
+  // MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagDown/LambdaB2LcHHH_preselect.root");
+  MCtree -> Add("/afs/cern.ch/user/a/avitaly/public/Lb2LcHHH-sigMC/Lb2LcHHH-sigMC-all-preselect-tr.root");
   
   // MCtree -> Add("../LambdaB2LcHHH_preselect_sWeighted.root");
    
@@ -28,11 +29,11 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     
     //std::string cuts = "B0_BKGCAT == 20";
     
-    normalized_plots = true;                //<-------- Normalized plots?
+    normalized_plots = false;                //<-------- Normalized plots?
     nbins = 200;                            //<-------- Default number of bins
     saveto = "../plots/";                   //<-------- Path to save it
 
-  new Plotvariable("lab0_M", MCtree, "Lb mass after preselection", "", nbins, 5150, 6200, "m_{Lb}", "MeV", "", vecp);
+  new Plotvariable("lab0_M", MCtree, "#Lambda_b mass from signal MC after truthmatching ", "", nbins, 5150, 6200, "m_{Lb}", "MeV", "", vecp);
    //  new Plotvariable("lab0_M", MCtree, "Without cuts",  "", vecp); 
 
     //There are basically two types of Constructos:
@@ -241,7 +242,7 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //------------------------------------------------------------------
     
     
-    
+    /*
     std::string cuts[] = {"abs(1968 -lab5_M)<20",  "abs(2286-lab1_M)<20", "lab6_PIDK>5",  "lab7_PIDK>5", "lab6_IP_OWNPV>0.1",  "lab7_IP_OWNPV>0.1",  "lab8_IP_OWNPV>0.1",  "lab2_PIDp>10", "lab3_PIDK>10",  "lab4_PIDK<-3",  "lab4_PIDp<-3", "lab1_IPCHI2_ORIVX<1",  "lab2_PIDp-lab2_PIDK > 0" };
     int nocuts=sizeof(cuts)/sizeof(cuts[0]);
     
@@ -254,7 +255,7 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
    //   new Plotvariable("lab0_M", MCtree, "Lb mass", "With cuts", nbins, 5200, 6200, "m_{Lc}", "MeV", allcuts, vecp);
    //  new Plotvariable("lab5_M", MCtree, "a1 mass", "With cuts", nbins, 1000, 3000, "m_{Lc}", "MeV", allcuts, vecp);
   
-    
+    */
     
     // ********************************** ALL BUT ONE PLOTS ******************************************
     /* 
@@ -278,13 +279,16 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
       allb1cuts="";
     } */
     
-  
+  /*
     std::ofstream cutsfile;
     cutsfile.open ("../plots/cuts.txt");
     for(int i=0;i<nocuts-1;i++){
       cutsfile << "SELECT "+cuts[i]+"\n";
     }
     cutsfile.close();
+    */
+  
+  
     /*
     
     // ************************* 2body subsystem masses**********************************
@@ -314,11 +318,16 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     */
     //with Lb mass cut
     
+    
+    /*
     std::string allcuts2bLb = "abs(5619.4-lab0_M)<40 && ";
     for(int i=0;i<nocuts-1;i++){
       allcuts2bLb+=cuts[i]+" && ";
     }
     allcuts2bLb+=cuts[nocuts-1];
+    */
+    
+    
     /* With a mass cut on Lb
     new Plotvariable("sqrt((lab1_PE+lab8_PE)**2-(lab1_PX+lab8_PX)**2-(lab1_PY+lab8_PY)**2-(lab1_PZ+lab8_PZ)**2)", MCtree, "Lc + pi- mass", "All Lc, a1, Lc mass, PIDK(6,7)>5, Lb mass cuts", nbins, 2400, 5700, "m_{1+8}", "MeV", allcuts2bLb, vecp);
     new Plotvariable("sqrt((lab1_PE+lab8_PE)**2-(lab1_PX+lab8_PX)**2-(lab1_PY+lab8_PY)**2-(lab1_PZ+lab8_PZ)**2)", MCtree, "Without cuts",  "", vecp);
