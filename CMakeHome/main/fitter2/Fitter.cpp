@@ -126,7 +126,7 @@ ostream& FitterPdf::Print(ostream& os) const
 
 int FitterPdf::Check()
 {
-	const map<string, int> pdf_nArg = {{"Gaussian", 3}, {"Polynomial", -1}, {"Exponential", 2}, {"CrystalBall", 5}, {"BifurGauss", 4}, {"Argus", 4},  {"Landau", 3}};
+	const map<string, int> pdf_nArg = {{"Gaussian", 3}, {"Polynomial", -1}, {"Exponential", 2}, {"CrystalBall", 5}};
 	int nParams = params.size();
 	
 	if(!pdf_nArg.count(pdf)) return 1;
@@ -183,38 +183,6 @@ int FitterPdf::Init()
 		RooAbsReal* pN = NewVar(params[4], "n", "");
 		
 		NewPdf<RooCBShape>(*pFitter->pFitVar, *pM0, *pSigma, *pAlpha, *pN);
-		
-		return 0;
-	}
-	
-	if(pdf == "BifurGauss")
-	{
-		RooAbsReal* pM0 = NewVar(params[1], "m0", pFitter->unit);
-		RooAbsReal* pSigmaL = NewVar(params[2], "sigmaL", pFitter->unit);
-		RooAbsReal* pSigmaR = NewVar(params[3], "sigmaR", pFitter->unit);
-		
-		NewPdf<RooBifurGauss>(*pFitter->pFitVar, *pM0, *pSigmaL, *pSigmaR);
-		
-		return 0;
-	}
-	
-	if(pdf == "Argus")
-	{
-		RooAbsReal* pM0 = NewVar(params[1], "m0", pFitter->unit);
-		RooAbsReal* pArC = NewVar(params[2], "ArC","");
-		RooAbsReal* pArP = NewVar(params[3], "ArP", "");
-		
-		NewPdf<RooArgusBG>(*pFitter->pFitVar, *pM0, *pArC, *pArP);
-		
-		return 0;
-	}
-	
-	if(pdf == "Landau")
-	{
-		RooAbsReal* pM0 = NewVar(params[1], "m0", pFitter->unit);
-		RooAbsReal* pSig = NewVar(params[2], "sigma",pFitter->unit);
-		
-		NewPdf<RooLandau>(*pFitter->pFitVar, *pM0, *pSig);
 		
 		return 0;
 	}
