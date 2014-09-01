@@ -12,13 +12,16 @@ using std::endl;
 
 void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
     
-    TChain* MCtree = new TChain("LambdaBOfflineTree/DecayTree");
-   // TChain* MCtree = new TChain("DecayTree");
+    //TChain* MCtree = new TChain("LambdaBOfflineTree/DecayTree");
+   TChain* MCtree = new TChain("DecayTree");
     
    // MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagDown/LambdaB2LcHHH.root");
    // MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagUp/LambdaB2LcHHH.root");
   // MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/2011MagDown/LambdaB2LcHHH_preselect.root");
-  MCtree -> Add("/afs/cern.ch/user/a/avitaly/public/Lb2LcHHH-sigMC/Lb2LcHHH-sigMC-all-preselect-tr.root");
+  //MCtree -> Add("/afs/cern.ch/user/a/avitaly/public/Lb2LcHHH-sigMC/Lb2LcHHH-sigMC-all-preselect-tr.root");
+  //MCtree -> Add("/afs/cern.ch/work/k/kheijhof/public/Lb2LcKKpi/LambdaB2LcHHH_preselect.root");
+  
+  MCtree -> Add(" ../plots/Lb-TMVA.root");
   
   // MCtree -> Add("../LambdaB2LcHHH_preselect_sWeighted.root");
    
@@ -30,10 +33,12 @@ void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     //std::string cuts = "B0_BKGCAT == 20";
     
     normalized_plots = false;                //<-------- Normalized plots?
-    nbins = 200;                            //<-------- Default number of bins
+    nbins = 100;                            //<-------- Default number of bins
     saveto = "../plots/";                   //<-------- Path to save it
-
-  new Plotvariable("lab0_M", MCtree, "#Lambda_b mass from signal MC after truthmatching ", "", nbins, 5150, 6200, "m_{Lb}", "MeV", "", vecp);
+new Plotvariable("lab0_M", MCtree, "#Lambda_{b} mass canditates with cut on BDT", "", nbins, 5150, 6200, "m_{LcKKPi}", "MeV", "TMVAResponse>0.01", vecp);
+  
+ //new Plotvariable("lab0_M", MCtree, "#Lambda_{b} mass canditates after preselection - only 2011MagDown data", "", nbins, 5150, 6200, "m_{LcKKPi}", "MeV", "", vecp);
+  //new Plotvariable("lab0_M", MCtree, "#Lambda_b mass from signal MC after truthmatching ", "", nbins, 5150, 6200, "m_{Lb}", "MeV", "", vecp);
    //  new Plotvariable("lab0_M", MCtree, "Without cuts",  "", vecp); 
 
     //There are basically two types of Constructos:
