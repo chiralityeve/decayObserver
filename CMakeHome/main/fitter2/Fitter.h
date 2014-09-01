@@ -49,6 +49,9 @@
 #include "RooMsgService.h"
 #include "RooPlot.h"
 #include "RooCBShape.h"
+#include "RooBifurGauss.h"
+#include "RooArgusBG.h"
+#include "RooLandau.h"
 
 #include "RooStats/SPlot.h"
 
