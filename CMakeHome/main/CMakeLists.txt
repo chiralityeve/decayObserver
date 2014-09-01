@@ -13,4 +13,5 @@ add_subdirectory(fitter)
 add_subdirectory(fitter2)
 add_subdirectory(bdtana)
 add_subdirectory(Getlumi)
+add_subdirectory(plotconf)
 
