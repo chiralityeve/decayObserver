@@ -12,10 +12,91 @@
 
 
 // -----------------------------------------------
-// Plots for LHCb presentation 
+// Plots to compare PID variables (MC <-> Data)
 // -----------------------------------------------
 
 void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+
+    //Data (pruned) after stripping
+    TFile* filedata = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned_newVars.root", "READ");
+    TTree* treedata = (TTree*)filedata->Get("Bs2phimumuTuple/DecayTree");
+
+
+    //Define Cut to select resonant Decay
+    std::string resonant = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
+
+    std::string non_resonant = "(J_psi_1S_M > 3316.6 || J_psi_1S_M < 2828.4) && (J_psi_1S_M < 3535.6 || J_psi_1S_M > 3873.0)";
+
+    std::string preselection = "phi_1020_M > 1300 && phi_1020_M < 1800 && Kplus_PIDK > -3 && Kminus_PIDK > -3";
+    preselection += " && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
+
+    std::string f2_cut = "phi_1020_M > 1300 && phi_1020_M < 1800";
+
+
+    normalized_plots = false;                               //<-------- Normalized plots? | In case of false you can still make canvases normalised by writing "norm" in options
+    nbins = 200;                                           //<-------- Default number of bins
+    saveto = "../plots/Compare_PIDvariables/";                   //<-------- Path to save it
+
+
+    //There are basically two types of Constructos:
+    //
+    //Type1: First (or only) histogram on one canvas
+    //Plotvariable Type1(variable to plot, pointer to Tree, Title of Canvas, Label in legend, #bins, lower bound, upper bound, x-axis label, unit, cuts (optional), container (do not edit))
+    //
+    //Type2: Additional histogram(s) on same canvas
+    //Plotvariable Type2(variable to plot, pointer to Tree, Label in legend, cuts(optional), container (do not edit))
+
+
+    //Compare PID variables between the two different channels
+    new Plotvariable("Kplus_PIDK", treedata, "Kplus DLL(K - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -50, 70,  "Kplus DLL(K - #pi)", "", non_resonant + " && " + f2_cut, vecp, "norm");                   
+    new Plotvariable("Kplus_PIDK", treedata, "resonant", resonant + " && " + f2_cut,  vecp);      
+ 
+    new Plotvariable("Kplus_PIDp", treedata, "Kplus DLL(p - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -50, 70,  "Kplus DLL(p - #pi)", "", non_resonant + " && " + f2_cut, vecp, "norm");                   
+    new Plotvariable("Kplus_PIDp", treedata, "resonant", resonant + " && " + f2_cut,  vecp);   
+
+    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treedata, "Kplus DLL(K - p) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -50, 70,  "Kplus DLL(K - p)", "",  non_resonant + " && " + f2_cut, vecp, "norm");                   
+    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treedata, "resonant", resonant + " && " + f2_cut,  vecp);   
+    
+    new Plotvariable("muplus_PIDmu", treedata, "Muplus DLL(#mu - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -5, 15,  "Muplus DLL(#mu - #pi)", "", non_resonant + " && " + f2_cut, vecp, "norm");                   
+    new Plotvariable("muplus_PIDmu", treedata, "resonant", resonant + " && " + f2_cut,  vecp); 
+
+
+    //Do we see a resonant Peak?
+    new Plotvariable("B0_M", treedata, "B_{s}-mass after applying resonant preselection", "resonant",
+            nbins, 5200, 5550, "m(B_{s})", "MeV", resonant + " && " + preselection, vecp);
+
+    new Plotvariable("phi_1020_M", treedata, "f_{2}'-mass after applying resonant preselection", "resonant",
+            nbins, 1280, 1820, "m(f_{2}')", "MeV", resonant + " && " + preselection, vecp);
+
+    new Plotvariable("phi_1020_M", treedata, "f_{2}'-mass after resonant preselection and cut on B_{s}-mass", "resonant",
+            nbins, 1280, 1820, "m(f_{2}')", "MeV", resonant + " && " + preselection + "&& B0_M > 5341 && B0_M < 5391", vecp);
+
+   
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -----------------------------------------------
+// Plots for LHCb presentation 
+// -----------------------------------------------
+
+void daniel_LHCbpresentation(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
 
     //Data (pruned) after stripping
     TFile* filedata = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned_newVars.root", "READ");
@@ -35,9 +116,20 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     TFile* fileMC = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/MC_Truthmatched/MC_merged_pruned_truthmatched_newVars.root", "READ");
     TTree* treeMC = (TTree*)fileMC->Get("Bs2phimumuTuple/DecayTree");
 
- 
+
+    //Peaking Background
+    TFile* file_peakingBKGR = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/LambdaMuMu_MC/LambdaMuMu_MC_P8.root", "read");
+    TTree* tree_peakingBKGR = (TTree*)file_peakingBKGR->Get("Bs2phimumuTuple/DecayTree");
+
+
+
     //Define Cut to select resonant Decay
     std::string resonant = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
+
+    std::string preselection = "phi_1020_M > 1300 && phi_1020_M < 1800 && Kplus_PIDK > -3 && Kminus_PIDK > -3";
+    preselection += " && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
+
+    std::string f2_cut = "phi_1020_M > 1300 && phi_1020_M < 1800";
 
 
     normalized_plots = false;                               //<-------- Normalized plots? | In case of false you can still make canvases normalised by writing "norm" in options
@@ -65,8 +157,13 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     new Plotvariable("B0_M", treepresel, "", "Before BDT", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", resonant, vecp);
     new Plotvariable("B0_M", treerespunzi, "", "After BDT", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", vecp);
 
-    //Plot Bs-Mass after stripping
-    new Plotvariable("B0_M", treedata, "", "Data", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2]", vecp);
+    //Plot Bs-Mass before and after preselection
+    new Plotvariable("B0_M", treedata, "", "Data before Presel", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", vecp);
+    new Plotvariable("B0_M", treedata, "", "Data after Presel", nbins, 5200, 5700, "m(B_{s})", "MeV/c^{2}", preselection, vecp);
+
+    //Plot Lambda_b -> Lambda(15250)mumu potential peaking background
+    new Plotvariable("B0_M", tree_peakingBKGR, "", "after f2-cut", nbins, 5200, 5700, "m(#Lambda_{b})", "MeV/c^{2}", vecp);
+    new Plotvariable("B0_M", tree_peakingBKGR, "", "after complete preselection", nbins, 5200, 5700, "m(#Lambda_{b})", "MeV/c^{2}", preselection, vecp);
 }
 
 

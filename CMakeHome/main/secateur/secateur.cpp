@@ -623,10 +623,13 @@ void Prune(const string& inputFilename, const string& outputFilename, const vect
 			
 			if(!pTreeIn){ cerr << "Error opening " << inputFilename << ":" << obj.path << endl; return; }	
 			
-			// Activate selected branches
+			// Activate selected branches - if branches consist of only one and this is named ALL activate every branch, else only the selected
+            if(obj.pTreeInfo->branches.size() == 1 && obj.pTreeInfo->branches.back().name == "ALL") pTreeIn->SetBranchStatus("*", 1);
+            else{
 			pTreeIn->SetBranchStatus("*", 0);
 			for(auto& br : obj.pTreeInfo->branches)
 				pTreeIn->SetBranchStatus(br.name.c_str(), 1);
+            }
 			
 			if(select.empty()) // No selections
 			{
