@@ -72,8 +72,12 @@ TH1* Plotvariable_2D::plot() {
 
     std::string str_tree2hist = name_ + " >> " + histid;   //Add prepared strings together
 
-    tree_-> Draw(str_tree2hist.c_str(), cuts_.c_str(), options_.c_str());                                                //Write Branch from tree
-    
+    Long64_t drawerror = tree_-> Draw(str_tree2hist.c_str(), cuts_.c_str(), options_.c_str());                                                //Write Branch from tree
+   
+    //Draw error msg in case of error
+    if(drawerror == -1) {
+        std::cerr << "Error while plotting " << savename_ << std::endl;
+    }
                                                                                                     //Edit color and style of histogram
     //htemp = (TH1D*)tree_->GetHistogram();
     //std::string histtitel = title_;
