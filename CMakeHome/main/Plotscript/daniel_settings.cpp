@@ -21,6 +21,13 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     TFile* filedata = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned_newVars.root", "READ");
     TTree* treedata = (TTree*)filedata->Get("Bs2phimumuTuple/DecayTree");
 
+    //Resonant Data after preselection with sweights
+    TFile* filesweights = new TFile("/afs/cern.ch/work/d/dberning/private/Sweighting/PIDcomparison/Data_resonant_preselected_newVars_sweights.root", "READ");
+    TTree* treesweights = (TTree*)filesweights->Get("DecayTree");
+
+    //Resonant Truthmatched Data after preselection
+    TFile* fileresMC = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/MC_res_Preselected/MC_truthmatched_resonant_preselected_newVars.root", "READ");
+    TTree* treeresMC = (TTree*)fileresMC->Get("Bs2phimumuTuple/DecayTree");
 
     //Define Cut to select resonant Decay
     std::string resonant = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147";
@@ -75,8 +82,23 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
     new Plotvariable("phi_1020_M", treedata, "f_{2}'-mass after resonant preselection and cut on B_{s}-mass", "resonant",
             nbins, 1280, 1820, "m(f_{2}')", "MeV", resonant + " && " + preselection + "&& B0_M > 5341 && B0_M < 5391", vecp);
 
-   
+  
+    //Sweighted
+    new Plotvariable("Kplus_PIDK", treesweights, "Kplus DLL(K - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -5, 30,  "Kplus DLL(K - #pi)", "", vecp, "norm");                   
+    new Plotvariable("Kplus_PIDK", treeresMC, "resonant",   vecp);      
+ 
+    new Plotvariable("Kplus_PIDp", treesweights, "Kplus DLL(p - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -15, 30,  "Kplus DLL(p - #pi)", "", vecp, "norm");                   
+    new Plotvariable("Kplus_PIDp", treeresMC, "resonant",   vecp);   
+
+    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treesweights, "Kplus DLL(K - p) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -53, 30,  "Kplus DLL(K - p)", "",   vecp, "norm");                   
+    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treeresMC, "resonant",   vecp);   
     
+    new Plotvariable("muplus_PIDmu", treesweights, "Muplus DLL(#mu - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
+            nbins,  -5, 15,  "Muplus DLL(#mu - #pi)", "",  vecp, "norm");                   
+    new Plotvariable("muplus_PIDmu", treeresMC, "resonant",   vecp); 
     
 }
 
