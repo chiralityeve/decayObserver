@@ -37,19 +37,19 @@ using std::map;
 
 
 struct VariableInfo{
-  string name;
-  string fromtree;
-  string title;
-  string legend;
-  int nbins;
-  double range_min;
-  double range_max;
-  string axislabel;
-  string unit;
-  string cuts;
-  string options;
+    string name;
+    string fromtree;
+    string title;
+    string legend;
+    int nbins;
+    double range_min;
+    double range_max;
+    string axislabel;
+    string unit;
+    string cuts;
+    string options;
 
-  int type;  //Types: 1 = Plot on new canvas, 2 = Plot on same canvas
+    int type;  //Types: 1 = Plot on new canvas, 2 = Plot on same canvas
 };
 
 
@@ -78,29 +78,29 @@ int main(int argc, char **argv) {
 
     //Settings are loaded here (depending on the main parameter given)
     std::string configFilename = argv[1];
-    
+
 
     vector<VariableInfo> variablevector;    //Vector that saves the infos for the variables to plot
     map<string, TChain*> treemap;
-    
+
 
 
 
     string outputFilename;
-    
+
     //Read Configfile here: variablevector is filled, same as inputFilename, decayChain and outputFilename
     ReadConfigurationFile(configFilename, outputFilename, variablevector, treemap);
-    
+
 
 
     //Create new Plotvariables
     for(auto& obj:variablevector) {
-    normalized_plots = false;                  //<-------- Normalized plots? Standard: false
-	saveto = outputFilename;                   //<-------- Path to save it
+        normalized_plots = false;                  //<-------- Normalized plots? Standard: false
+        saveto = outputFilename;                   //<-------- Path to save it
 
-	if(obj.type == 1) new Plotvariable(obj.name, treemap[obj.fromtree], obj.title, obj.legend, obj.nbins, obj.range_min, obj.range_max, 
-            obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);
-    if(obj.type == 2) new Plotvariable(obj.name, treemap[obj.fromtree], obj.legend, obj.cuts, vecp);
+        if(obj.type == 1) new Plotvariable(obj.name, treemap[obj.fromtree], obj.title, obj.legend, obj.nbins, obj.range_min, obj.range_max, 
+                obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);
+        if(obj.type == 2) new Plotvariable(obj.name, treemap[obj.fromtree], obj.legend, obj.cuts, vecp);
     }
 
 
@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
     unsigned int nplots = 0;                            //number of plots on the same canvas (counter)
 
     std::string savepath;
-    
+
     unsigned int savepathnr = 0;
     std::string str_savepathnr;
     std::string savename;
@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
             normsame = defnormsame;
 
             savepath = saveto + str_savepathnr + "_" + vec[i]->Getsavename() + ".png";          //note: savepath is used within the next loop iteration
-            
+
             //Only things that need to be done for 1-D histograms
             if((vec[i] -> Getname()).find(":") == std::string::npos) {
                 if((vec[i] -> Getoptions()).find("norm") != std::string::npos) {        //Find if canvas should be normalised
@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
 
                 motherhistp = vec[i] -> plot(kBlue, 1, norm); 
                 maxbincontent = motherhistp -> GetMaximum();
-                
+
                 //Check if it is a normal histogram which means bin contents of 0 or above
                 minbincontent = motherhistp -> GetMinimum();
                 if(minbincontent < 0) motherhistp -> SetMinimum(minbincontent + minbincontent/10);
@@ -279,13 +279,13 @@ int main(int argc, char **argv) {
                 maxbincontent = temphistp -> GetMaximum();
                 motherhistp -> SetMaximum(maxbincontent + maxbincontent/10);
             }
-            
+
             //minbincontent
             if(minbincontent > temphistp -> GetMinimum()) {
                 minbincontent = temphistp -> GetMinimum();
                 if(minbincontent < 0) motherhistp -> SetMinimum(minbincontent + minbincontent/10);
             }
-    
+
             legendp->Draw();
 
             //Save to ROOT-File (adding legendname to the title before)
@@ -295,17 +295,17 @@ int main(int argc, char **argv) {
             temphistp -> Write();      
             std::cout << "Info in <TCanvas::Print>: Current histogram "  << vec[i] -> Getsavename() << "_subplot" << nplots << " added to .ROOT-File" << std::endl;
             temphistp -> SetTitle(temptitle_before.c_str());
-            
+
         }
     }
     cp -> SaveAs(savepath.c_str());                                                                 //Plot last canvas (.PNG)
-    
+
     cp -> SaveAs(pdfname.c_str());                                                                  //Plot last canvas (.PDF)
 
     std::cout << std:: endl <<"Info in <TCanvas::Print>: Close pdf file:" << std::endl;
 
     cp -> SaveAs( (pdfname + "]").c_str());                                                         //finish PDF plotting
-    
+
     outfile->Close();           //Close ROOT-File
 
     return 0;
@@ -330,106 +330,119 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
     string treename;    //Reference to the curren tree
     string inputFilename;
     string decayChain;
-      
-	ifstream ifs(filename);
-	bool parseError = false;
-	map<string, function<void(const string&)> > dispatch; // Lambda expressions are used for parsing
-	
-	// Trims leading and trailing white space of str
-	auto trim = [](const string& str) -> string
-	{
-		try
-		{
-			const string whiteSpace = " \t\r";
-			size_t a = str.find_first_not_of(whiteSpace);
-			size_t b = str.find_last_not_of(whiteSpace);
-			return str.substr(a, b-a+1);
-		}
-		catch(out_of_range& e){ return ""; }	
-	};
-	
-	// Checks if strs contains str
-	auto contains = [](const vector<string>& strs, const string& str){ return find(strs.begin(), strs.end(), str) != strs.end(); };
-	
-	// Searches for the next key value pair and calls their interpreters if they are in the expected keys vector (expkeys)
-	// Return true when the key matched and false otherwise.
-	auto parse = [&](const vector<string>& expkeys)
-	{
-		static bool nextline = true;
-		static string key;
-		static string val;
-		
-		if(parseError) return false;
 
-		while(ifs && (!nextline || (ifs>>key && getline(ifs, val))))
-		{
-			nextline = true; 					// Make sure that a new line will be read when we continue.
-			if(key[0] == '#') continue;	 		// This is a comment, ignore it.
-			if(!contains(expkeys, key)) break; 	// The key does not match any of the expected ones
-			dispatch[key](trim(val));
-			return true;
-		}
-		nextline = false; // The key didn't match and we might want to try another set of keys later, so don't read a new line the next time.
-		return false; // Fail		
-	};
-	
-	auto parseAll = [&](const vector<string>& expkeys)
-	{
-		while(parse(expkeys));
-	};
-	
+    ifstream ifs(filename);
+    bool parseError = false;
+    map<string, function<void(const string&)> > dispatch; // Lambda expressions are used for parsing
+
+    // Trims leading and trailing white space of str
+    auto trim = [](const string& str) -> string
+    {
+        try
+        {
+            const string whiteSpace = " \t\r";
+            size_t a = str.find_first_not_of(whiteSpace);
+            size_t b = str.find_last_not_of(whiteSpace);
+            return str.substr(a, b-a+1);
+        }
+        catch(out_of_range& e){ return ""; }	
+    };
+
+    // Checks if strs contains str
+    auto contains = [](const vector<string>& strs, const string& str){ return find(strs.begin(), strs.end(), str) != strs.end(); };
+
+    // Searches for the next key value pair and calls their interpreters if they are in the expected keys vector (expkeys)
+    // Return true when the key matched and false otherwise.
+    auto parse = [&](const vector<string>& expkeys)
+    {
+        static bool nextline = true;
+        static string key;
+        static string val;
+
+        if(parseError) return false;
+
+        while(ifs && (!nextline || (ifs>>key && getline(ifs, val))))
+        {
+            nextline = true; 					// Make sure that a new line will be read when we continue.
+            if(key[0] == '#') continue;	 		// This is a comment, ignore it.
+            if(!contains(expkeys, key)) break; 	// The key does not match any of the expected ones
+            dispatch[key](trim(val));
+            return true;
+        }
+        nextline = false; // The key didn't match and we might want to try another set of keys later, so don't read a new line the next time.
+        return false; // Fail		
+    };
+
+    auto parseAll = [&](const vector<string>& expkeys)
+    {
+        while(parse(expkeys));
+    };
+
 
     //Where to save the histograms
-	dispatch["OUTPUT"] = [&](const string& line){ outputFilename = line; };
-	
+    dispatch["OUTPUT"] = [&](const string& line){ outputFilename = line; };
+
     //Inputfile(as TCHain) + tree
     dispatch["INPUT"] = [&](const string& line)
-		{
-			if(ArgParser(line).Scan(treename, inputFilename, decayChain))
-			{
-				parseError = true;
-				cerr << "Parsing error" << endl;
-				return;
-			}
-            
-            treemap[treename] = new TChain(decayChain.c_str());
-            treemap[treename] -> Add(inputFilename.c_str());
+    {
+        if(ArgParser(line).Scan(treename, inputFilename, decayChain))
+        {
+            parseError = true;
+            cerr << "Parsing error" << endl;
+            return;
+        }
+
+        treemap[treename] = new TChain(decayChain.c_str());
+        treemap[treename] -> Add(inputFilename.c_str());
 
 
-		};
-    
+    };
+
     //Tree to add to the previous Inputfile
     dispatch["INPUT_ADD"] = [&](const string& line)
-		{
-			if(ArgParser(line).Scan(inputFilename))
-			{
-				parseError = true;
-				cerr << "Parsing error" << endl;
-				return;
-			}
+    {
+        if(ArgParser(line).Scan(inputFilename))
+        {
+            parseError = true;
+            cerr << "Parsing error" << endl;
+            return;
+        }
 
-            treemap[treename] -> Add(inputFilename.c_str());    //treename is the name of the current tree
-		};
+        treemap[treename] -> Add(inputFilename.c_str());    //treename is the name of the current tree
+    };
 
 
-	//Normal 1D Plotting
-	dispatch["PLOT"] = [&](const string& line)
-	{
-	 
+    //Normal 1D Plotting
+    dispatch["PLOT"] = [&](const string& line)
+    {
+
         dispatch["PLOTVAR"] = [&](const string& line)
-		{
-			if(ArgParser(line).Scan(info.name, info.fromtree, info.title, info.legend, info.nbins, info.range_min, info.range_max, 
-                        info.axislabel, info.unit, info.cuts, info.options))
-			{
-				parseError = true;
-				cerr << "Parsing error" << endl;
-				return;
-			}
+        {
+            if(ArgParser(line).NumArgs() == 11) {     //Check if there are 11 entries => with options
+                if(ArgParser(line).Scan(info.name, info.fromtree, info.title, info.legend, info.nbins, info.range_min, info.range_max, 
+                            info.axislabel, info.unit, info.cuts, info.options))
+                {
+                    parseError = true;
+                    cerr << "Parsing error" << endl;
+                    return;
+                }
+            }
+
+            else{       //Else Only 10 => without options
+                if(ArgParser(line).Scan(info.name, info.fromtree, info.title, info.legend, info.nbins, info.range_min, info.range_max, 
+                            info.axislabel, info.unit, info.cuts))
+                {
+                    parseError = true;
+                    cerr << "Parsing error" << endl;
+                    return;
+                }
+                info.options = "";
+            }
 
             info.type = 1;  //Type 1 = Plot on new canvas
-			variablevector.push_back(info);
-		
-		};
+            variablevector.push_back(info);
+
+        };
 
         dispatch["PLOTVAR_SAME"] = [&](const string& line) 
         {
@@ -443,29 +456,29 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
             info.type = 2;  //Type 2 = Plot on same canvas as the one before
             variablevector.push_back(info);
         };
-				
-		parseAll({"PLOTVAR", "PLOTVAR_SAME"});
-	};
+
+        parseAll({"PLOTVAR", "PLOTVAR_SAME"});
+    };
 
 
 
 
-	
-	if(!ifs){ cerr << "Error opening " << filename << endl; return 1; }
-	parseAll({"OUTPUT"}); //"INPUT",
-	if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << outputFilename << endl; return 1; }
+
+    if(!ifs){ cerr << "Error opening " << filename << endl; return 1; }
+    parseAll({"OUTPUT"}); //"INPUT",
+    if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << outputFilename << endl; return 1; }
 
     parseAll({"INPUT"});
     parseAll({"INPUT_ADD"});
-	
-	parseAll({"PLOT"});
+
+    parseAll({"PLOT"});
 
 
-	if(inputFilename.empty()){ cerr << "No data ROOT file specified in "   <<  inputFilename << endl; return 1; }
-	
-	// If we did not reach the EOF, then the configuration file contains gibberish
-	if(parseError){ return 1; }
-	if(ifs){ cerr << "Error parsing " << filename << endl; return 1; }
-	
-	return 0;
+    if(inputFilename.empty()){ cerr << "No data ROOT file specified in "   <<  inputFilename << endl; return 1; }
+
+    // If we did not reach the EOF, then the configuration file contains gibberish
+    if(parseError){ return 1; }
+    if(ifs){ cerr << "Error parsing " << filename << endl; return 1; }
+
+    return 0;
 }

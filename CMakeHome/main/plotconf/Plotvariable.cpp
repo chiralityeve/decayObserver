@@ -168,7 +168,7 @@ TH1D* Plotvariable::plot(Color_t color /*= kBlue*/, Style_t style/* = 1*/, std::
     
     std::string xlabel, ylabel;
 
-    if(unit_ != "") {
+    if(unit_ != "" && unit_ != " ") {
         xlabel =  xlabel_ + " (" + unit_ + ")";
         ylabel = "Events / (" + str_binwidth + " " + unit_ + ")";
     }
