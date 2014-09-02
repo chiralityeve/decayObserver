@@ -1,0 +1,11 @@
+# Input filename, decayChain
+# INPUT ../plots/Lb-TMVA.root DecayTree
+# Ouput folder
+
+OUTPUT ../plots/
+
+PLOT
+  INPUT ../plots/Lb-TMVA.root DecayTree
+  PLOTVAR lab0_M Title 200 5150 6200 m_{LcKKPi} MeV TMVAResponse>0.01 'norm'
+  PLOTVAR lab1_M Title2 200 1050 4200 m_{LcKKPi} MeV TMVAResponse>0.01 'norm'
+
