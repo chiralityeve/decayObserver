@@ -6,6 +6,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1.h>
+#include <TH1D.h>
 #include <TH2D.h>
 #include <TPaveStats.h>
 #include <TGaxis.h>
@@ -16,38 +17,30 @@
 #include "Plotvariable.h"
 #include "Plotvariable_2D.h"
 #include "tree2hist.h"
+#include <fstream>
+#include <sstream>
+#include <map>
+#include <functional>
+#include "ArgParser.h"
+
 
 
 using std::cout;
 using std::endl;
+using std::string;
+using std::map;
 
 // --------------------------------------------------------
 // This Script creates Histograms from TTree - Variables
 // --------------------------------------------------------
 
-#include <vector>
-#include <string>
-#include <TH1D.h>
-#include "Plotvariable.h"
-#include <TTree.h>
-#include <TChain.h>
-#include <iostream>
 
-#include <fstream>
-
-#include <sstream>
-#include <map>
-#include <vector>
-#include <functional>
-#include <algorithm>
-#include "ArgParser.h"
-
-using std::cout;
-using std::endl;
 
 struct VariableInfo{
   string name;
+  string fromtree;
   string title;
+  string legend;
   int nbins;
   double range_min;
   double range_max;
@@ -55,11 +48,20 @@ struct VariableInfo{
   string unit;
   string cuts;
   string options;
+
+  int type;  //Types: 1 = Plot on new canvas, 2 = Plot on same canvas
 };
 
-int ReadConfigurationFile(const string& filename, vector<VariableInfo>& variablevector, string& inputFilename, string& decayChain, string& outputFilename);
 
 
+
+//Forward declaration of ReadConfigfile
+int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap);
+
+
+
+
+//Main-function
 int main(int argc, char **argv) {
     gStyle->SetOptStat(0);          //Do not plot infobox in histogram
 
@@ -77,22 +79,44 @@ int main(int argc, char **argv) {
     //Settings are loaded here (depending on the main parameter given)
     std::string configFilename = argv[1];
     
-    vector<VariableInfo> variablevector;
-    string inputFilename, decayChain, outputFilename;
-    ReadConfigurationFile(configFilename, variablevector,  inputFilename, decayChain, outputFilename);
-   
+
+    vector<VariableInfo> variablevector;    //Vector that saves the infos for the variables to plot
+    map<string, TChain*> treemap;
+    
+
+
+
+    string outputFilename;
+    
+    //Read Configfile here: variablevector is filled, same as inputFilename, decayChain and outputFilename
+    ReadConfigurationFile(configFilename, outputFilename, variablevector, treemap);
+    
+
+
+    //Create new Plotvariables
     for(auto& obj:variablevector) {
-	TChain* MCtree = new TChain(decayChain.c_str());
-	MCtree -> Add(inputFilename.c_str());
-	normalized_plots = false;                //<-------- Normalized plots?
+    normalized_plots = false;                  //<-------- Normalized plots? Standard: false
 	saveto = outputFilename;                   //<-------- Path to save it
-	new Plotvariable(obj.name, MCtree, obj.title, "", obj.nbins, obj.range_min, obj.range_max, obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);
+
+	if(obj.type == 1) new Plotvariable(obj.name, treemap[obj.fromtree], obj.title, obj.legend, obj.nbins, obj.range_min, obj.range_max, 
+            obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);
+    if(obj.type == 2) new Plotvariable(obj.name, treemap[obj.fromtree], obj.legend, obj.cuts, vecp);
     }
 
 
-    // -----------------------------------
-    // Plotprocess
-    // -----------------------------------
+
+
+
+
+
+
+
+
+
+
+    // -----------------------------------------------
+    // Plotprocess (from here same as the old script)
+    // ----------------------------------------------
 
     TCanvas c("canvas", "dasvancas", 800, 600);         //Create canvas
     TCanvas* cp = &c;
@@ -288,9 +312,24 @@ int main(int argc, char **argv) {
 }
 
 
-int ReadConfigurationFile(const string& filename, vector<VariableInfo>& variablevector,  string& inputFilename, string& decayChain, string& outputFilename)
+
+
+
+
+
+
+
+
+
+//Implementation of ReadConfigfile
+int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap)
 {
-        VariableInfo info;
+    VariableInfo info;
+
+    //Information for the current tree
+    string treename;    //Reference to the curren tree
+    string inputFilename;
+    string decayChain;
       
 	ifstream ifs(filename);
 	bool parseError = false;
@@ -339,65 +378,89 @@ int ReadConfigurationFile(const string& filename, vector<VariableInfo>& variable
 		while(parse(expkeys));
 	};
 	
-	// Define the interpreters
-	/*dispatch["INPUT" ] = [&](const string& line){ 
-	  ArgParser ap(line);
-	  inputFilename = ap.Get<string>(0);
-	  decayChain = ap.Get<string>(1);
-	};*/
+
+    //Where to save the histograms
 	dispatch["OUTPUT"] = [&](const string& line){ outputFilename = line; };
 	
-	
+    //Inputfile(as TCHain) + tree
+    dispatch["INPUT"] = [&](const string& line)
+		{
+			if(ArgParser(line).Scan(treename, inputFilename, decayChain))
+			{
+				parseError = true;
+				cerr << "Parsing error" << endl;
+				return;
+			}
+            
+            treemap[treename] = new TChain(decayChain.c_str());
+            treemap[treename] -> Add(inputFilename.c_str());
+
+
+		};
+    
+    //Tree to add to the previous Inputfile
+    dispatch["INPUT_ADD"] = [&](const string& line)
+		{
+			if(ArgParser(line).Scan(inputFilename))
+			{
+				parseError = true;
+				cerr << "Parsing error" << endl;
+				return;
+			}
+
+            treemap[treename] -> Add(inputFilename.c_str());    //treename is the name of the current tree
+		};
+
+
+	//Normal 1D Plotting
 	dispatch["PLOT"] = [&](const string& line)
 	{
 	 
-		dispatch["INPUT"] = [&](const string& line)
+        dispatch["PLOTVAR"] = [&](const string& line)
 		{
-			if(ArgParser(line).Scan(inputFilename, decayChain))
+			if(ArgParser(line).Scan(info.name, info.fromtree, info.title, info.legend, info.nbins, info.range_min, info.range_max, 
+                        info.axislabel, info.unit, info.cuts, info.options))
 			{
 				parseError = true;
 				cerr << "Parsing error" << endl;
 				return;
 			}
-			// cout << inputFilename << endl;
-		//	cout << int_a << ", " << double_a << ", " << string_a << endl;
-		};
-		dispatch["PLOTVAR"] = [&](const string& line)
-		{
-			if(ArgParser(line).Scan(info.name, info.title, info.nbins, info.range_min, info.range_max, info.axislabel, info.unit, info.cuts, info.options))
-			{
-				parseError = true;
-				cerr << "Parsing error" << endl;
-				return;
-			}
+
+            info.type = 1;  //Type 1 = Plot on new canvas
 			variablevector.push_back(info);
-		//	cout << int_b << ", " << double_b << ", " << string_b << endl;
+		
 		};
+
+        dispatch["PLOTVAR_SAME"] = [&](const string& line) 
+        {
+            if(ArgParser(line).Scan(info.name, info.fromtree, info.cuts))
+            {
+                parseError = true;
+                cerr << "parsing error" << endl;
+                return;
+            }
+
+            info.type = 2;  //Type 2 = Plot on same canvas as the one before
+            variablevector.push_back(info);
+        };
 				
-		parseAll({"INPUT", "PLOTVAR"});
+		parseAll({"PLOTVAR", "PLOTVAR_SAME"});
 	};
 
-	/*
-	dispatch["PLOT"] = [&](const string& line)
-	{ 
-	 ArgParser ap(line);
-	 
-	 info.name = ap.Get<string>(0);
-	 info.title = ap.Get<string>(1);
-	 
-	 variablevector.push_back(info);
 
-	};
-	
-	*/
+
+
 	
 	if(!ifs){ cerr << "Error opening " << filename << endl; return 1; }
 	parseAll({"OUTPUT"}); //"INPUT",
-	
-	
 	if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << outputFilename << endl; return 1; }
+
+    parseAll({"INPUT"});
+    parseAll({"INPUT_ADD"});
 	
 	parseAll({"PLOT"});
+
+
 	if(inputFilename.empty()){ cerr << "No data ROOT file specified in "   <<  inputFilename << endl; return 1; }
 	
 	// If we did not reach the EOF, then the configuration file contains gibberish
