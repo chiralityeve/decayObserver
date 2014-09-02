@@ -1,0 +1,181 @@
+#include <vector>
+#include <string>
+#include <TH1D.h>
+#include "Plotvariable.h"
+#include <TTree.h>
+#include <TChain.h>
+#include <iostream>
+
+#include <fstream>
+
+#include <sstream>
+#include <map>
+#include <vector>
+#include <functional>
+#include <algorithm>
+#include "ArgParser.h"
+
+
+
+using std::cout;
+using std::endl;
+
+
+using namespace std;
+
+int ReadConfigurationFile(const string& filename);
+
+std::string inputFilename;
+std::string decayChain;
+std::string outputFilename;
+
+struct VariableInfo{
+  string name;
+  string title;
+  int nbins;
+  double range_min;
+  double range_max;
+  string axislabel;
+  string unit;
+  string cuts;
+  string options;
+};
+
+VariableInfo info;
+
+vector<VariableInfo> variablevector;
+
+int ReadConfigurationFile(const string& filename)
+{
+	ifstream ifs(filename);
+	bool parseError = false;
+	map<string, function<void(const string&)> > dispatch; // Lambda expressions are used for parsing
+	
+	// Trims leading and trailing white space of str
+	auto trim = [](const string& str) -> string
+	{
+		try
+		{
+			const string whiteSpace = " \t\r";
+			size_t a = str.find_first_not_of(whiteSpace);
+			size_t b = str.find_last_not_of(whiteSpace);
+			return str.substr(a, b-a+1);
+		}
+		catch(out_of_range& e){ return ""; }	
+	};
+	
+	// Checks if strs contains str
+	auto contains = [](const vector<string>& strs, const string& str){ return find(strs.begin(), strs.end(), str) != strs.end(); };
+	
+	// Searches for the next key value pair and calls their interpreters if they are in the expected keys vector (expkeys)
+	// Return true when the key matched and false otherwise.
+	auto parse = [&](const vector<string>& expkeys)
+	{
+		static bool nextline = true;
+		static string key;
+		static string val;
+		
+		if(parseError) return false;
+
+		while(ifs && (!nextline || (ifs>>key && getline(ifs, val))))
+		{
+			nextline = true; 					// Make sure that a new line will be read when we continue.
+			if(key[0] == '#') continue;	 		// This is a comment, ignore it.
+			if(!contains(expkeys, key)) break; 	// The key does not match any of the expected ones
+			dispatch[key](trim(val));
+			return true;
+		}
+		nextline = false; // The key didn't match and we might want to try another set of keys later, so don't read a new line the next time.
+		return false; // Fail		
+	};
+	
+	auto parseAll = [&](const vector<string>& expkeys)
+	{
+		while(parse(expkeys));
+	};
+	
+	// Define the interpreters
+	/*dispatch["INPUT" ] = [&](const string& line){ 
+	  ArgParser ap(line);
+	  inputFilename = ap.Get<string>(0);
+	  decayChain = ap.Get<string>(1);
+	};*/
+	dispatch["OUTPUT"] = [&](const string& line){ outputFilename = line; };
+	
+	
+	dispatch["PLOT"] = [&](const string& line)
+	{
+	 
+		dispatch["INPUT"] = [&](const string& line)
+		{
+			if(ArgParser(line).Scan(inputFilename, decayChain))
+			{
+				parseError = true;
+				cerr << "Parsing error" << endl;
+				return;
+			}
+			// cout << inputFilename << endl;
+		//	cout << int_a << ", " << double_a << ", " << string_a << endl;
+		};
+		dispatch["PLOTVAR"] = [&](const string& line)
+		{
+			if(ArgParser(line).Scan(info.name, info.title, info.nbins, info.range_min, info.range_max, info.axislabel, info.unit, info.cuts, info.options))
+			{
+				parseError = true;
+				cerr << "Parsing error" << endl;
+				return;
+			}
+			variablevector.push_back(info);
+		//	cout << int_b << ", " << double_b << ", " << string_b << endl;
+		};
+				
+		parseAll({"INPUT", "PLOTVAR"});
+	};
+
+	/*
+	dispatch["PLOT"] = [&](const string& line)
+	{ 
+	 ArgParser ap(line);
+	 
+	 info.name = ap.Get<string>(0);
+	 info.title = ap.Get<string>(1);
+	 
+	 variablevector.push_back(info);
+
+	};
+	
+	*/
+	
+	if(!ifs){ cerr << "Error opening " << filename << endl; return 1; }
+	parseAll({"OUTPUT"}); //"INPUT",
+	
+	
+	if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << outputFilename << endl; return 1; }
+	
+	parseAll({"PLOT"});
+	if(inputFilename.empty()){ cerr << "No data ROOT file specified in "   <<  inputFilename << endl; return 1; }
+	
+	// If we did not reach the EOF, then the configuration file contains gibberish
+	if(parseError){ return 1; }
+	if(ifs){ cerr << "Error parsing " << filename << endl; return 1; }
+	
+	return 0;
+}
+
+
+void vitali_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+   string configFilename = "../configs/plots/example.conf";
+   ReadConfigurationFile(configFilename);
+   
+  for(auto& obj:variablevector) {
+      TChain* MCtree = new TChain(decayChain.c_str());
+      MCtree -> Add(inputFilename.c_str());
+      normalized_plots = false;                //<-------- Normalized plots?
+      //nbins = 100;                            //<-------- Default number of bins
+      saveto = outputFilename;                   //<-------- Path to save it
+      new Plotvariable(obj.name, MCtree, obj.title, "", obj.nbins, obj.range_min, obj.range_max, obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);
+  }
+}
+
+
+
