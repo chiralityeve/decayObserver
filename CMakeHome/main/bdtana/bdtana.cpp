@@ -15,17 +15,21 @@ int main(int argc, char** argv)
 {
 	bool argTrain = false;
 	bool argApply = false;
+    bool argCut = false;
 	string configFilename;
 	BdtAnalyser* pBdt = NULL;
+
+
 	
 	if(argc == 3) 
 	{
 		argTrain = argv[1] == string("-t") || argv[1] == string("-train");
 		argApply = argv[1] == string("-a") || argv[1] == string("-apply");
+        argCut = argv[1] == string("-c") || argv[1] == string("-cut");
 		configFilename = argv[2];
 	}
 	
-	if(argTrain == argApply)
+	if(argTrain == argApply && argTrain == argCut)
 	{
 		PrintUsage();
 		return 0;
@@ -34,8 +38,9 @@ int main(int argc, char** argv)
 	pBdt = CreateBdtAnalyser(configFilename);
 	if(!pBdt) return 0;
 	
-	if(argTrain) pBdt->Train();
+	if(argTrain) { pBdt->Train(); pBdt->Cut(); }
 	if(argApply) pBdt->Apply();
+    if(argCut) pBdt->Cut();
 	
 	
 	return 0;
@@ -43,11 +48,12 @@ int main(int argc, char** argv)
 
 void PrintUsage()
 {
-	cerr << "Usage: bdtana [-t|-a] config_file                                               " << endl \
+	cerr << "Usage: bdtana [-t|-a|-c] config_file                                               " << endl \
 	     << "Trains and applies a BDT with the settings in config_file                       " << endl \
 		 << "                                                                                " << endl \
 	     << "  -t          : Train the BDT                                                   " << endl \
 	     << "  -a          : Apply the BDT                                                   " << endl \
+	     << "  -c          : Find optimal cut on TMVAResponse                                " << endl \
 	     << "  config_file : Location where to find the configuration file                   " << endl;
 }
 
@@ -135,6 +141,22 @@ BdtAnalyser* CreateBdtAnalyser(const string& configFilename)
 			pBdt->AddVariable(ap.Get<string>(1));
 			continue;
 		}
+
+        //Edit: Get Cut from different FOMS, therefore need estimates for Background and Signal in Signalregion
+
+        if(key == "NSIG")
+        {
+            if(nArgs != 1){ nArgErrorMsg(); break; }
+            pBdt->nSig = ap.Get<double>(1);
+            continue;
+        }
+
+        if(key == "NBKG")
+        {
+            if(nArgs != 1){ nArgErrorMsg(); break; }
+            pBdt->nBkg = ap.Get<double>(1);
+            continue;
+        }
 	}
 	
 	if(ifs)

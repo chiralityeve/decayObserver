@@ -25,7 +25,7 @@ class BdtAnalyser
 	using string = std::string;
 	template<class T> using vector = std::vector<T>;
 public:
-	BdtAnalyser(){ TMVA::Tools::Instance(); }
+	BdtAnalyser(){ TMVA::Tools::Instance(); nSig = 0; nBkg = 0;}
 	~BdtAnalyser(){}
 	
 	void AddSignal    (const string& filename, const string& tree, const string& weight=""){ sigInputs.push_back({filename, tree, weight}); }
@@ -42,7 +42,11 @@ public:
 	
 	void Train();
 	void Apply();
-	
+    void Cut();         //Find optimal cut
+
+    double nSig;        //estimated Signalevents to optimise cut
+    double nBkg;        //estimated Backgroundevents to optimise cut
+    	
 private:
 	struct FileTreeWeight {string filename, tree, weight; };
 	struct FileTree {string filename, tree; };
@@ -58,6 +62,7 @@ private:
 	string bdtOptions;
 	string readerOptions;
 	string sampleOptions;
+
 	
 	TChain* CreateDataChain() const;
 	TFile* CreateApplyOutput() const;
