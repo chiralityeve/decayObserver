@@ -16,7 +16,7 @@
 #include <vector>
 #include "Plotvariable.h"
 #include "Plotvariable_2D.h"
-#include "tree2hist.h"
+//#include "tree2hist.h"
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -56,7 +56,7 @@ struct VariableInfo{
 
 
 //Forward declaration of ReadConfigfile
-int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap);
+int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap, map<string, string>&cutmap);
 
 
 
@@ -81,15 +81,16 @@ int main(int argc, char **argv) {
 
 
     vector<VariableInfo> variablevector;    //Vector that saves the infos for the variables to plot
-    map<string, TChain*> treemap;
-
+    map<string, TChain*> treemap;           //Map that saves the used trees with a given name
+    map<string, string> cutmap;              //Map that has the defined cuts in it with a given name
+    
 
 
 
     string outputFilename;
 
     //Read Configfile here: variablevector is filled, same as inputFilename, decayChain and outputFilename
-    ReadConfigurationFile(configFilename, outputFilename, variablevector, treemap);
+    ReadConfigurationFile(configFilename, outputFilename, variablevector, treemap, cutmap);
 
 
 
@@ -322,7 +323,7 @@ int main(int argc, char **argv) {
 
 
 //Implementation of ReadConfigfile
-int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap)
+int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap, map<string, string>& cutmap)
 {
     VariableInfo info;
 
@@ -330,6 +331,10 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
     string treename;    //Reference to the curren tree
     string inputFilename;
     string decayChain;
+
+    //Information for the cut(map)
+    string cutname;
+    string cutdefinition;
 
     ifstream ifs(filename);
     bool parseError = false;
@@ -411,6 +416,18 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
         treemap[treename] -> Add(inputFilename.c_str());    //treename is the name of the current tree
     };
 
+    //Define Cuts
+    dispatch["CUT"] = [&](const string& line)
+    {
+        if(ArgParser(line).Scan(cutname, cutdefinition))
+        {
+            parseError = true;
+            cerr << "Parsing error" << endl;
+            return;
+        }
+
+        cutmap[cutname] = cutdefinition;
+    };
 
     //Normal 1D Plotting
     dispatch["PLOT"] = [&](const string& line)
@@ -438,6 +455,8 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
                 }
                 info.options = "";
             }
+            //Check if the cuts are "normal" cuts or an alias which refers to cuts in the cutmap
+            info.cuts = cutmap.count(info.cuts) ? info.cuts = cutmap[info.cuts] : info.cuts;     //if alias is found, replace info.cuts with the entry belonging to it 
 
             info.type = 1;  //Type 1 = Plot on new canvas
             variablevector.push_back(info);
@@ -446,12 +465,15 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
 
         dispatch["PLOTVAR_SAME"] = [&](const string& line) 
         {
-            if(ArgParser(line).Scan(info.name, info.fromtree, info.cuts))
+            if(ArgParser(line).Scan(info.name, info.fromtree, info.legend, info.cuts))
             {
                 parseError = true;
                 cerr << "parsing error" << endl;
                 return;
             }
+            //Check if the cuts are "normal" cuts or an alias which refers to cuts in the cutmap
+            info.cuts = cutmap.count(info.cuts) ? info.cuts = cutmap[info.cuts] : info.cuts;     //if alias is found, replace info.cuts with the entry belonging to it 
+
 
             info.type = 2;  //Type 2 = Plot on same canvas as the one before
             variablevector.push_back(info);
@@ -470,6 +492,8 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
 
     parseAll({"INPUT"});
     parseAll({"INPUT_ADD"});
+
+    parseAll({"CUT"});
 
     parseAll({"PLOT"});
 

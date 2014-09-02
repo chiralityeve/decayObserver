@@ -1,4 +1,4 @@
-// Documentation of Plotscript
+// Documentation of plotconf (plotting with a given configname)
 
 On lxplus first run 
 
@@ -11,14 +11,13 @@ and run
 
 Compilation is done with
 
-    $ make Plotscript
+    $ make plotconf
 
 Now you can run the program with
 
-    $ ./bin/Plotscript <parameter>
+    $ ./bin/plotconf <configfile>
 
-Currently for parameters there is daniel, vitali and kevin allowed which refer to the functions daniel_current, vitali_current and kevin_current
-and run the settings and plots in this functions.
 
-For informations of which informations should be provided in this functions go to plot_example.cpp and see the made comments in there.
+
+For informations of which informations should be provided in the config file go to EXAMPLE_CONFIG.conf and see the made comments in there.
 The desired plots are created as .png, .pdf and .root files.
