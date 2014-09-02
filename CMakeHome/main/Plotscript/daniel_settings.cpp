@@ -84,21 +84,21 @@ void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, in
 
   
     //Sweighted
-    new Plotvariable("Kplus_PIDK", treesweights, "Kplus DLL(K - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
-            nbins,  -5, 30,  "Kplus DLL(K - #pi)", "", vecp, "norm");                   
-    new Plotvariable("Kplus_PIDK", treeresMC, "resonant",   vecp);      
+    new Plotvariable("Kplus_PIDK", treesweights, "Kplus DLL(K - #pi) resonant after preselection", "Sweighted Data", 
+            nbins,  -5, 70,  "Kplus DLL(K - #pi)", "", "sig0_yield_sw", vecp, "norm");                   
+    new Plotvariable("Kplus_PIDK", treeresMC, "truthm. MC",   vecp);      
  
-    new Plotvariable("Kplus_PIDp", treesweights, "Kplus DLL(p - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
-            nbins,  -15, 30,  "Kplus DLL(p - #pi)", "", vecp, "norm");                   
-    new Plotvariable("Kplus_PIDp", treeresMC, "resonant",   vecp);   
+    new Plotvariable("Kplus_PIDp", treesweights, "Kplus DLL(p - #pi) resonant after preselection", "Sweighted Data", 
+            nbins,  -50, 70,  "Kplus DLL(p - #pi)", "", "sig0_yield_sw", vecp, "norm");                   
+    new Plotvariable("Kplus_PIDp", treeresMC, "truthm. MC",   vecp);   
 
-    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treesweights, "Kplus DLL(K - p) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
-            nbins,  -53, 30,  "Kplus DLL(K - p)", "",   vecp, "norm");                   
-    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treeresMC, "resonant",   vecp);   
+    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treesweights, "Kplus DLL(K - p) resonant after preselection", "Sweighted Data", 
+            nbins,  -5, 70,  "Kplus DLL(K - p)", "", "sig0_yield_sw",  vecp, "norm");                   
+    new Plotvariable("Kplus_PIDK-Kplus_PIDp", treeresMC, "truthm. MC",   vecp);   
     
-    new Plotvariable("muplus_PIDmu", treesweights, "Muplus DLL(#mu - #pi) resonant #leftrightarrow non-resonant after cut on f2-mass", "non-resonant", 
-            nbins,  -5, 15,  "Muplus DLL(#mu - #pi)", "",  vecp, "norm");                   
-    new Plotvariable("muplus_PIDmu", treeresMC, "resonant",   vecp); 
+    new Plotvariable("muplus_PIDmu", treesweights, "Muplus DLL(#mu - #pi) resonant after preselection", "Sweighted Data", 
+            nbins,  -5, 15,  "Muplus DLL(#mu - #pi)", "", "sig0_yield_sw", vecp, "norm");                   
+    new Plotvariable("muplus_PIDmu", treeresMC, "truthm. MC",   vecp); 
     
 }
 
