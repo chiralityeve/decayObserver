@@ -56,14 +56,16 @@ struct VariableInfo{
 
 
 //Forward declaration of ReadConfigfile
-int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap, map<string, string>&cutmap);
+int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap, map<string, string>&cutmap, 
+        int& enable_infobox);
 
 
 
 
 //Main-function
 int main(int argc, char **argv) {
-    gStyle->SetOptStat(0);          //Do not plot infobox in histogram
+    int enable_infobox = 0;
+    
 
     std::vector<Plotvariable*> vec;
     std::vector<Plotvariable*> *vecp = &vec;
@@ -90,8 +92,9 @@ int main(int argc, char **argv) {
     string outputFilename;
 
     //Read Configfile here: variablevector is filled, same as inputFilename, decayChain and outputFilename
-    ReadConfigurationFile(configFilename, outputFilename, variablevector, treemap, cutmap);
+    ReadConfigurationFile(configFilename, outputFilename, variablevector, treemap, cutmap, enable_infobox);
 
+    gStyle->SetOptStat(enable_infobox);          //Whether to plot the infobox (default: 0)
 
 
     //Create new Plotvariables
@@ -322,8 +325,12 @@ int main(int argc, char **argv) {
 
 
 
+
+//---------------------------------
 //Implementation of ReadConfigfile
-int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap, map<string, string>& cutmap)
+//---------------------------------
+int ReadConfigurationFile(const string &filename, string& outputFilename, vector<VariableInfo>& variablevector, map<string, TChain*>& treemap, map<string, string>& cutmap,
+        int& enable_infobox)
 {
     VariableInfo info;
 
@@ -383,6 +390,8 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
         while(parse(expkeys));
     };
 
+    //Enable infobox?
+    dispatch["INFOBOX"] = [&](const string& line){ ArgParser(line).Scan(enable_infobox); };
 
     //Where to save the histograms
     dispatch["OUTPUT"] = [&](const string& line){ outputFilename = line; };
@@ -490,6 +499,7 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
     parseAll({"OUTPUT"}); //"INPUT",
     if(outputFilename.empty()){ cerr << "No output ROOT file specified in " << outputFilename << endl; return 1; }
 
+    parseAll({"INFOBOX"});
     parseAll({"INPUT"});
     parseAll({"INPUT_ADD"});
 
