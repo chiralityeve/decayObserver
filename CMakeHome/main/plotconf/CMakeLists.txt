@@ -1,6 +1,6 @@
 # Executables
 add_executable(plotconf plotconf.cpp Plotvariable.cpp
-    Plotvariable_2D.cpp tree2hist.cpp)
+    Plotvariable_2D.cpp)
 
 # Aliases for module libs
 
