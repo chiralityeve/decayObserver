@@ -1,0 +1,48 @@
+
+---------------------------------------------
+-----------------B2JpsiKstar-----------------
+---------------------------------------------
+
+------ Generator level Cut Efficiency -------
+
+0.160490 +/- 0.000430
+
+------ Stripping Efficiency -------
+
+Generated Events:  2019537.000000
+Events after Stripping (not-truthmatched): 306508.000000
+Events after Stripping (truthmatched): 306508.000000
+
+=> Effizienz: 0.151771 +/- 0.000252
+
+------ Preselectionefficiency (no cut on Jpsi) -------
+
+Events before Cuts (Truthmatched):  306508.000000
+Events after Preselection: 16093.000000
+
+=> Effizienz: 0.052504 +/- 0.000403
+
+------ BDT Efficiency --------
+
+Events before BDT-cut (preselected, truthmatched):  16093.000000
+
+Events after Common-cut: 1865.000000		Effizienz: 0.115889 +/- 0.002523
+Events after Punzi-cut: 120.000000		Effizienz: 0.007457 +/- 0.000678
+
+------ Trigger Efficiency --------
+
+Events after BDT Common-cut (preselected, truthmatched):  1865.000000
+Events after BDT Punzi-cut (preselected, truthmatched):  120.000000
+
+Events after Common-cut and Triggerrequ.: 1640.000000		Effizienz: 0.879357 +/- 0.007542
+Events after Punzi-cut and Triggerrequ: 114.000000		Effizienz: 0.950000 +/- 0.019896
+
+------ Total Efficiency --------
+
+With Common-Cut: (0.013033 +/- 0.000324) %
+With Punzi-Cut: (0.000906 +/- 0.000085) %
+
+------ Peaking Background Events after Selection -------------
+
+Common-Cut: N(peaking) = 1183.711135 +/- 61.152779
+Punzi-Cut: N(peaking) = 82.282359 +/- 8.563347

@@ -1,0 +1,44 @@
+
+---------------------------------------------
+-----------------B2KstarMuMu-----------------
+---------------------------------------------
+
+------ Generator level Cut Efficiency -------
+
+0.171710 +/- 0.006840
+
+------ Stripping Efficiency -------
+
+Generated Events:  511247.000000
+Events after Stripping (not-truthmatched): 35111.000000
+Events after Stripping (truthmatched): 35111.000000
+
+=> Effizienz: 0.068677 +/- 0.000354
+
+------ Preselectionefficiency (with Jpsi-Cut) -------
+
+Events before Cuts (Truthmatched):  35111.000000
+Events after Preselection: 31.000000
+
+=> Effizienz: 0.000883 +/- 0.000159
+
+------ BDT Efficiency --------
+
+Events before BDT-cut (preselected, truthmatched):  31.000000
+
+Events after Common-cut: 1.000000		Effizienz: 0.032258 +/- 0.031734
+Events after Punzi-cut: 1.000000		Effizienz: 0.032258 +/- 0.031734
+
+------ Trigger Efficiency --------
+
+Events after BDT Common-cut (preselected, truthmatched):  1.000000
+Events after BDT Punzi-cut (preselected, truthmatched):  1.000000
+
+Events after Common-cut and Triggerrequ.: 1.000000		Effizienz: 1.000000 +/- 0.000000
+Events after Punzi-cut and Triggerrequ: 1.000000		Effizienz: 1.000000 +/- 0.000000
+
+------ Total Efficiency --------
+
+With Common-Cut: (0.000034 +/- 0.000034) %
+With Punzi-Cut: (0.000034 +/- 0.000034) %
+
