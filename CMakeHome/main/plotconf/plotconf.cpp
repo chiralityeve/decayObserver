@@ -48,8 +48,14 @@ struct VariableInfo{
     string unit;
     string cuts;
     string options;
+    
+    //for 2D:
+    double yrange_min;
+    double yrange_max;
+    string yaxislabel;
+    string yunit;
 
-    int type;  //Types: 1 = Plot on new canvas, 2 = Plot on same canvas
+    int type;  //Types: 0 = Plot on new canvas, 1 = Plot on same canvas, 2 = 2D-plot
 };
 
 
@@ -102,9 +108,11 @@ int main(int argc, char **argv) {
         normalized_plots = false;                  //<-------- Normalized plots? Standard: false
         saveto = outputFilename;                   //<-------- Path to save it
 
-        if(obj.type == 1) new Plotvariable(obj.name, treemap[obj.fromtree], obj.title, obj.legend, obj.nbins, obj.range_min, obj.range_max, 
-                obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);
-        if(obj.type == 2) new Plotvariable(obj.name, treemap[obj.fromtree], obj.legend, obj.cuts, vecp);
+        if(obj.type == 0) new Plotvariable(obj.name, treemap[obj.fromtree], obj.title, obj.legend, obj.nbins, obj.range_min, obj.range_max, 
+                obj.axislabel, obj.unit, obj.cuts, vecp, obj.options);  //on new canvas
+        else if(obj.type == 1) new Plotvariable(obj.name, treemap[obj.fromtree], obj.legend, obj.cuts, vecp);   //on same canvas
+        else if(obj.type == 2) new Plotvariable_2D(obj.name, treemap[obj.fromtree], obj.title, obj.nbins, obj.range_min, obj.range_max,
+                obj.yrange_min, obj.yrange_max, obj.axislabel, obj.unit, obj.yaxislabel, obj.yunit, obj.cuts, vecp, obj.options);
     }
 
 
@@ -467,7 +475,7 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
             //Check if the cuts are "normal" cuts or an alias which refers to cuts in the cutmap
             info.cuts = cutmap.count(info.cuts) ? info.cuts = cutmap[info.cuts] : info.cuts;     //if alias is found, replace info.cuts with the entry belonging to it 
 
-            info.type = 1;  //Type 1 = Plot on new canvas
+            info.type = 0;  //Type 2 = Plot on new canvas
             variablevector.push_back(info);
 
         };
@@ -484,11 +492,51 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
             info.cuts = cutmap.count(info.cuts) ? info.cuts = cutmap[info.cuts] : info.cuts;     //if alias is found, replace info.cuts with the entry belonging to it 
 
 
-            info.type = 2;  //Type 2 = Plot on same canvas as the one before
+            info.type = 1;  //Type 1 = Plot on same canvas as the one before
             variablevector.push_back(info);
         };
 
         parseAll({"PLOTVAR", "PLOTVAR_SAME"});
+    };
+
+
+    //2D-plotting
+    dispatch["PLOT_2D"] = [&](const string& line)
+    {
+
+        dispatch["PLOTVAR"] = [&](const string& line)
+        {
+            if(ArgParser(line).NumArgs() == 14) {     //Check if there are 14 entries => with options
+                if(ArgParser(line).Scan(info.name, info.fromtree, info.title,  info.nbins, info.range_min, info.range_max, info.yrange_min, info.yrange_max,
+                            info.axislabel, info.unit, info.yaxislabel, info.yunit, info.cuts, info.options))
+                {
+                    parseError = true;
+                    cerr << "Parsing error" << endl;
+                    return;
+                }
+            }
+
+            else{       //Else Only 13 => without options
+                if(ArgParser(line).Scan(info.name, info.fromtree, info.title,  info.nbins, info.range_min, info.range_max, info.yrange_min, info.yrange_max,
+                            info.axislabel, info.unit, info.yaxislabel, info.yunit, info.cuts))
+                {
+                    parseError = true;
+                    cerr << "Parsing error" << endl;
+                    return;
+                }
+                info.options = "";
+            }
+            //Check if the cuts are "normal" cuts or an alias which refers to cuts in the cutmap
+            info.cuts = cutmap.count(info.cuts) ? info.cuts = cutmap[info.cuts] : info.cuts;     //if alias is found, replace info.cuts with the entry belonging to it 
+
+            info.type = 2;  //Type 2 = 2D-plot
+            variablevector.push_back(info);
+
+        };
+
+
+
+        parseAll({"PLOTVAR"});
     };
 
 
@@ -506,7 +554,7 @@ int ReadConfigurationFile(const string &filename, string& outputFilename, vector
     parseAll({"CUT"});
 
     parseAll({"PLOT"});
-
+    parseAll({"PLOT_2D"});
 
     if(inputFilename.empty()){ cerr << "No data ROOT file specified in "   <<  inputFilename << endl; return 1; }
 

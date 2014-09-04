@@ -79,93 +79,22 @@ int main() {
     TTree *tree_BDT = dynamic_cast<TTree*>(file_BDT->Get("Bs2phimumuTuple/DecayTree"));
 
 
-    cout << std::fixed;
+    //cout << std::fixed;
     
+    //-------------------------------------------------------
+    // Define generator level efficiency and cuts -----------
+    //-------------------------------------------------------
 
-    //----------------------------------
-    // Generator level cut efficiency
-    // ---------------------------------
+    Value_w_Err generator_eff(0.16049, 0.00043);
 
-    double generator_cut = 0.16049;
-    double err_generator_cut = 0.00043;
+    std::string truthmatching = "1";
 
-    double rel_err_generator_cut = err_generator_cut / generator_cut;
-  
-
-    cout << endl << "---------------------------------------------";
-    cout << endl << "-----------------B2JpsiKstar-----------------";
-    cout << endl << "---------------------------------------------" << endl;
-
-
-    cout << endl << "------ Generator level Cut Efficiency -------" << endl << endl;
-    cout << generator_cut << " +/- " << err_generator_cut << endl << endl;
-
-    
-    // ----------------------------------
-    // Stripping-Effizienz berechnen
-    // ----------------------------------
-   
-    //std::string resonant_gen = "J_psi_1S_M > 3047 && J_psi_1S_M < 3147"; 
-
-    double n_generated_events = tree_gen -> GetEntries();
-    double n_after_stripping = tree_gen_after_stripping -> GetEntries();
-
-    //std::string truthmatched = resonant_gen + "";
-    double n_truthmatched = tree_gen_after_stripping -> GetEntries();
-    double strippingerr = getEffError(n_generated_events, n_truthmatched);
-
-
-    cout << "------ Stripping Efficiency -------" << endl << endl;
-    cout << "Generated Events:  " << n_generated_events << endl;
-    cout << "Events after Stripping (not-truthmatched): " << n_after_stripping << endl; 
-    cout << "Events after Stripping (truthmatched): " << n_truthmatched << endl << endl;
-    cout << "=> Effizienz: " << n_truthmatched / n_generated_events << " +/- " << strippingerr << endl << endl;
-
-
-    // ---------------------------------
-    // Preselection-Effizienz berechnen
-    // ---------------------------------
-    
     std::string preselection = "phi_1020_M < 1800 && phi_1020_M  > 1300 && Kplus_PIDK > -3 && Kminus_PIDK > -3";
     preselection += " && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
     //preselection += " && J_psi_1S_M > 3047 && J_psi_1S_M < 3147";     //Only Jpsi candidates
-
-    double n_events = tree -> GetEntries();
-    double n_presel = tree -> GetEntries(preselection.c_str());
-    double efferror = getEffError(n_events, n_presel); 
-
-  
-    cout << "------ Preselectionefficiency (no cut on Jpsi) -------" << endl << endl;
-    cout << "Events before Cuts (Truthmatched):  " << n_events << endl;
-    cout << "Events after Preselection: " << n_presel << endl << endl;
-    cout << "=> Effizienz: " << n_presel / n_events << " +/- " << efferror << endl << endl;
-
-
-    // ---------------------------------
-    // BDT Effizienz berechnen
-    // ---------------------------------
     
     std::string punzi = preselection + " && TMVAResponse > 0.244909";
     std::string common = preselection + " && TMVAResponse > 0.123853";
-
-    double n_before_BDT = tree_BDT -> GetEntries(preselection.c_str());
-    double n_after_BDT_punzi = tree_BDT -> GetEntries(punzi.c_str());
-    double n_after_BDT_common = tree_BDT -> GetEntries(common.c_str());
-
-
-    cout << "------ BDT Efficiency --------" << endl << endl;
-    cout << "Events before BDT-cut (preselected, truthmatched):  " << n_before_BDT << endl << endl;
-    
-    cout << "Events after Common-cut: " << n_after_BDT_common << "\t\tEffizienz: " << n_after_BDT_common / n_before_BDT << " +/- " 
-        << getEffError(n_before_BDT, n_after_BDT_common) << endl;
-   
-    cout << "Events after Punzi-cut: " << n_after_BDT_punzi << "\t\tEffizienz: " << n_after_BDT_punzi / n_before_BDT << " +/- " 
-        << getEffError(n_before_BDT, n_after_BDT_punzi) << endl << endl;
-   
-
-    // ----------------------------------
-    // Trigger Effizienz berechnen
-    // ----------------------------------
     
     std::string trigger =  "(B0_L0MuonDecision_TOS == 1 || B0_L0DiMuonDecision_TOS == 1)";
     trigger += " && (B0_Hlt1TrackAllL0Decision_TOS == 1 || B0_Hlt1TrackMuonDecision_TOS == 1 || B0_Hlt1DiMuonLowMassDecision_TOS == 1 || B0_Hlt1DiMuonHighMassDecision_TOS == 1 || B0_Hlt1SingleMuonHighPTDecision_TOS == 1)";
@@ -174,19 +103,115 @@ int main() {
     std::string punzi_trigger = punzi + " && " + trigger;
     std::string common_trigger = common + " && " + trigger;
 
+
+
+
+    //----------------------------------
+    // Generator level cut efficiency
+    // ---------------------------------
+ 
+    cout << endl << "---------------------------------------------";
+    cout << endl << "-----------------B2JpsiKstar-----------------";
+    cout << endl << "---------------------------------------------" << endl;
+
+
+    cout << endl << "------ Generator level Cut Efficiency -------" << endl << endl;
+    generator_eff.Print(); cout  << endl << endl;
+
+
+
+    
+
+    // ----------------------------------
+    // Stripping-Effizienz berechnen
+    // ----------------------------------
+   
+    
+
+    double n_generated_events = tree_gen -> GetEntries();
+    double n_after_stripping = tree_gen_after_stripping -> GetEntries();
+
+    
+    double n_truthmatched = tree_gen_after_stripping -> GetEntries(truthmatching.c_str());
+    double strippingerr = getEffError(n_generated_events, n_truthmatched);
+
+    Value_w_Err stripping_eff( n_truthmatched / n_generated_events, strippingerr );
+
+
+    cout << "------ Stripping Efficiency -------" << endl << endl;
+    cout << "Generated Events:  " << n_generated_events << endl;
+    cout << "Events after Stripping (not-truthmatched): " << n_after_stripping << endl; 
+    cout << "Events after Stripping (truthmatched): " << n_truthmatched << endl << endl;
+    cout << "=> Effizienz: "; stripping_eff.Print(); cout  << endl << endl;
+
+
+
+
+
+    // ---------------------------------
+    // Preselection-Effizienz berechnen
+    // ---------------------------------
+    
+
+
+    double n_events = tree -> GetEntries();
+    double n_presel = tree -> GetEntries(preselection.c_str());
+    double efferror = getEffError(n_events, n_presel);
+
+    Value_w_Err presel_eff( n_presel / n_events, efferror);
+
+  
+    cout << "------ Preselectionefficiency (no cut on Jpsi) -------" << endl << endl;
+    cout << "Events before Cuts (Truthmatched):  " << n_events << endl;
+    cout << "Events after Preselection: " << n_presel << endl << endl;
+    cout << "=> Effizienz: "; presel_eff.Print(); cout << endl << endl;
+
+
+
+
+    // ---------------------------------
+    // BDT Effizienz berechnen
+    // ---------------------------------
+    
+    
+    double n_before_BDT = tree_BDT -> GetEntries(preselection.c_str());
+    double n_after_BDT_punzi = tree_BDT -> GetEntries(punzi.c_str());
+    double n_after_BDT_common = tree_BDT -> GetEntries(common.c_str());
+
+    Value_w_Err punzi_eff( n_after_BDT_punzi / n_before_BDT, getEffError(n_before_BDT, n_after_BDT_punzi) );
+    Value_w_Err common_eff( n_after_BDT_common / n_before_BDT, getEffError(n_before_BDT, n_after_BDT_common) );
+
+
+    cout << "------ BDT Efficiency --------" << endl << endl;
+    cout << "Events before BDT-cut (preselected, truthmatched):  " << n_before_BDT << endl << endl;
+    
+    cout << "Events after Common-cut: " << n_after_BDT_common << "\t\tEffizienz: "; common_eff.Print(); cout << endl;
+   
+    cout << "Events after Punzi-cut: " << n_after_BDT_punzi << "\t\tEffizienz: "; punzi_eff.Print(); cout << endl << endl;
+   
+
+
+
+
+    // ----------------------------------
+    // Trigger Effizienz berechnen
+    // ----------------------------------
+    
+
+
     double n_after_trigger_punzi = tree_BDT -> GetEntries(punzi_trigger.c_str());
     double n_after_trigger_common = tree_BDT -> GetEntries(common_trigger.c_str());
 
+    Value_w_Err trigger_punzi_eff( n_after_trigger_punzi / n_after_BDT_punzi, getEffError(n_after_BDT_punzi, n_after_trigger_punzi));
+    Value_w_Err trigger_common_eff( n_after_trigger_common / n_after_BDT_common, getEffError(n_after_BDT_common, n_after_trigger_common));
    
     cout << "------ Trigger Efficiency --------" << endl << endl;
     cout << "Events after BDT Common-cut (preselected, truthmatched):  " << n_after_BDT_common << endl;
     cout << "Events after BDT Punzi-cut (preselected, truthmatched):  " << n_after_BDT_punzi << endl << endl;
     
-    cout << "Events after Common-cut and Triggerrequ.: " << n_after_trigger_common << "\t\tEffizienz: " << n_after_trigger_common / n_after_BDT_common << " +/- " 
-        << getEffError(n_after_BDT_common, n_after_trigger_common) << endl;
+    cout << "Events after Common-cut and Triggerrequ.: " << n_after_trigger_common << "\t\tEffizienz: "; trigger_common_eff.Print(); cout << endl;
    
-    cout << "Events after Punzi-cut and Triggerrequ: " << n_after_trigger_punzi << "\t\tEffizienz: " << n_after_trigger_punzi / n_after_BDT_punzi<< " +/- " 
-        << getEffError(n_after_BDT_punzi, n_after_trigger_punzi) << endl << endl;
+    cout << "Events after Punzi-cut and Triggerrequ: " << n_after_trigger_punzi << "\t\tEffizienz: "; trigger_punzi_eff.Print(); cout << endl << endl;
 
 
 
@@ -194,31 +219,24 @@ int main() {
     // Totale Effizienz 
     // -------------------------
 
-    //Error of one factor
-    double eff_ohne_gencut_common = n_after_trigger_common / n_generated_events;
+    //Error of one factor (without generator level cut)
+    Value_w_Err total_common_eff_wo_gencut( n_after_trigger_common / n_generated_events, getEffError(n_generated_events, n_after_trigger_common));
     
-    double err_ohne_gencut_common = getEffError(n_generated_events, n_after_trigger_common);
-    double rel_err_ohne_gencut_common = err_ohne_gencut_common / eff_ohne_gencut_common;
+    Value_w_Err total_punzi_eff_wo_gencut( n_after_trigger_punzi / n_generated_events, getEffError(n_generated_events, n_after_trigger_punzi));
+    
 
-    
-    
-    double eff_ohne_gencut_punzi = n_after_trigger_punzi / n_generated_events;
-    
-    double err_ohne_gencut_punzi = getEffError(n_generated_events, n_after_trigger_punzi);
-    double rel_err_ohne_gencut_punzi = err_ohne_gencut_punzi / eff_ohne_gencut_punzi;
 
-    //Error of second factor already calculated (gencut)
-    double total_eff_common = eff_ohne_gencut_common * generator_cut;
-    double total_rel_error_common = sqrt( pow(rel_err_ohne_gencut_common, 2) + pow(rel_err_generator_cut, 2));
-    double total_error_common = total_rel_error_common * total_eff_common;
-    
-    double total_eff_punzi = eff_ohne_gencut_punzi * generator_cut;
-    double total_rel_error_punzi = sqrt( pow(rel_err_ohne_gencut_punzi, 2) + pow(rel_err_generator_cut, 2));
-    double total_error_punzi = total_rel_error_punzi * total_eff_punzi;
+    //Error altogether with gencut as well
+    Value_w_Err total_common_eff = total_common_eff_wo_gencut * generator_eff;
+    Value_w_Err total_punzi_eff = total_punzi_eff_wo_gencut * generator_eff;
+
+    //in percent
+    Value_w_Err total_common_eff_percent = total_common_eff * 100;
+    Value_w_Err total_punzi_eff_percent = total_punzi_eff * 100;
     
     cout << "------ Total Efficiency --------" << endl << endl;
-    cout << "With Common-Cut: (" << total_eff_common*100 << " +/- " << total_error_common*100 << ") %" << endl;
-    cout << "With Punzi-Cut: (" << total_eff_punzi*100  << " +/- " << total_error_punzi*100 << ") %" << endl << endl;
+    cout << "With Common-Cut: ("; total_common_eff_percent.Print(); cout << ") %" << endl;
+    cout << "With Punzi-Cut: ("; total_punzi_eff_percent.Print(); cout << ") %"  << endl << endl << endl << endl;
 
 
 
@@ -227,31 +245,56 @@ int main() {
 
 
 
-    // -------------------------------------
-    // Verrechnen mit Lumi und Effizienzen
-    // --------------------------------------
+    // ---------------------------------------------------------------
+    // Verrechnen mit Kontrollkanal - ab hier nur noch mit Punzi..
+    // ---------------------------------------------------------------
 
-    //Lumi in inverse micro barn
-    Value_w_Err lumi(3.0 * pow(10, 9));
+    cout << "------ Peaking Background Events after Selection (using controlchannel)-------------" << endl << endl; 
 
-    //Cross-section of B0 in micro barn
-    Value_w_Err sigmaB0(38.1);
 
-    //Branching Ratio of B2JpsiKstar and Jpsi2MuMu and Kstar2KPi
-    Value_w_Err BR(7.9462 * pow(10, -5), 0.36 * pow(10, -5));
 
-    //Efficiency
-    Value_w_Err Eff_punzi(total_eff_punzi, total_error_punzi);
-    Value_w_Err Eff_common(total_eff_common, total_error_common);
+    //Resonant (control) decay------------------------
+    //Number resonant Decays
+    Value_w_Err Nres(4767, 84);
 
+    cout << "Resonant decays after selection: "; Nres.Print(); cout << endl;
+
+    //BR(res)
+    Value_w_Err Bres1(2.6 * pow(10, -4), 0.9 * pow(10, -4));    //Bs -> f2 Jpsi NOTE: eigentlich asymmetrischer Fehler +0.9 , -0.6 ....
+    Value_w_Err Bres2(5.93 * pow(10, -2), 0.06 * pow(10, -2));  //Jpsi -> mu mu
+    Value_w_Err Bres = Bres1 * Bres2;
+
+    cout << "Resonant BR: "; Bres.Print(); cout  << "\tNOTE: Symmetric error for Bs -> f2 Jpsi assumed" << endl;
+
+    //Efficiency res. Decay
+    Value_w_Err Res_punzi_eff(0.4258 * pow(10, -2), 0.0186 * pow(10, -2));
+    cout << "Resonant Efficiency (punzi-cut): "; Res_punzi_eff.Print(); cout  << endl << endl;
+
+    //This decay----------------------------------
+    //BR(this)
+    Value_w_Err Bthis1(1.34 * pow(10, -3), 0.06 * pow(10, -3));
+    Value_w_Err Bthis2(5.93 * pow(10, -2), 0.05 * pow(10, -2));
+    Value_w_Err Bthis =  Bthis1 * Bthis2;
+
+    cout << "BR of this decay: "; Bthis.Print(); cout  << endl;
+
+
+
+    //Efficiency calculated above
+    
+    //Ratio of production fractions
+    Value_w_Err fsfd(0.259, 0.015);     //Value of fs/fd
+    Value_w_Err one(1.0);
+    Value_w_Err fdfs = one / fsfd;
+
+    cout << "fd/fs: "; fdfs.Print(); cout << endl << endl;
 
     //Result
-    Value_w_Err Npeaking_punzi = lumi * sigmaB0 * BR *  Eff_punzi;
-    Value_w_Err Npeaking_common = lumi * sigmaB0 * BR *  Eff_common;
+    Value_w_Err Npeaking_punzi = Nres / (Bres * Res_punzi_eff) * fdfs * Bthis * total_punzi_eff;
+    
 
-    cout << "------ Peaking Background Events after Selection -------------" << endl << endl;
-    cout << "Common-Cut: N(peaking) = "; Npeaking_common.Print(); cout << endl;
-    cout << "Punzi-Cut: N(peaking) = "; Npeaking_punzi.Print(); cout << endl;
+    
+    cout << "Punzi-Cut: N(peaking) = "; Npeaking_punzi.Print(); cout << endl << endl;
 
 
 
