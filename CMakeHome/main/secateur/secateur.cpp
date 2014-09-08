@@ -158,10 +158,17 @@ struct Object
 		while(true)
 		{
 			b = path.find('/',a);
+			if(b == string::npos) return dirs;
 			dirs.push_back(path.substr(a, b==string::npos?b:b-a));
-			if(b==path.find_last_of('/')) return dirs;
+			//if(b==path.find_last_of('/') || b == string::npos) return dirs;
 			a = b+1;
 		}
+	}
+	
+	string GetPath() const
+	{
+		if(GetDirectories().size() == 0 && path[0]=='/') return path.substr(1);
+		return path;
 	}
 
 	string path, type;
@@ -607,21 +614,27 @@ void Prune(const string& inputFilename, const string& outputFilename, const vect
 	for(auto& obj : objects)
 	{
 		// First create the directories in which the current object (obj) is stored
+		string fullPath = "/";
+		
 		for(auto& dirname : obj.GetDirectories())
 		{
+			TDirectory* pDirTemp = NULL;
+			
 			pDirIn = pDirIn->GetDirectory(dirname.c_str());
-			if(!pDirIn){ cerr << "Error opening " << inputFilename << ":/" << dirname << endl; return; }
-			pDirOut = pDirOut->mkdir(pDirIn->GetName(), pDirIn->GetTitle());		
+			if(!pDirIn){ cerr << "Error opening " << inputFilename << ":" << fullPath << dirname << endl; return; }
+			pDirTemp = pDirOut->GetDirectory(pDirIn->GetName());
+			pDirOut = pDirTemp? pDirTemp : pDirOut->mkdir(pDirIn->GetName(), pDirIn->GetTitle());	
+			fullPath += dirname + "/";
 		}
 		pDirOut->cd(); // Make sure the new objects will be stored in the correct place
 		
 		if(obj.IsTree())
 		{
-			TTree* pTreeIn = (TTree*) fileIn.Get(obj.path.c_str());
+			TTree* pTreeIn = (TTree*) fileIn.Get(obj.GetPath().c_str());
 			TTree* pTreeOut = NULL;
 			string select = obj.pTreeInfo->GetSelection();
 			
-			if(!pTreeIn){ cerr << "Error opening " << inputFilename << ":" << obj.path << endl; return; }	
+			if(!pTreeIn){ cerr << "Error opening " << inputFilename << ":" << obj.GetPath() << endl; return; }	
 			
 			// Activate selected branches - if branches consist of only one and this is named ALL activate every branch, else only the selected
             if(obj.pTreeInfo->branches.size() == 1 && obj.pTreeInfo->branches.back().name == "ALL") pTreeIn->SetBranchStatus("*", 1);
@@ -650,10 +663,10 @@ void Prune(const string& inputFilename, const string& outputFilename, const vect
 		}
 		else
 		{
-			TH1* pHisIn = (TH1*) fileIn.Get(obj.path.c_str());
+			TH1* pHisIn = (TH1*) fileIn.Get(obj.GetPath().c_str());
 			TH1* pHisOut = NULL;
 			
-			if(!pHisIn){ cerr << "Error opening " << inputFilename << ":" << obj.path << endl; return; }
+			if(!pHisIn){ cerr << "Error opening " << inputFilename << ":" << obj.GetPath() << endl; return; }
 			pHisOut = (TH1*) pHisIn->Clone(pHisIn->GetName());
 			pHisOut->Write();
 			delete pHisOut;
