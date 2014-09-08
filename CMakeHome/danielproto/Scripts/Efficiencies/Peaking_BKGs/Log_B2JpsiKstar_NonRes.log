@@ -15,32 +15,32 @@ Events after Stripping (truthmatched): 306508
 
 => Effizienz: 0.151771 +/- 0.000252479
 
------- Preselectionefficiency (with cut on Jpsi) -------
+------ Preselectionefficiency (Veto on Jpsi and Psi(2S)) -------
 
 Events before Cuts (Truthmatched):  306508
-Events after Preselection: 14957
+Events after Preselection: 424
 
-=> Effizienz: 0.0487981 +/- 0.00038915
+=> Effizienz: 0.00138332 +/- 6.71337e-05
 
 ------ BDT Efficiency --------
 
-Events before BDT-cut (preselected, truthmatched):  14957
+Events before BDT-cut (preselected, truthmatched):  424
 
-Events after Common-cut: 1759		Effizienz: 0.117604 +/- 0.00263403
-Events after Punzi-cut: 113		Effizienz: 0.00755499 +/- 0.000708024
+Events after Common-cut: 43		Effizienz: 0.101415 +/- 0.0146605
+Events after Punzi-cut: 5		Effizienz: 0.0117925 +/- 0.00524256
 
 ------ Trigger Efficiency --------
 
-Events after BDT Common-cut (preselected, truthmatched):  1759
-Events after BDT Punzi-cut (preselected, truthmatched):  113
+Events after BDT Common-cut (preselected, truthmatched):  43
+Events after BDT Punzi-cut (preselected, truthmatched):  5
 
-Events after Common-cut and Triggerrequ.: 1547		Effizienz: 0.879477 +/- 0.00776273
-Events after Punzi-cut and Triggerrequ: 107		Effizienz: 0.946903 +/- 0.0210936
+Events after Common-cut and Triggerrequ.: 39		Effizienz: 0.906977 +/- 0.0442955
+Events after Punzi-cut and Triggerrequ: 5		Effizienz: 1 +/- 0
 
 ------ Total Efficiency --------
 
-With Common-Cut: (0.0122938 +/- 0.000314177) %
-With Punzi-Cut: (0.000850315 +/- 8.22325e-05) %
+With Common-Cut: (0.000309928 +/- 4.96347e-05) %
+With Punzi-Cut: (3.97344e-05 +/- 1.777e-05) %
 
 
 
@@ -53,5 +53,5 @@ Resonant Efficiency (punzi-cut): 0.004258 +/- 0.000186
 BR of this decay: 7.9462e-05 +/- 3.62053e-06
 fd/fs: 3.861 +/- 0.22361
 
-Punzi-Cut: N(peaking) = 189.431 +/- 70.0962
+Punzi-Cut: N(peaking) = 8.85192 +/- 5.06636
 
