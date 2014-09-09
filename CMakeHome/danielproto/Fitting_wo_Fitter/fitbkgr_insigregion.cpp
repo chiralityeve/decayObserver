@@ -139,7 +139,9 @@ int main() {
     RooAbsReal* intOfFunc = totalPdf.createIntegral(Bs_M, NormSet(Bs_M), Range("signalrange"));
     cout << "Normalised Integral (5316.3 - 5416.3): " << intOfFunc -> getVal() << endl;
     double bkgr_yield_in_sig_region = (intOfFunc -> getVal()) * (background_yield.getVal());
-    cout << "Background im Signalwindow: " << bkgr_yield_in_sig_region << endl;
+    double bkgr_yield_error = (intOfFunc -> getVal()) * (background_yield.getError());
+    
+    cout << "Background im Signalwindow: " << bkgr_yield_in_sig_region << " +/- " << bkgr_yield_error << endl;
 
 
     /*

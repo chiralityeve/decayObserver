@@ -233,6 +233,8 @@ RooAbsReal* FitterPdf::NewVar(const FitterParam& param, const string& parname, c
 	pFitter->params.push_back(pVar);
 	if(!param.id.empty()) pFitter->sharedParams[param.id] = pVar;
 
+    if(parname == "yield") Yield_w_Err = pVar;  //Save the yield as RooRealVar (because of the error)
+
 	return pVar;
 }
 RooAbsReal* FitterPdf::NewFormulaVar(const string& parname, const string& formula, const vector<RooAbsReal*>& dependents, const string& unit)
@@ -307,12 +309,12 @@ Fitter& Fitter::operator =(const Fitter& other)
 
 void Fitter::InitPointers()
 {
-	InitNULL(pFitVar, pData, pTotPdf, pSPlot, pResult);
+	InitNULL(pFitVar, pData, pTotPdf, pSigPdf, pBkgPdf, pSPlot, pResult);
 }
 
 void Fitter::Clean()
 {
-	Delete(pFitVar, pData, pTotPdf, pSPlot);
+	Delete(pFitVar, pData, pTotPdf, pSigPdf, pBkgPdf, pSPlot);
 	Delete(params);
 }
 
@@ -470,15 +472,25 @@ int Fitter::InitPdfs()
 {
 	RooArgList pdfs;
 	RooArgList ylds;
+
+    RooArgList sigpdfs;
+    RooArgList sigylds;
+
+    RooArgList bkgpdfs;
+    RooArgList bkgylds;
 	
 	for(auto& sig : {true, false})
 	for(auto& pdf : sig?sigPdfs:bkgPdfs)
 	{
 		if(pdf.Init()) return 1;
+        if(sig) { sigpdfs.add(pdf.GetPdf()); sigylds.add(pdf.GetYld()); }
+        if(!sig) { bkgpdfs.add(pdf.GetPdf()); bkgylds.add(pdf.GetYld()); }
 		pdfs.add(pdf.GetPdf());
 		ylds.add(pdf.GetYld());
 	}
 	pTotPdf = new RooAddPdf("pdf", "pdf", pdfs, ylds);
+    pSigPdf = new RooAddPdf("sigpdf", "sigpdf", sigpdfs, sigylds);
+    pBkgPdf = new RooAddPdf("bkgpdf", "bkgpdf", bkgpdfs, bkgylds);
 
 	return 0;
 }
@@ -640,6 +652,61 @@ RooArgList Fitter::GetYieldsList()
 }
 
 
+//Calculate Integral of the PDFs which are (currently) already added to the Fitter
+Value_w_Err Fitter::CalculateIntegral() 
+{
+    Value_w_Err tempyield(0.0, 0.0);
+    Value_w_Err totalyieldsignal(0.0, 0.0);
+    Value_w_Err totalyieldbackground(0.0, 0.0);
+
+
+
+    for(auto& sigpdf : sigPdfs)    //Loop through signalpdfs
+    {
+        tempyield.SetVal(sigpdf.GetYield_w_Err().getVal());
+        tempyield.SetError(sigpdf.GetYield_w_Err().getError()); 
+        totalyieldsignal = totalyieldsignal + tempyield;
+    }
+
+    for(auto& bkgpdf : bkgPdfs)    //Loop through backgroundpdfs
+    {
+        tempyield.SetVal(bkgpdf.GetYield_w_Err().getVal());
+        tempyield.SetError(bkgpdf.GetYield_w_Err().getError()); 
+        totalyieldbackground = totalyieldbackground + tempyield;
+    }
+
+    Value_w_Err totalyield = totalyieldsignal + totalyieldbackground;
+
+
+    pFitVar -> setRange("integralrange", integral_lowerlimit, integral_upperlimit);
+
+    RooAbsReal* intOfTotal = pTotPdf -> createIntegral(*pFitVar, RooFit::NormSet(*pFitVar), RooFit::Range("integralrange"));
+    RooAbsReal* intOfSignal = pSigPdf -> createIntegral(*pFitVar, RooFit::NormSet(*pFitVar), RooFit::Range("integralrange"));
+    RooAbsReal* intOfBackground = pBkgPdf -> createIntegral(*pFitVar, RooFit::NormSet(*pFitVar), RooFit::Range("integralrange"));
+    
+    Value_w_Err norm_integral(intOfTotal->getVal());
+    Value_w_Err integral = norm_integral * totalyield;
+
+    Value_w_Err norm_integralsig(intOfSignal->getVal());
+    Value_w_Err integral_signal = norm_integralsig * totalyieldsignal;   
+    
+    Value_w_Err norm_integralbkg(intOfBackground->getVal());
+    Value_w_Err integral_background = norm_integralbkg * totalyieldbackground;
+
+    std::cout << std::endl << std::endl << "------------------------ Integral of TotalPdf ----------------------------------" << std::endl;
+    std::cout << "\tTotal yield:\t\t "; totalyield.Print(); std::cout << std::endl;
+    std::cout << "\tIntegral(" << integral_lowerlimit << ", " << integral_upperlimit << "):\t "; integral.Print(); std::cout << std::endl;
+ 
+    std::cout << std::endl << std::endl << "------------------------ Integral of SignalPdfs --------------------------------" << std::endl;
+    std::cout << "\tTotal yield:\t\t "; totalyieldsignal.Print(); std::cout << std::endl;
+    std::cout << "\tIntegral(" << integral_lowerlimit << ", " << integral_upperlimit << "):\t "; integral_signal.Print(); std::cout << std::endl;  
+    
+    std::cout << std::endl << std::endl << "------------------------ Integral of BackgroundPdfs ----------------------------" << std::endl;
+    std::cout << "\tTotal yield:\t\t "; totalyieldbackground.Print(); std::cout << std::endl;
+    std::cout << "\tIntegral(" << integral_lowerlimit << ", " << integral_upperlimit << "):\t "; integral_background.Print(); std::cout << std::endl << std::endl;
+
+    return integral;
+}
 
 
 

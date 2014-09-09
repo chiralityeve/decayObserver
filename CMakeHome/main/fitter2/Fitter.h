@@ -53,6 +53,8 @@
 #include "RooArgusBG.h"
 #include "RooLandau.h"
 
+#include "Value_w_Err.h"    //Custom class to handle symmetric (gaussian) errors
+
 #include "RooStats/SPlot.h"
 
 class Fitter;
@@ -102,6 +104,9 @@ public:
 	
 	RooAbsPdf& GetPdf(){ return *pPdf; }
 	RooAbsReal& GetYld(){ return *pYld; }
+
+    RooRealVar& GetYield_w_Err() { return *Yield_w_Err; };
+    
 	
 private:
 	void InitPointers();
@@ -113,6 +118,7 @@ private:
 	vector<FitterParam> params;
 	RooAbsPdf* pPdf;
 	RooAbsReal* pYld;
+    RooRealVar* Yield_w_Err;
 	
 	RooAbsReal* NewVar(const FitterParam& param, const string& parname, const string& unit);
 	RooAbsReal* NewFormulaVar(const string& parname, const string& formula, const vector<RooAbsReal*>& dependents, const string& unit);
@@ -148,7 +154,12 @@ public:
 	int AddBackground(const string& pdf, const vector<FitterParam>& params);
 	
 	int Run(bool verbose=false, bool recreate=false);
-	
+
+    bool calcintegral = false;  //by default no integral needs to be calculated
+    double integral_lowerlimit = 0;
+    double integral_upperlimit = 0;
+    Value_w_Err CalculateIntegral();
+    
 
 private:	
 	vector<string> trees;
@@ -167,6 +178,8 @@ private:
 	RooRealVar* pFitVar;
 	RooDataSet* pData;
 	RooAddPdf* pTotPdf;
+	RooAddPdf* pSigPdf;
+	RooAddPdf* pBkgPdf;
 	RooStats::SPlot* pSPlot;
 	
 	RooFitResult* pResult;

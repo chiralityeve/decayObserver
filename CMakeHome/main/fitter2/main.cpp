@@ -47,6 +47,7 @@ int main(int argc, char** argv)
 	{
 		cout << fitter;
 		fitter.Run(showRooFitOutput);
+        if(fitter.calcintegral) fitter.CalculateIntegral();
 	}
 	
 	return 0;
@@ -131,7 +132,7 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 			ArgParser ap(arg);
 			tuple<string, double, double, string, string, string> argVals; //branchname range_min range_max unit plot_title x_axis_label
 			
-			fitters.push_back(baseFitter);
+			fitters.push_back(baseFitter);  //Push fitter to vector of fitters (this fitter will be edited in the later process)
 			pFitter = &fitters.back();
 			if(ap.NumArgs() != 6){ cerr << "Wrong number of arguments in " << key << ' ' << arg << endl; return 1; }
 			if(ap.Scan(get<0>(argVals), get<1>(argVals), get<2>(argVals), get<3>(argVals), get<4>(argVals), get<5>(argVals)))
@@ -174,6 +175,24 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 
 			continue;
 		}
+        
+        
+        if(key == "INTEGRAL")
+        {
+            if(pFitter->calcintegral==true){ cerr << "Only one integral can be calculated per FIT environment" << endl; return 1; }
+            ArgParser ap(arg);
+            if(!pFitter){ cerr << "Expecting FIT before INTEGRAL" << endl; return 1; }
+            if(ap.NumArgs() != 2){ cerr << "Wrong number of arguments in " << key << ' ' << arg << endl; return 1; }
+        	if(ap.Scan(pFitter->integral_lowerlimit, pFitter->integral_upperlimit))
+			{ 
+				cerr << "Error parsing " << key << ' ' << arg << endl; 
+				return 1; 
+			}
+            pFitter->calcintegral = true; 
+
+        }
+        
+
 	}
 	
 	return 0;
