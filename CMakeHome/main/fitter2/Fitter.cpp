@@ -714,7 +714,11 @@ void Fitter::CalculateIntegrals()
         std::cout << "--------------------\t" << rangename << " (" << integralrange.minimum << ", " << integralrange.maximum << ")\t------------------------" << std::endl;
         std::cout << "--------------------------------------------------------------------------------" << std::endl; 
 
-        if(integralrange.minimum < range.minimum || integralrange.maximum > range.maximum)  std::cout << std::endl << "\t\t!!!!!!!WARNING: Integralrange exceeds range!!!!!!!" << std::endl;
+        if(integralrange.minimum < range.minimum || integralrange.maximum > range.maximum) 
+        {
+            std::cerr << std::endl << "\t\t!!!!!!!ERROR: Integralrange exceeds range!!!!!!!" << std::endl << std::endl << std::endl;
+            continue;
+        }
 
         std::cout << std::endl << "------------------------ Integral of TotalPdf ----------------------------------" << std::endl;
         std::cout << "\tTotal yield:\t\t "; totalyield.Print(); std::cout << std::endl;
