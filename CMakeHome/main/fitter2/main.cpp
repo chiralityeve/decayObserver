@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	{
 		cout << fitter;
 		fitter.Run(showRooFitOutput);
-        if(fitter.calcintegral) fitter.CalculateIntegral();
+        fitter.CalculateIntegrals();
 	}
 	
 	return 0;
@@ -178,18 +178,17 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
         
         
         if(key == "INTEGRAL")
-        {
-            if(pFitter->calcintegral==true){ cerr << "Only one integral can be calculated per FIT environment" << endl; return 1; }
+        { 
             ArgParser ap(arg);
             if(!pFitter){ cerr << "Expecting FIT before INTEGRAL" << endl; return 1; }
             if(ap.NumArgs() != 2){ cerr << "Wrong number of arguments in " << key << ' ' << arg << endl; return 1; }
-        	if(ap.Scan(pFitter->integral_lowerlimit, pFitter->integral_upperlimit))
+        	double lowlimit, uplimit;
+            if(ap.Scan(lowlimit, uplimit))
 			{ 
 				cerr << "Error parsing " << key << ' ' << arg << endl; 
 				return 1; 
 			}
-            pFitter->calcintegral = true; 
-
+            pFitter->CreateIntegralrange(lowlimit, uplimit);
         }
         
 

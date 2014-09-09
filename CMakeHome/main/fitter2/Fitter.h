@@ -59,6 +59,8 @@
 
 class Fitter;
 
+
+
 class FitterParam
 {
 	using string = std::string;
@@ -155,11 +157,9 @@ public:
 	
 	int Run(bool verbose=false, bool recreate=false);
 
-    bool calcintegral = false;  //by default no integral needs to be calculated
-    double integral_lowerlimit = 0;
-    double integral_upperlimit = 0;
-    Value_w_Err CalculateIntegral();
-    
+
+    void CreateIntegralrange(double lowlimit, double uplimit);
+    void CalculateIntegrals();
 
 private:	
 	vector<string> trees;
@@ -174,6 +174,8 @@ private:
 	vector<RooAbsReal*> params;
 	vector<FitterPdf> sigPdfs;
 	vector<FitterPdf> bkgPdfs;
+
+    vector<Interval> integralranges;
 	
 	RooRealVar* pFitVar;
 	RooDataSet* pData;
