@@ -175,6 +175,29 @@ int ReadConfigurationFile(const string& filename, vector<Fitter>& fitters)
 
 			continue;
 		}
+      
+        //Signal or Background components that shall be shown seperately in the plot
+		if(key == "SIGNAL_SHOW" || key == "BACKGROUND_SHOW")
+		{
+			string pdf;
+			vector<FitterParam> params;
+			int err = 0;
+			
+			if(!pFitter){ cerr << "Expecting FIT before " << key << ' ' << arg << endl; return 1; }
+			if(!(istringstream(arg) >> pdf)){ cerr << "Wrong number of arguments in " << key << ' ' << arg << endl; return 1; }
+			if(FitterParam::ParseArgs(arg.substr(pdf.size()), params)){cerr << "Error parsing " << key << ' ' << arg << endl; return 1; }
+			
+			err = key == "SIGNAL_SHOW"? pFitter->AddSignal(pdf, params, /*showsep =*/ true) : pFitter->AddBackground(pdf, params, /*showsep =*/ true);
+			switch(err)
+			{
+				case 0: break;
+				case 1: cerr << "Unknown pdf in " << key << ' ' << arg << endl; return 1;
+				case 2: cerr << "Wrong number of arguments in " << key << ' ' << arg << endl; return 1;
+				default: break;
+			}
+
+			continue;
+		}
         
         
         if(key == "INTEGRAL")

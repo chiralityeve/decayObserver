@@ -108,6 +108,8 @@ public:
 	RooAbsReal& GetYld(){ return *pYld; }
 
     RooRealVar& GetYield_w_Err() { return *Yield_w_Err; };
+
+    bool showsep;   //Whether this pdf shall be plotted seperately
     
 	
 private:
@@ -152,8 +154,8 @@ public:
 	void SetPlot(const string& plotTitle, const string& axisLabel);
 	void SetResultsFilename(const string& resultsFilename);
 	void SetWeightsFilename(const string& weightsFilename);
-	int AddSignal(const string& pdf, const vector<FitterParam>& params);
-	int AddBackground(const string& pdf, const vector<FitterParam>& params);
+	int AddSignal(const string& pdf, const vector<FitterParam>& params, bool showseperately = false);
+	int AddBackground(const string& pdf, const vector<FitterParam>& params, bool showseperately = false);
 	
 	int Run(bool verbose=false, bool recreate=false);
 

@@ -106,7 +106,7 @@ int FitterParam::ParseArgs(const string& line, vector<FitterParam>& params)
 FitterPdf::FitterPdf(){ InitPointers(); }
 FitterPdf::FitterPdf(const FitterPdf& other){ InitPointers(); *this = other; }
 FitterPdf::FitterPdf(Fitter* pFitter, const string& name, const string& pdf, const vector<FitterParam>& params):
-    name(name),pdf(pdf),params(params)
+    showsep(false), name(name),pdf(pdf), params(params)
 {
     InitPointers();
     this->pFitter = pFitter;
@@ -261,6 +261,7 @@ FitterPdf& FitterPdf::operator=(const FitterPdf& other)
     name = other.name;
     pdf = other.pdf;
     params = other.params;
+    showsep = other.showsep;
 
     return *this;
 }
@@ -375,9 +376,10 @@ void Fitter::SetResultsFilename(const string& resultsFilename){ this->resultsFil
 void Fitter::SetWeightsFilename(const string& weightsFilename){ this->weightsFilename = weightsFilename; }
 
 
-int Fitter::AddSignal(const string& pdfName, const vector<FitterParam>& params)
+int Fitter::AddSignal(const string& pdfName, const vector<FitterParam>& params, bool showseperately /*= false*/)
 {
     FitterPdf pdf(this, "sig" + Int2String(sigPdfs.size()), pdfName, params);
+    pdf.showsep = showseperately;
     int err = pdf.Check();
 
     if(err) return err;
@@ -385,9 +387,10 @@ int Fitter::AddSignal(const string& pdfName, const vector<FitterParam>& params)
     return 0;
 }
 
-int Fitter::AddBackground(const string& pdfName, const vector<FitterParam>& params)
+int Fitter::AddBackground(const string& pdfName, const vector<FitterParam>& params, bool showseperately /*= false*/)
 {
     FitterPdf pdf(this, "bkg" + Int2String(bkgPdfs.size()), pdfName, params);
+    pdf.showsep = showseperately;
     int err = pdf.Check();
 
     if(err) return err;
@@ -514,12 +517,27 @@ void Fitter::SaveResults(bool recreate)
     RooArgList bkgComponent;
     double pullMax = 0.;
 
-    pData->plotOn(pFrame, RooFit::MarkerSize(0.9));
+    pData->plotOn(pFrame, RooFit::MarkerSize(0.9));     //Plot data
     for(auto& pdf : bkgPdfs) bkgComponent.add(pdf.GetPdf());
-    pTotPdf->plotOn(pFrame, RooFit::Components(bkgComponent), RooFit::LineColor(kGreen) );
+    pTotPdf->plotOn(pFrame, RooFit::Components(bkgComponent), RooFit::LineColor(kGreen) );  //Plot background components (green)
 
-    pTotPdf->plotOn(pFrame, RooFit::LineColor(kRed));	
-    pTotPdf->paramOn(pFrame, RooFit::Format("NEU", RooFit::AutoPrecision(1)), RooFit::Layout(0.65, 0.99, 0.93));
+    //Go through pdfs and check if a pdf wants to be shown seperately
+    std::vector<Color_t> colors = {kBlue, kMagenta, kOrange, kCyan};  //You can plot up to 4 pdfs seperately
+    int counter = 0;
+    for(auto& sig : {true, false}) {
+        for(auto& pdf : sig?sigPdfs:bkgPdfs)
+        {
+            if(pdf.showsep) { 
+                pTotPdf->plotOn(pFrame, RooFit::Components(pdf.GetPdf()), RooFit::LineColor(colors[counter%colors.size()]),
+                        RooFit::LineStyle(2), RooFit::LineWidth(2));
+                counter += 1;
+            }
+        }
+    }
+
+
+    pTotPdf->plotOn(pFrame, RooFit::LineColor(kRed));	    //Plot total PDF (red)
+    pTotPdf->paramOn(pFrame, RooFit::Format("NEU", RooFit::AutoPrecision(1)), RooFit::Layout(0.65, 0.99, 0.93));       //Plot parameterbar
     pFrame->getAttText()->SetTextSize(0.75*pFrame->GetYaxis()->GetLabelSize());
 
     pHisPull = pFrame->pullHist();
@@ -689,7 +707,7 @@ void Fitter::CalculateIntegrals()
 
     Value_w_Err totalyield = totalyieldsignal + totalyieldbackground;
 
-    
+
     std::string rangename;
     int i = 0;
     for( auto& integralrange : integralranges) {
