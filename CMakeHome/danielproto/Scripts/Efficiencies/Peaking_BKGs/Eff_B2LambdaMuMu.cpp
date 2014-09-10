@@ -92,7 +92,9 @@ int main() {
     std::string preselection = "phi_1020_M < 1800 && phi_1020_M  > 1300 && Kplus_PIDK > -3 && Kminus_PIDK > -3";
     preselection += " && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
     //preselection += " && J_psi_1S_M > 3047 && J_psi_1S_M < 3147";     //Only Jpsi candidates
-    
+    preselection += " && (J_psi_1S_M < 2828.4 || J_psi_1S_M > 3316.6) && (J_psi_1S_M < 3535.6 || J_psi_1S_M > 3873.0)";
+    preselection += " && B0_M > 5316.3 && B0_M < 5416.3";
+
     std::string punzi = preselection + " && TMVAResponse > 0.244909";
     std::string common = preselection + " && TMVAResponse > 0.123853";
     
@@ -161,7 +163,7 @@ int main() {
     Value_w_Err presel_eff( n_presel / n_events, efferror);
 
   
-    cout << "------ Preselectionefficiency (no cut on Jpsi) -------" << endl << endl;
+    cout << "------ Preselectionefficiency (cut out resonances and cut on Bs-mass) -------" << endl << endl;
     cout << "Events before Cuts (Truthmatched):  " << n_events << endl;
     cout << "Events after Preselection: " << n_presel << endl << endl;
     cout << "=> Effizienz: "; presel_eff.Print(); cout << endl << endl;

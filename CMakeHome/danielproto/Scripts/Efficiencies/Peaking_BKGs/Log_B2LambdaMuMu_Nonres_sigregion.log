@@ -1,0 +1,57 @@
+
+---------------------------------------------
+-----------------B2JpsiKstar-----------------
+---------------------------------------------
+
+------ Generator level Cut Efficiency -------
+
+0.3398 +/- 0.0016
+
+------ Stripping Efficiency -------
+
+Generated Events:  511247
+Events after Stripping (not-truthmatched): 35111
+Events after Stripping (truthmatched): 35111
+
+=> Effizienz: 0.0686772 +/- 0.000353705
+
+------ Preselectionefficiency (cut out resonances and cut on Bs-mass) -------
+
+Events before Cuts (Truthmatched):  35111
+Events after Preselection: 43
+
+=> Effizienz: 0.00122469 +/- 0.000186649
+
+------ BDT Efficiency --------
+
+Events before BDT-cut (preselected, truthmatched):  43
+
+Events after Common-cut: 3		Effizienz: 0.0697674 +/- 0.0388497
+Events after Punzi-cut: 0		Effizienz: 0 +/- 0
+
+------ Trigger Efficiency --------
+
+Events after BDT Common-cut (preselected, truthmatched):  3
+Events after BDT Punzi-cut (preselected, truthmatched):  0
+
+Events after Common-cut and Triggerrequ.: 3		Effizienz: 1 +/- 0
+Events after Punzi-cut and Triggerrequ: 0		Effizienz: -nan +/- nan
+
+------ Total Efficiency --------
+
+With Common-Cut: (0.000199395 +/- 0.000115124) %
+With Punzi-Cut: (0 +/- nan) %
+
+
+
+------ Peaking Background Events after Selection (using controlchannel)-------------
+
+Resonant decays after selection: 4767 +/- 84
+Resonant BR: 1.5418e-05 +/- 5.33928e-06	NOTE: Symmetric error for Bs -> f2 Jpsi assumed
+Resonant Efficiency (punzi-cut): 0.004258 +/- 0.000186
+
+BR of this decay: 2.43e-07 +/- 6.3231e-08
+flambdab/fs: 2.31061 +/- 0.2417
+
+Punzi-Cut: N(peaking) = 0 +/- nan
+

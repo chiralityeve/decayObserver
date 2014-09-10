@@ -17,3 +17,5 @@ target_link_libraries(FitBKGRafterBDT_punzi ${LIBRARIES})
 target_link_libraries(FitBKGRafterBDT_common ${LIBRARIES})
 target_link_libraries(FitResSignalafterBDT_common ${LIBRARIES})
 target_link_libraries(FitResSignalafterBDT_punzi ${LIBRARIES})
+
+add_subdirectory(2D-Fits)

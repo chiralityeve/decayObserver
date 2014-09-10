@@ -126,7 +126,7 @@ ostream& FitterPdf::Print(ostream& os) const
 
 int FitterPdf::Check()
 {
-    const map<string, int> pdf_nArg = {{"Gaussian", 3}, {"Polynomial", -1}, {"Exponential", 2}, {"CrystalBall", 5}, {"BifurGauss", 4}, {"Argus", 4},  {"Landau", 3}};
+    const map<string, int> pdf_nArg = {{"Gaussian", 3}, {"Polynomial", -1}, {"Exponential", 2}, {"CrystalBall", 5}, {"BifurGauss", 4}, {"Argus", 4},  {"Landau", 3}, {"BreitWigner", 3}};
     int nParams = params.size();
 
     if(!pdf_nArg.count(pdf)) return 1;
@@ -218,6 +218,16 @@ int FitterPdf::Init()
 
         return 0;
     }
+
+    if(pdf == "BreitWigner")
+    {
+        RooAbsReal* pMean = NewVar(params[1], "mean", pFitter->unit);
+        RooAbsReal* pSigma = NewVar(params[2], "sigma", pFitter->unit);
+
+        NewPdf<RooBreitWigner>(*pFitter->pFitVar, *pMean, *pSigma);
+        return 0;
+    }
+
 
     return 1;
 }

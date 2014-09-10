@@ -52,6 +52,7 @@
 #include "RooBifurGauss.h"
 #include "RooArgusBG.h"
 #include "RooLandau.h"
+#include "RooBreitWigner.h"
 
 #include "Value_w_Err.h"    //Custom class to handle symmetric (gaussian) errors
 
