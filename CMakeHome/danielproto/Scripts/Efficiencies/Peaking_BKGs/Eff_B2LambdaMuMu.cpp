@@ -93,7 +93,7 @@ int main() {
     preselection += " && (Kplus_PIDK - Kplus_PIDp) > -3 && (Kminus_PIDK - Kminus_PIDp) > -3";
     //preselection += " && J_psi_1S_M > 3047 && J_psi_1S_M < 3147";     //Only Jpsi candidates
     preselection += " && (J_psi_1S_M < 2828.4 || J_psi_1S_M > 3316.6) && (J_psi_1S_M < 3535.6 || J_psi_1S_M > 3873.0)";
-    preselection += " && B0_M > 5316.3 && B0_M < 5416.3";
+    //preselection += " && B0_M > 5150 && B0_M < 5700";
 
     std::string punzi = preselection + " && TMVAResponse > 0.244909";
     std::string common = preselection + " && TMVAResponse > 0.123853";
@@ -255,14 +255,15 @@ int main() {
 
     //Resonant (control) decay------------------------
     //Number resonant Decays
-    Value_w_Err Nres(4767, 84);
+    Value_w_Err Nres(1892.17, 80.47);
 
     cout << "Resonant decays after selection: "; Nres.Print(); cout << endl;
 
     //BR(res)
-    Value_w_Err Bres1(2.6 * pow(10, -4), 0.9 * pow(10, -4));    //Bs -> f2 Jpsi NOTE: eigentlich asymmetrischer Fehler +0.9 , -0.6 ....
-    Value_w_Err Bres2(5.93 * pow(10, -2), 0.06 * pow(10, -2));  //Jpsi -> mu mu
-    Value_w_Err Bres = Bres1 * Bres2;
+    Value_w_Err Bres1(2.6 * pow(10, -4), 0.6 * pow(10, -4));    //Bs -> f2 Jpsi NOTE: eigentlich asymmetrischer Fehler +0.9 , -0.6 ....
+    Value_w_Err Bres2(5.961 * pow(10, -2), 0.033 * pow(10, -2));  //Jpsi -> mu mu
+    Value_w_Err Bres3(44.35 * pow(10, -2), 1.1 * pow(10,-2));   //f2 -> K+ K-
+    Value_w_Err Bres = Bres1 * Bres2 * Bres3;
 
     cout << "Resonant BR: "; Bres.Print(); cout << "\tNOTE: Symmetric error for Bs -> f2 Jpsi assumed"  << endl;
 

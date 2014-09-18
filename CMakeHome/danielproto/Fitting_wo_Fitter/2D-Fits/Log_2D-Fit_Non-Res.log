@@ -1,0 +1,83 @@
+
+[1mRooFit v3.60 -- Developed by Wouter Verkerke and David Kirkby[0m 
+                Copyright (C) 2000-2013 NIKHEF, University of California & Stanford University
+                All rights reserved, please read http://roofit.sourceforge.net/license.txt
+
+[#1] INFO:Eval -- RooTreeDataStore::loadValues(Datensatz_Masse) Ignored 150 out of range events
+[#1] INFO:Minization -- RooMinuit::optimizeConst: activating const optimization
+[#1] INFO:Minization --  The following expressions have been identified as constant and will be precalculated and cached: (Res_sig,Nonres_sig,BKG)
+ **********
+ **   13 **MIGRAD        1500           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=563.616 FROM MIGRAD    STATUS=INITIATE       10 CALLS          11 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  BKG_yield    5.00000e+01   2.50000e+01   1.95152e-01   5.41530e+01
+   2  Nonres_sig_yield   2.40000e+01   1.00000e+01   2.39036e-01  -3.59847e-01
+   3  Res_sig_yield   1.20000e+01   5.00000e+00   2.39036e-01  -4.72877e-01
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=556.842 FROM MIGRAD    STATUS=CONVERGED      57 CALLS          58 TOTAL
+                     EDM=3.13549e-06    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  BKG_yield    2.31061e+01   5.71827e+00   9.73047e-04  -2.31373e-02
+   2  Nonres_sig_yield   2.94694e+01   7.60640e+00   2.36832e-03   5.20085e-03
+   3  Res_sig_yield   1.34231e+01   5.88339e+00   3.86294e-03   1.62888e-03
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  30    NPAR=  3    ERR DEF=0.5
+  3.274e+01 -8.270e+00 -1.362e+00 
+ -8.270e+00  5.840e+01 -2.064e+01 
+ -1.362e+00 -2.064e+01  3.546e+01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3
+        1  0.23597   1.000 -0.189 -0.040
+        2  0.49877  -0.189  1.000 -0.454
+        3  0.47133  -0.040 -0.454  1.000
+ **********
+ **   18 **HESSE        1500
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=556.842 FROM HESSE     STATUS=OK             16 CALLS          74 TOTAL
+                     EDM=3.13665e-06    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  BKG_yield    2.31061e+01   5.71872e+00   1.94609e-04  -1.08536e+00
+   2  Nonres_sig_yield   2.94694e+01   7.61204e+00   4.73665e-04  -4.23124e-01
+   3  Res_sig_yield   1.34231e+01   5.88733e+00   7.72587e-04  -4.81463e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  30    NPAR=  3    ERR DEF=0.5
+  3.274e+01 -8.288e+00 -1.354e+00 
+ -8.288e+00  5.849e+01 -2.072e+01 
+ -1.354e+00 -2.072e+01  3.551e+01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3
+        1  0.23628   1.000 -0.189 -0.040
+        2  0.49990  -0.189  1.000 -0.455
+        3  0.47247  -0.040 -0.455  1.000
+[#1] INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on B0_M integrates over variables (phi_1020_M)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on phi_1020_M integrates over variables (B0_M)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) directly selected PDF components: (Res_sig)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) indirectly selected PDF components: (B_DCB_res,B_CB1_res,B_CB2_res,KK_BreitWigner_res)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on B0_M integrates over variables (phi_1020_M)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) directly selected PDF components: (Res_sig)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) indirectly selected PDF components: (B_DCB_res,B_CB1_res,B_CB2_res,KK_BreitWigner_res)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on phi_1020_M integrates over variables (B0_M)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) directly selected PDF components: (Nonres_sig)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) indirectly selected PDF components: (B_DCB_res,B_CB1_res,B_CB2_res,KK_Exponential_nonres)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on B0_M integrates over variables (phi_1020_M)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) directly selected PDF components: (Nonres_sig)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) indirectly selected PDF components: (B_DCB_res,B_CB1_res,B_CB2_res,KK_Exponential_nonres)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on phi_1020_M integrates over variables (B0_M)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) directly selected PDF components: (BKG)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) indirectly selected PDF components: (B_BKG,KK_BKG)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on B0_M integrates over variables (phi_1020_M)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) directly selected PDF components: (BKG)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(totalPdf) indirectly selected PDF components: (B_BKG,KK_BKG)
+[#1] INFO:Plotting -- RooAbsReal::plotOn(totalPdf) plot on phi_1020_M integrates over variables (B0_M)

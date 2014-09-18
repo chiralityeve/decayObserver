@@ -86,7 +86,7 @@ int main() {
     RooAddPdf totalPdf("totalPdf", "Summe aus Signal und Background", shapes, yields);
 
     Bs_M.setRange("fitrange", 5500, 5700);  
-    Bs_M.setRange("signalrange", 5316.3, 5416.3);
+    Bs_M.setRange("signalrange", 5316.7, 5416.7);
     Bs_M.setRange("extrapolationrange", 5300, 5500);
 
     totalPdf.fitTo(*ReducedDataSet, Extended(), Range("fitrange") );
@@ -110,7 +110,10 @@ int main() {
     totalPdf.plotOn(DMassFrame, LineColor(kRed));
 
     //Plot extrapolated line
-    totalPdf.plotOn(DMassFrame, LineColor(kRed), LineStyle(2), Range("extrapolationrange"));
+    totalPdf.plotOn(DMassFrame, LineColor(kRed), LineStyle(2), LineWidth(2), Range("extrapolationrange"));
+
+    //Plot signalregion line
+    totalPdf.plotOn(DMassFrame, LineColor(kGreen), Range("signalrange"));
 
     //Display fit parameters
     totalPdf.paramOn(DMassFrame, Format("NELU", AutoPrecision(2)), Layout(0.5, 1.0, 0.9));

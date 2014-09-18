@@ -15,7 +15,7 @@
 // Plots to compare PID variables (MC <-> Data)
 // -----------------------------------------------
 
-void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_comparePID(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
 
     //Data (pruned) after stripping
     TFile* filedata = new TFile("/afs/cern.ch/work/d/dberning/private/Pruned/Data/Data_merged_pruned_newVars.root", "READ");
@@ -531,7 +531,7 @@ void daniel_BDTvsPrevAna(std::vector<Plotvariable*> *vecp, bool &normalized_plot
 // 1. Vergleich Signal (MC) und background sample 
 // -----------------------------------------------
 
-void daniel_comparison_MC_BKG(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
+void daniel_current(std::vector<Plotvariable*> *vecp, bool &normalized_plots, int &nbins, std::string &saveto) {
 
     TChain* Bkgrtree = new TChain("DecayTree");                                                               //Background tree (B_M > 5500)
     Bkgrtree -> Add("/afs/cern.ch/work/d/dberning/private/Subsamples/Bsf2mumu_Data2011_background_subsample.root");

@@ -41,12 +41,11 @@ int main() {
 // -----------------------------------------------------------------------
 // Get an estimate on the Signalevents for the resonant Bs2Jpsif2-Channel (after preselection and triggerrequirements)
 // -----------------------------------------------------------------------
-   
-    gStyle -> SetOptStat(0);
+    
     
     
     // Open Data 
-    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Data_resonant_triggered_punzi.root");
+    TFile* fileReal = TFile::Open("/afs/cern.ch/work/d/dberning/private/BDT/Cutted/Data_non-resonant_triggered_punzi_unblinded.root");
     if (fileReal == 0) {
         // if we cannot open the file, print an error message and return immediatly
         printf("Error: cannot open RealData");
@@ -83,27 +82,27 @@ int main() {
 
 
     //Resonant Signal (resonant = f2)
-    RooRealVar B_CB1_res_mean("B_CB1_res_mean", "", 5370, 5300, 5440, "MeV"),
-               B_CB1_res_sigma("B_CB1_res_sigma", "", 18, 0, 80, "MeV"),
-               B_CB1_res_alpha("B_CB1_res_alpha", "", 1.4, 0.1, 3.0),
-               B_CB1_res_n("B_CB1_res_n", "", 3, 0, 70);
+    RooRealVar B_CB1_res_mean("B_CB1_res_mean", "", 5369.96, "MeV"),
+               B_CB1_res_sigma("B_CB1_res_sigma", "", 17.4881, "MeV"),
+               B_CB1_res_alpha("B_CB1_res_alpha", "", 1.31874),
+               B_CB1_res_n("B_CB1_res_n", "", 6.92291);
     
     //RooRealVar mean is the same as B_CB1
-    RooRealVar B_CB2_res_sigma("B_CB2_res_sigma", "", 40, 0, 80, "MeV");
+    RooRealVar B_CB2_res_sigma("B_CB2_res_sigma", "", 68.9154, "MeV");
                //same alpha
                //same n
-    RooRealVar B_DCB_coefficient("B_DCB_coefficient", "", 0.5, 0.0, 1.0);
+    RooRealVar B_DCB_coefficient("B_DCB_coefficient", "", 0.936966);
     
     RooCBShape B_CB1_res("B_CB1_res", "", Bs_M, B_CB1_res_mean, B_CB1_res_sigma, B_CB1_res_alpha, B_CB1_res_n);
     RooCBShape B_CB2_res("B_CB2_res", "", Bs_M, B_CB1_res_mean, B_CB2_res_sigma, B_CB1_res_alpha, B_CB1_res_n);
     RooAddPdf  B_DCB_res("B_DCB_res", "", B_CB1_res, B_CB2_res, B_DCB_coefficient);
 
-    RooRealVar KK_BreitWigner_res_mean("KK_BreitWigner_res_mean", "", 1520, 1500, 1550, "MeV"),
-               KK_BreitWigner_res_sigma("KK_BreitWigner_res_sigma", "", 100, 20, 200, "MeV");
+    RooRealVar KK_BreitWigner_res_mean("KK_BreitWigner_res_mean", "", 1521.55, "MeV"),
+               KK_BreitWigner_res_sigma("KK_BreitWigner_res_sigma", "", 46.7051, "MeV");
     RooGaussian KK_BreitWigner_res("KK_BreitWigner_res", "", KK_M, KK_BreitWigner_res_mean, KK_BreitWigner_res_sigma);
 
     RooProdPdf Res_sig("Res_sig", "", RooArgSet(B_DCB_res,KK_BreitWigner_res));
-    RooRealVar Res_sig_yield("Res_sig_yield", "", 3200, 500, 5000);
+    RooRealVar Res_sig_yield("Res_sig_yield", "", 12, 0, 50);
 
 
 
@@ -111,25 +110,31 @@ int main() {
     //Non-resonant Signal (non-res = KK)
     //for Bs-mass use same DCB as for the resonant channel
 
-    RooRealVar KK_Exponential_nonres_lambda("KK_Exponential_nonres_lambda", "", -0.001, -0.1, 0.0);
+    RooRealVar KK_Exponential_nonres_lambda("KK_Exponential_nonres_lambda", "", -0.00114470);
               
     RooExponential KK_Exponential_nonres("KK_Exponential_nonres", "", KK_M, KK_Exponential_nonres_lambda);
 
     RooProdPdf Nonres_sig("Nonres_sig", "", RooArgSet(B_DCB_res, KK_Exponential_nonres));
-    RooRealVar Nonres_sig_yield("Nonres_sig_yield", "", 1500, 500, 3000);
+
+    //Fixed yieldratio from controlchannel
+    RooFormulaVar Nonres_sig_yield("Nonres_sig_yield", "Res_sig_yield*1.548444379", RooArgList(Res_sig_yield));
+    //Non-fixed yield for non-resonant signal
+    //RooRealVar Nonres_sig_yield("Nonres_sig_yield", "", 24, 0, 100);
 
 
 
 
     //Combinatorial Background
-    RooRealVar B_BKG_lambda("B_BKG_lambda", "", -0.001, -0.1, 0.0);
+    RooRealVar B_BKG_lambda("B_BKG_lambda", "", -0.00410129, -0.1, 0.0);    //free
+    //RooRealVar B_BKG_lambda("B_BKG_lambda", "", -0.00410129);    //fixed
     RooExponential B_BKG("B_BKG", "", Bs_M, B_BKG_lambda);
 
-    RooRealVar KK_BKG_lambda("KK_BKG_lambda", "", -0.002, -0.1, 0.0);
+    RooRealVar KK_BKG_lambda("KK_BKG_lambda", "", -0.00257055, -0.1, 0.0);  //free  
+    //RooRealVar KK_BKG_lambda("KK_BKG_lambda", "", -0.00257055);  //fixed
     RooExponential KK_BKG("KK_BKG", "", KK_M, KK_BKG_lambda);
 
     RooProdPdf BKG("BKG", "", RooArgSet(B_BKG, KK_BKG));
-    RooRealVar BKG_yield("BKG_yield", "", 700.0, 0.0, 1500.0);
+    RooRealVar BKG_yield("BKG_yield", "", 50, 0.0, 400);
 
 
 
@@ -146,8 +151,13 @@ int main() {
     //Plotte den ganzen Spaß
     //----------------------
     
+    //Ordner
+    std::string ordner2 = "free_yields";
+    std::string ordner1 = "open_ratio_free_BKG";
+    std::string ordner = "fixed_ratio_free_BKG";
+    
     //Open TFile to save Plots
-    TFile* f = new TFile("../plots/2D-Fits/Resonant_selection_punzi.root", "RECREATE");
+    TFile* f = new TFile(("../plots/2D-Fits/Non-Res/"+ordner+"/Non-Resonant_selection_punzi.root").c_str(), "RECREATE");
     
     //CreateRooPlot object with Mass on the (x) axis
     RooPlot* MassFrame_Bs = Bs_M.frame(Bins(50), Name("Masse"), Title("2D-Fit of B_{s}- and KK-mass | Projection on B_{s}-mass"));
@@ -207,8 +217,8 @@ int main() {
 
     Bs_Toppad -> cd();
     MassFrame_Bs -> Draw();
-    legend->AddEntry(MassFrame_Bs->findObject("plot_res_sig"), "B_{s} #rightarrow f_{2}' J/#psi", "lp");
-    legend->AddEntry(MassFrame_Bs->findObject("plot_nonres_sig"), "B_{s} #rightarrow K^{+} K^{-} J/#psi", "lp");
+    legend->AddEntry(MassFrame_Bs->findObject("plot_res_sig"), "B_{s} #rightarrow f_{2}' #mu^{+} #mu^{-}", "lp");
+    legend->AddEntry(MassFrame_Bs->findObject("plot_nonres_sig"), "B_{s} #rightarrow K^{+} K^{-} #mu^{+} #mu^{-}", "lp");
     legend->AddEntry(MassFrame_Bs->findObject("plot_comb_bkg"), "Comb. BKG", "lp");
     legend->AddEntry(MassFrame_Bs->findObject("plot_total_pdf"), "Total Pdf", "lp");
     legend -> Draw();
@@ -263,11 +273,11 @@ int main() {
 
 
     //Save plots
-    MassCanvas_Bs -> SaveAs("../plots/2D-Fits/Projection_Bs-mass.png");
+    MassCanvas_Bs -> SaveAs(("../plots/2D-Fits/Non-Res/"+ordner+"/Projection_Bs-mass.png").c_str());
     Bs_Toppad -> SetLogy(1); 
-    MassCanvas_Bs -> SaveAs("../plots/2D-Fits/Projection_Bs-mass_logy.png");
+    MassCanvas_Bs -> SaveAs(("../plots/2D-Fits/Non-Res/"+ordner+"/Projection_Bs-mass_logy.png").c_str());
     Bs_Toppad -> SetLogy(0);
-    MassCanvas_KK -> SaveAs("../plots/2D-Fits/Projection_KK-mass.png");
+    MassCanvas_KK -> SaveAs(("../plots/2D-Fits/Non-Res/"+ordner+"/Projection_KK-mass.png").c_str());
 
 
 
@@ -284,15 +294,15 @@ int main() {
 
     datahist -> Draw("LEGO2");
     datahist -> Write();
-    MassCanvas_2D -> SaveAs("../plots/2D-Fits/Data_gen_2Dhistogram.png");
+    MassCanvas_2D -> SaveAs(("../plots/2D-Fits/Non-Res/"+ordner+"/Data_gen_2Dhistogram.png").c_str());
 
     fithist -> Draw("SURF,same");
     fithist -> Write();
-    MassCanvas_2D -> SaveAs("../plots/2D-Fits/2D-Fit_overlaid.png");
+    MassCanvas_2D -> SaveAs(("../plots/2D-Fits/Non-Res/"+ordner+"/2D-Fit_overlaid.png").c_str());
 
     fithist -> Draw("SURF");
     fithist -> Write();
-    MassCanvas_2D -> SaveAs("../plots/2D-Fits/PDF_gen_2Dhistogram.png");
+    MassCanvas_2D -> SaveAs(("../plots/2D-Fits/Non-Res/"+ordner+"/PDF_gen_2Dhistogram.png").c_str());
 
 
 

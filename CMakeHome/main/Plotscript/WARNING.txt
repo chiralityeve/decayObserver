@@ -1,0 +1,3 @@
+WARNING:
+
+This script is not supported anymore. It is recommended to use "plotconf" instead which works with config files.
