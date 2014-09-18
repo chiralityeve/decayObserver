@@ -132,7 +132,8 @@ int main(int argc, char **argv) {
 
     TCanvas c("canvas", "dasvancas", 800, 600);         //Create canvas
     TCanvas* cp = &c;
-
+    cp -> SetLeftMargin(0.108);
+    cp -> SetRightMargin(0.05);
 
 
     TLegend legend(0.7, 0.75, 0.89, 0.89);               //Create legend

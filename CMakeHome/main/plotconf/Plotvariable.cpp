@@ -181,10 +181,12 @@ TH1D* Plotvariable::plot(Color_t color /*= kBlue*/, Style_t style/* = 1*/, std::
 
     
     htemp -> GetXaxis() -> SetTitle(xlabel.c_str());
-    htemp -> GetXaxis() -> SetTitleOffset(1.18);
+    htemp -> GetXaxis() -> SetTitleOffset(0.95);
+    htemp -> GetXaxis() -> SetTitleSize(0.045);
 
     htemp -> GetYaxis() -> SetTitle(ylabel.c_str());
-    htemp -> GetYaxis() -> SetTitleOffset(1.48);
+    htemp -> GetYaxis() -> SetTitleOffset(1.18);
+    htemp -> GetYaxis() -> SetTitleSize(0.045);
 
     return htemp;
 }
