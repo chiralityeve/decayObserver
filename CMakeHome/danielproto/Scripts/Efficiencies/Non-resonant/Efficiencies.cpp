@@ -12,7 +12,7 @@
 #include <TStyle.h>
 #include <math.h>
 #include <TMath.h>
-
+#include "Value_w_Err.h"
 
 using std::cout;
 using std::endl;
@@ -210,6 +210,28 @@ int main() {
     cout << "------ Total Efficiency --------" << endl << endl;
     cout << "With Common-Cut:" << total_eff_common << " +/- " << total_error_common << endl;
     cout << "With Punzi-Cut:" << total_eff_punzi  << " +/- " << total_error_punzi << endl << endl;
+
+
+
+    //------------------------
+    // Theoretical Prediction
+    // -----------------------
+    Value_w_Err N_res(1892.17, 80.47);
+    Value_w_Err BR1_res(2.6 * pow(10,-4), 0.6 * pow(10,-4));    //Bs -> Jpsi f2'
+    Value_w_Err BR2_res(5.961 * pow(10,-2), 0.033 * pow(10,-2));    //Jpsi -> MuMu
+    Value_w_Err BR3_res(0.887/2, 0.022/2);                      //f2' -> K+K-
+    Value_w_Err BR_res = BR1_res * BR2_res * BR3_res;
+    Value_w_Err eff_res(0.4258 * pow(10,-2), 0.0186 * pow(10,-2));
+
+    Value_w_Err BR_th_non_res(1.8 * pow(10,-7), 0.7 * pow(10, -7));
+    Value_w_Err BR_th_non_res_ges = BR_th_non_res * BR3_res; 
+    Value_w_Err eff_non_res(0.2815 * pow(10,-2), 0.0014 * pow(10,-2));
+
+   
+
+    Value_w_Err N_exp_non_res = N_res / BR_res / eff_res * BR_th_non_res_ges * eff_non_res;
+
+    cout << "Expected Non-Res events"; N_exp_non_res.Print(); cout << endl << endl;
 
    }
 
